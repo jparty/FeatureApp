@@ -1,0 +1,82 @@
+/*--------------------------------------------------------------------
+
+Copyright Jonathan Cozzo and Patrick Rannou (22/03/2013)
+
+This software is an Android application whose purpose is to select 
+and characterize zones on a photography (type, material, color...).
+
+This software is governed by the CeCILL license under French law and
+abiding by the rules of distribution of free software.  You can  use, 
+modify and/ or redistribute the software under the terms of the CeCILL
+license as circulated by CEA, CNRS and INRIA at the following URL
+"http://www.cecill.info". 
+
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL license and that you accept its terms.
+
+-----------------------------------------------------------------------*/
+
+package com.ecn.featureapp.dialogs;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import com.ecn.featureapp.*;
+import com.ecn.featureapp.activities.*;
+
+/**
+ * This class create a dialog that ask the user to confirm that he really want
+ * to quit the activity (after he pressed the back button); It prevents him from
+ * losing unsaved modifications by mistake.
+ * 
+ * @author patrick
+ * 
+ */
+public class QuitActivityAlertDialog extends DialogFragment {
+
+	@Override
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		// Create a dialog and set the title and the message
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(R.string.quit_activity);
+		builder.setMessage(R.string.quit_activity_explanation);
+		
+		// Button if the user agrees
+		builder.setPositiveButton(R.string.ok,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// Quit this activity
+						((MainActivity) getActivity()).finish();
+					}
+				});
+		
+		// Button if the user disagrees
+		builder.setNegativeButton(R.string.cancel,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+					}
+				});
+
+		return builder.create();
+
+	}
+}
