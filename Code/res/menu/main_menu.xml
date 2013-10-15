@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/itemChoiceProject"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Choix Projet"></item>
+    <item
+        android:id="@+id/itemChoiceFacade"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Choix Facade"></item>
+    <item
+        android:id="@+id/itemChoiceInterneElement"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Choix Eléments Internes"></item>
+    <item
+        android:id="@+id/itemDefinitionElements"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Caractérisation Eléments"></item>
+    <item
+        android:id="@+id/itemInformation"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Information"></item>
+    <item
+        android:id="@+id/itemSummaryExport"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Recapitulatif et Export"></item>
+    
+
+</menu>
