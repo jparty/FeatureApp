@@ -4,32 +4,32 @@
         android:id="@+id/itemChoiceProject"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Choix Projet"></item>
+        android:title="@string/menu_main_chooseProject"></item>
     <item
         android:id="@+id/itemChoiceFacade"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Choix Facade"></item>
+        android:title="@string/menu_main_chooseFacade"></item>
     <item
-        android:id="@+id/itemChoiceInterneElement"
+        android:id="@+id/itemChooseInterneElement"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Choix Eléments Internes"></item>
+        android:title="@string/menu_main_chooseInterneElement"></item>
     <item
         android:id="@+id/itemDefinitionElements"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Caractérisation Eléments"></item>
+        android:title="@string/menu_main_definitionElements"></item>
     <item
         android:id="@+id/itemInformation"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Information"></item>
+        android:title="@string/menu_main_information"></item>
     <item
         android:id="@+id/itemSummaryExport"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Recapitulatif et Export"></item>
+        android:title="@string/menu_main_summaryExport"></item>
     
 
 </menu>

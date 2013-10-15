@@ -21,7 +21,7 @@
 				android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:contentDescription="@string/imageNewProject"/>
+                android:contentDescription="@string/image_newProject"/>
             
             <Button 
                 android:id="@+id/takePicture"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageNewProject"
                 android:layout_alignParentRight="true"
-                android:text="@string/loadPicture"/>"
+                android:text="@string/loadPicture"/>
             
         </RelativeLayout>
         <RelativeLayout
@@ -49,7 +49,7 @@
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_alignParentTop="true"
-	                android:contentDescription="@string/imageLoadLocalProject"/>
+	                android:contentDescription="@string/image_loadLocalProject"/>
 	            
 	            <Button 
 	                android:id="@+id/loadLocalProject"
@@ -69,7 +69,7 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:layout_alignParentTop="true"
-		            android:contentDescription="@string/imageLoadDistantProject"/>
+		            android:contentDescription="@string/image_loadDistantProject"/>
 		        
 		        <Button 
 		            android:id="@+id/loadDistantlProject"

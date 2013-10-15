@@ -1,72 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <string name="app_name">FeatureApp</string>
-    <string name="menu_settings">Paramètres</string>
-    <string name="take_picture">Prendre une photo</string>
-    <string name="load_image">Charger une image</string>
-    <string name="traitementImage">Traitement de l\'image</string>
-    <string name="test">Editer cette image</string>
-    <string name="save">Enregistrer</string>
-    <string name="select_frontage">Sélectionner les zones</string>
-    <string name="add_frontage">Ajouter une zone</string>
-    <string name="divide_frontage">Séparer des zones</string>
-    <string name="regroup_frontage">Regrouper des zones</string>
-    <string name="select_frontage_mode">Sélection des zones</string>
-    <string name="features_mode">Choix des caractéristiques</string>
-    <string name="summary">Récapitulatif</string>
+    <string name="add_balcony">Indiquer un balcon</string>
+    <string name="accuracypreference_summary">Définie la précision avec laquelle il faut toucher le premier point pour fermer un polygone (en nombre de pixels)</string>
+    <string name="accuracypreference_title">Précision de la fin du tracé d\'une zone</string>
     <string name="add_features">Caractériser une zone</string>
-    <string name="number_floors">Ajouter le nombre d\'étages</string>
-    <string name="error_selecting_image">Erreur lors de la sélection de l\'image</string>
-    <string name="positionsaved">La position GPS a été enregistrée</string>
-    <string name="savingposition">Recherche de la position GPS en cours&#8230;</string>
-    <string name="noGPSsensor">Le GPS est désactivé. Veuillez l\'activer pour pouvoir rechercher votre position exacte.</string>
-    <string name="material_dialog_title">Choix du matériau</string>
-    <string name="delete_frontage">Supprimer une zone</string>
-    <string name="delete_confirmation">Supprimer cette zone ?</string>
-    <string name="ok">OK</string>
+    <string name="add_frontage">Ajouter une zone</string>
+    <string name="app_name">FeatureApp</string>
+    
+    <string name="balcony_height_dialog_title">Estimer la hauteur du balcon (en cm)</string>
+    
     <string name="cancel">Annuler</string>
-    <string name="information_about_frontage">Informations sur cette zone</string>
-    <string name="materials">Matériaux</string>
-    <string name="choose_frontages_to_regroup">Choisissez les zones à regrouper</string>
-    <string name="regroup">Regrouper les zones sélectionnées</string>
-    <string name="type_dialog_title">Choissisez le type de surface</string>
-    <string name="edit_dialog_title">Nom du matériau :</string>
-    <string name="number_of_floors_dialog_title">Insérer le nombre d\'étages :</string>
-    <string name="define_color">Définir la couleur</string>
     <string name="choose_color_message">Choisissez la couleur de la zone :</string>
+    <string name="choose_frontages_to_regroup">Choisissez les zones à regrouper</string>
+    <string name="color">Couleur</string>
+    <string name="createFacade">Création façade</string>
+    
+    <string name="define_color">Définir la couleur</string>
+    <string name="delete_confirmation">Supprimer cette zone ?</string>
+    <string name="delete_frontage">Supprimer des zones</string>
+    <string name="divide_frontage">Séparer des zones</string>
+    
+    <string name="edit_dialog_title">Nom du matériau :</string>
+    <string name="editFacade">Editer façade</string>
+    <string name="error_selecting_image">Erreur lors de la sélection de l\'image</string>
+    
+    <string name="features_mode">Choix des caractéristiques</string>
+    <string name="floors">étages</string>
+    <string name="file_saved">Fichier enregistré</string>
+    
+    <string name="GPSpositionnotfound">Impossible de trouver la position GPS</string>
+    
+    <string name="image_loadDistantProject">Image : Charger un projet distant</string>
+    <string name="image_loadLocalProject">Image : Charger un projet local</string>
+    <string name="image_newProject">Image : Nouveau projet</string>
+    <string name="image_facadePicture">Image : Photo de la façade</string>
+    <string name="information_about_building">Informations sur le bâtiment</string>
+    <string name="information_about_frontage">Informations sur cette zone</string>
+    <string name="is_balcony">Ceci est un balcon situé à environ</string>
+    <string name="infoText_name">nom :</string>
+    <string name="infoText_author">auteur :</string>
+    <string name="infoText_date">date :</string>
+    <string name="infoText_adress">adresse :</string>
+    <string name="infoText_void"></string>
+    <string name="infoText_city">ville :</string>
+    <string name="infoText_postalCode">code postal :</string>
+    <string name="infoText_country">pays :</string>
+    <string name="infoEdit_name">nom</string>
+    <string name="infoEdit_author">auteur</string>
+    <string name="infoEdit_date">date</string>
+    <string name="infoEdit_adress">adresse</string>
+    <string name="infoEdit_complement">complément</string>
+    <string name="infoEdit_city">ville</string>
+    <string name="infoEdit_postalCode">code postal</string>
+    <string name="infoEdit_country">pays</string>
+    <string name="infoButton_geo">Géolocaliser</string>
+    
+    <string name="loadDistantlProject">Charger un projet distant</string>
+    <string name="loadLocalProject">Charger un projet local</string>
+    <string name="loadPicture">Charger une photo</string>
+    <string name="load_image">Charger une image</string>
+    
+    <string name="materials">Matériaux</string>
+    <string name="material_dialog_title">Choix du matériau</string>
+    <string name="menu_settings">Paramètres</string>
+    <string name="menu_main_chooseFacade">Choix Façade</string>
+    <string name="menu_main_chooseProject">Choix Projet</string>
+    <string name="menu_main_chooseInterneElement">Choix Eléments Internes</string>
+    <string name="menu_main_definitionElements">Définition Eléments</string>
+    <string name="menu_main_information">Information</string>
+    <string name="menu_main_summaryExport">Récaputulatif et Export</string>
+    <string name="meter_height">centimètre(s) de haut</string>
+    <string name="multiple_balconies_error">Vous ne pouvez pas définir plusieurs balcons à la fois</string>
+    
+    <string name="noGPSsensor">Le GPS est désactivé. Veuillez l\'activer pour pouvoir rechercher votre position exacte.</string>
+    <string name="not_defined">Non défini</string>
+    <string name="number_floors">Ajouter le nombre d\'étages</string>
+    <string name="number_of_balcony">Nombre de balcons</string>
+    <string name="number_of_floors">Nombre d\'étages</string>
+    <string name="number_of_floors_dialog_title">Insérer le nombre d\'étages :</string>
+    
+    <string name="ok">OK</string>
+    <string name="online_image_error">Cette application ne supporte pas les images provenant de Picasa</string>
+    <string name="other">Autre</string>
+    
+    <string name="param">Paramètres</string>
+    <string name="percentage_of_glazing">Pourcentage de vitrage</string>
+    <string name="positionsaved">La position GPS a été enregistrée</string>
+    
     <string name="quit_activity">Revenir à l\'écran d\'accueil ?</string>
     <string name="quit_activity_explanation">Vous perdrez toutes les modifications non enregistrées !</string>
-    <string name="online_image_error">Cette application ne supporte pas les images provenant de Picasa</string>
-    <string name="type">Type</string>
-    <string name="not_defined">Non défini</string>
-    <string name="color">Couleur</string>
-    <string name="GPSpositionnotfound">Impossible de trouver la position GPS</string>
-    <string name="zoneselection_preferences">Séléction des zones</string>
-    <string name="accuracypreference_title">Précision de la fin du tracé d\'une zone</string>
-    <string name="accuracypreference_summary">Définie la précision avec laquelle il faut toucher le premier point pour fermer un polygone (en nombre de pixels)</string>
-    <string name="other">Autre</string>
+   
+    <string name="regroup">Regrouper les zones sélectionnées</string>
+    <string name="regroup_frontage">Regrouper des zones</string>
+    
+    <string name="save">Enregistrer</string>
+    <string name="savingposition">Recherche de la position GPS en cours&#8230;</string>
+    <string name="select_frontage">Sélectionner les zones</string>
+    <string name="select_frontage_mode">Sélection des zones</string>
     <string name="show_global_info">Afficher les informations globales</string>
-    <string name="information_about_building">Informations sur le bâtiment</string>
-    <string name="number_of_floors">Nombre d\'étages</string>
-    <string name="floors">étages</string>
-    <string name="percentage_of_glazing">Pourcentage de vitrage</string>
-    <string name="zones_regrouped">Zones regroupées</string>
-    <string name="zones_divided">Zones séparées</string>
-    <string name="add_balcony">Indiquer un balcon</string>
-    <string name="balcony_height_dialog_title">Estimer la hauteur du balcon (en cm)</string>
-    <string name="multiple_balconies_error">Vous ne pouvez pas définir plusieurs balcons à la fois</string>
-    <string name="is_balcony">Ceci est un balcon situé à environ</string>
-    <string name="meter_height">centimètre(s) de haut</string>
-    <string name="number_of_balcony">Nombre de balcons</string>
-    <string name="file_saved">Fichier enregistré</string>
-    <string name="param">Paramètres</string>
-    <string name="imageNewProject">Image : Nouveau projet</string>
+    <string name="summary">Récapitulatif</string>
+    <string name="suppressFacade">Suppression façade</string>
+    
     <string name="takePicture">Prendre une photo</string>
-    <string name="loadPicture">Charger une photo</string>
-    <string name="imageLoadLocalProject">Image : Charger un projet local</string>
-    <string name="loadLocalProject">Charger un projet local</string>
-    <string name="imageLoadDistantProject">Image : Charger un projet distant</string>
-    <string name="loadDistantlProject">Charger un projet distant</string>
+    <string name="take_picture">Prendre une photo</string>
+    <string name="test">Editer cette image</string>
+    <string name="traitementImage">Traitement de l\'image</string>
+    <string name="type">Type</string>
+    <string name="type_dialog_title">Choissisez le type de surface</string>
+
+    <string name="zoneselection_preferences">Séléction des zones</string>
+    <string name="zones_divided">Zones séparées</string>
+    <string name="zones_regrouped">Zones regroupées</string>
 
 </resources>

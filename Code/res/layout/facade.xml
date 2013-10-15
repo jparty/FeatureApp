@@ -21,8 +21,8 @@
 	    android:id="@+id/imageFacade"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:contentDescription="Image : Photo de la façade"
+	    android:contentDescription="@string/image_facadePicture"
 	    android:layout_below="@+id/menuFacade"
-	    android:layout_alignParentLeft="true"/>"
+	    android:layout_alignParentLeft="true"/>
 
 </RelativeLayout>

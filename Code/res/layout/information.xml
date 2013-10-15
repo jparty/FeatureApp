@@ -16,7 +16,7 @@
                 android:id="@+id/infoTextName"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="nom :"
+                android:text="@string/infoText_name"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"/>
@@ -25,7 +25,7 @@
                 android:id="@+id/infoTextAuthor"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="auteur :"
+                android:text="@string/infoText_author"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/infoTextName"/>
             
@@ -33,7 +33,7 @@
                 android:id="@+id/infoTextDate"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="date :"
+                android:text="@string/infoText_date"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/infoTextAuthor"/>
             
@@ -49,14 +49,14 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:hint="nom"
+                android:hint="@string/infoEdit_name"
                 android:inputType="text"/>
             
             <EditText
                 android:id="@+id/infoEditAuthor"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="auteur"
+                android:hint="@string/infoEdit_author"
                 android:inputType="text"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/infoEditName"/>
@@ -65,7 +65,7 @@
                 android:id="@+id/infoEditDate"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="date"
+                android:hint="@string/infoEdit_date"
                 android:inputType="date"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/infoEditAuthor"/>
@@ -80,7 +80,7 @@
                 android:id="@+id/infoTextAdress"
                 android:layout_height="35dp"
                 android:layout_width="wrap_content"
-                android:text="adresse :"
+                android:text="@string/infoText_adress"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"/>
@@ -89,7 +89,7 @@
                 android:id="@+id/infoVoid"
                 android:layout_height="35dp"
                 android:layout_width="wrap_content"
-                android:text=""
+                android:text="@string/infoText_void"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/infoTextAdress"/>
             
@@ -97,7 +97,7 @@
                 android:id="@+id/infoTextCity"
                 android:layout_height="35dp"
                 android:layout_width="wrap_content"
-                android:text="ville :"
+                android:text="@string/infoText_city"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/infoVoid"/>
             
@@ -105,7 +105,7 @@
                 android:id="@+id/infoTextPostalCode"
                 android:layout_height="35dp"
                 android:layout_width="wrap_content"
-                android:text="code postal :"
+                android:text="@string/infoText_postalCode"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/infoTextCity"/>
             
@@ -113,7 +113,7 @@
                 android:id="@+id/infoTextCountry"
                 android:layout_height="35dp"
                 android:layout_width="wrap_content"
-                android:text="pays :"
+                android:text="@string/infoText_country"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/infoTextPostalCode"/>
         </RelativeLayout>
@@ -126,7 +126,7 @@
                 android:id="@+id/infoEditAdress"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="adresse"
+                android:hint="@string/infoEdit_adress"
                 android:inputType="text"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"/>
@@ -134,7 +134,7 @@
                 android:id="@+id/infoEditAdressComplement"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="complément"
+                android:hint="@string/infoEdit_complement"
                 android:inputType="text"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/infoEditAdress"/>
@@ -143,7 +143,7 @@
                 android:id="@+id/infoEditCity"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="ville"
+                android:hint="@string/infoEdit_city"
                 android:inputType="text"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/infoEditAdressComplement"/>
@@ -152,7 +152,7 @@
                 android:id="@+id/infoEditPostalCode"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="code postal"
+                android:hint="@string/infoEdit_postalCode"
                 android:inputType="text"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/infoEditCity"/>
@@ -161,7 +161,7 @@
                 android:id="@+id/infoEditCountry"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="pays"
+                android:hint="@string/infoEdit_country"
                 android:inputType="text"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/infoEditPostalCode"/>
@@ -170,7 +170,7 @@
                 android:id="@+id/buttonGeo"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Géolocaliser"
+                android:text="@string/infoButton_geo"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/infoEditCountry"/>
         </RelativeLayout>
