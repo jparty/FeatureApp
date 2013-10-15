@@ -18,7 +18,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.ecn.featureapp.activities.WelcomeActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >"
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,11 +28,13 @@
         </activity>
         <activity
             android:name="com.ecn.featureapp.activities.MainActivity"
-            android:label="" >
+            android:label=""
+            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name="com.ecn.featureapp.activities.PreferencesActivity"
-            android:label="@string/menu_settings" >
+            android:label="@string/menu_settings"
+            android:screenOrientation="landscape" >
         </activity>
     </application>
 

@@ -60,5 +60,13 @@
     <string name="meter_height">centimètre(s) de haut</string>
     <string name="number_of_balcony">Nombre de balcons</string>
     <string name="file_saved">Fichier enregistré</string>
+    <string name="param">Paramètres</string>
+    <string name="imageNewProject">Image : Nouveau projet</string>
+    <string name="takePicture">Prendre une photo</string>
+    <string name="loadPicture">Charger une photo</string>
+    <string name="imageLoadLocalProject">Image : Charger un projet local</string>
+    <string name="loadLocalProject">Charger un projet local</string>
+    <string name="imageLoadDistantProject">Image : Charger un projet distant</string>
+    <string name="loadDistantlProject">Charger un projet distant</string>
 
 </resources>

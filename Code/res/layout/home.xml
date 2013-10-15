@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout from the HomeFragment -->
+
+
+<!-- Load image action -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content" >
+     
+	<!-- TODO dimensions dynamiques des marges et tailles -->
+        
+	<RelativeLayout
+	    android:layout_width="430dp"
+	    android:layout_height="fill_parent" >
+
+		<!-- Image à définir dans le code java -->
+		
+			<ImageView 
+				android:id="@+id/imageNewProject"
+				android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:contentDescription="@string/imageNewProject"/>
+            
+            <Button 
+                android:id="@+id/takePicture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageNewProject"
+                android:layout_alignParentLeft="true"
+                android:text="@string/takePicture"/>
+            
+            <Button 
+                android:id="@+id/loadPicture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageNewProject"
+                android:layout_alignParentRight="true"
+                android:text="@string/loadPicture"/>"
+            
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="430dp"
+            android:layout_height="fill_parent">
+				<!-- Image à définir dans le code java -->
+	            <ImageView 
+	                android:id="@+id/imageLoadLocalProject"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_alignParentTop="true"
+	                android:contentDescription="@string/imageLoadLocalProject"/>
+	            
+	            <Button 
+	                android:id="@+id/loadLocalProject"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_below="@+id/imageLoadLocalProject"
+	                android:layout_alignParentLeft="true"
+	                android:text="@string/loadLocalProject"/>
+            
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="430dp"
+            android:layout_height="fill_parent">
+				<!-- Image à définir dans le code java -->
+		        <ImageView 
+		            android:id="@+id/imageLoadDistantProject"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentTop="true"
+		            android:contentDescription="@string/imageLoadDistantProject"/>
+		        
+		        <Button 
+		            android:id="@+id/loadDistantlProject"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_below="@+id/imageLoadDistantProject"
+		            android:layout_alignParentLeft="true"
+		            android:text="@string/loadDistantlProject"/>
+        
+    </RelativeLayout>
+    
+</LinearLayout>
