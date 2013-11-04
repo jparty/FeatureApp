@@ -154,15 +154,12 @@ public class SetOfZone {
 	 * 
 	 * @param zoneNumber
 	 *            the number of the zone to select
-	 * @return true if a zone was selected and false otherwise (if the number in
-	 *         parameter was negative)
 	 */
-	public boolean select(int zoneNumber) {
+	public void select(int zoneNumber) {
 		if (zoneNumber >= 0) {
-			zones.get(zoneNumber).selected = true;
-			return true;
+			zones.get(zoneNumber).selected = !zones.get(zoneNumber).selected;
 		} else {
-			return false;
+			unselectAll();
 		}
 	}
 

@@ -48,4 +48,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:text="@string/definition_recap"/>
+
+    <TextView
+        android:id="@+id/definition_textview_select"
+        android:textSize="30sp"
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        android:text="@string/definition_select_text"/>
+
+    <Button
+        android:id="@+id/definition_button_select_confirm"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:text="@string/definition_select"/>
 </RelativeLayout>
