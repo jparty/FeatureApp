@@ -53,17 +53,17 @@ import com.ecn.urbapp.zones.*;
 public class DrawImageView extends Drawable {
 
 	/** Zones that need to be drawn */
-	public SetOfZone frontages;
+	public SetOfZone zones;
 
 	/**
 	 * Constructor of this class
 	 * 
-	 * @param frontages
+	 * @param zones
 	 *            the set of zones the need to be drawn
 	 */
-	public DrawImageView(SetOfZone frontages) {
+	public DrawImageView(SetOfZone zones) {
 		super();
-		this.frontages = frontages;
+		this.zones = zones;
 	}
 
 	/**
@@ -87,31 +87,31 @@ public class DrawImageView extends Drawable {
 		fillPaint.setAlpha(50);
 
 		// For all the zones
-		for (int i = 0; i < frontages.getFrontages().size(); i++) {
+		for (int i = 0; i < zones.getZones().size(); i++) {
 			// If the zone is not selected, only draw the lines
-			if (!frontages.getFrontages().get(i).isSelected()) {
+			if (!zones.getZones().get(i).isSelected()) {
 				// Paint in a different color depending on its state
-				if (frontages.getFrontages().get(i).isFinished()) {
+				if (zones.getZones().get(i).isFinished()) {
 					// Add all the lines of the polygon
-					for (int j = 0; j < frontages.getFrontages().get(i).frontage
+					for (int j = 0; j < zones.getZones().get(i).frontage
 							.size() - 1; j++) {
 						canvas.drawLine(
-								frontages.getFrontages().get(i).frontage.get(j).x,
-								frontages.getFrontages().get(i).frontage.get(j).y,
-								frontages.getFrontages().get(i).frontage
-										.get(j + 1).x, frontages.getFrontages()
+								zones.getZones().get(i).frontage.get(j).x,
+								zones.getZones().get(i).frontage.get(j).y,
+								zones.getZones().get(i).frontage
+										.get(j + 1).x, zones.getZones()
 										.get(i).frontage.get(j + 1).y,
 								finishedPaint);
 					}
 				} else {
 					// Add all the lines of the polygon
-					for (int j = 0; j < frontages.getFrontages().get(i).frontage
+					for (int j = 0; j < zones.getZones().get(i).frontage
 							.size() - 1; j++) {
 						canvas.drawLine(
-								frontages.getFrontages().get(i).frontage.get(j).x,
-								frontages.getFrontages().get(i).frontage.get(j).y,
-								frontages.getFrontages().get(i).frontage
-										.get(j + 1).x, frontages.getFrontages()
+								zones.getZones().get(i).frontage.get(j).x,
+								zones.getZones().get(i).frontage.get(j).y,
+								zones.getZones().get(i).frontage
+										.get(j + 1).x, zones.getZones()
 										.get(i).frontage.get(j + 1).y,
 								unfinishedPaint);
 					}
@@ -123,13 +123,13 @@ public class DrawImageView extends Drawable {
 				// Create a closed path for the polygon
 				Path polyPath = new Path();
 				polyPath.moveTo(
-						frontages.getFrontages().get(i).frontage.get(0).x,
-						frontages.getFrontages().get(i).frontage.get(0).y);
-				for (int j = 0; j < frontages.getFrontages().get(i).frontage
+						zones.getZones().get(i).frontage.get(0).x,
+						zones.getZones().get(i).frontage.get(0).y);
+				for (int j = 0; j < zones.getZones().get(i).frontage
 						.size(); j++) {
 					polyPath.lineTo(
-							frontages.getFrontages().get(i).frontage.get(j).x,
-							frontages.getFrontages().get(i).frontage.get(j).y);
+							zones.getZones().get(i).frontage.get(j).x,
+							zones.getZones().get(i).frontage.get(j).y);
 				}
 
 				// Draw the polygon

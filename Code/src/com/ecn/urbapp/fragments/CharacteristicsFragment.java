@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.dialogs.TypeDialogFragment;
 import com.ecn.urbapp.utils.DrawImageView;
 import com.ecn.urbapp.zones.SetOfZone;
 
@@ -60,6 +61,20 @@ public class CharacteristicsFragment extends Fragment {
 	/** Text to explain how to select the zone */
 	private TextView text = null;
 
+	/**
+	 * Returns the SetOfZone defined on the photograph.
+	 */
+	public static SetOfZone getZones() {
+		return zones;
+	}
+
+	/**
+	 * Returns the Image used in this project.
+	 */
+	public static ImageView getMyImage() {
+		return myImage;
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,13 +84,13 @@ public class CharacteristicsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_definition, null);
 
+		myImage = (ImageView) v.findViewById(R.id.image);
 		select = (Button) v.findViewById(R.id.definition_button_select);
+		selectConfirm = (Button) v.findViewById(R.id.definition_button_select_confirm);
+		text = (TextView) v.findViewById(R.id.definition_textview_select);
 		define = (Button) v.findViewById(R.id.definition_button_define);
 		delete = (Button) v.findViewById(R.id.definition_button_delete);
 		recap = (Button) v.findViewById(R.id.definition_button_recap);
-		selectConfirm = (Button) v.findViewById(R.id.definition_button_select_confirm);
-		text = (TextView) v.findViewById(R.id.definition_textview_select);
-		myImage = (ImageView) v.findViewById(R.id.image);
 
 		// Initialize the list of zones with its state before a screen rotation
 		// (or with an empty list if this creation does not correspond to a
@@ -104,6 +119,7 @@ public class CharacteristicsFragment extends Fragment {
 
 	    select.setOnClickListener(clickListenerSelect);
 	    selectConfirm.setOnClickListener(clickListenerSelectConfirm);
+	    define.setOnClickListener(clickListenerDefine);
 
 		return v;
 	}
@@ -159,7 +175,7 @@ public class CharacteristicsFragment extends Fragment {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			// If the user touch inside a zone, select the zone
-			zones.select(zones.isInsideFrontage(this
+			zones.select(zones.isInsideZone(this
 					.convertTouchPoint(event.getX(), event.getY())));
 
 			// Ask to draw again
@@ -190,6 +206,18 @@ public class CharacteristicsFragment extends Fragment {
 			// Converting the point in image coordinate system
 			this.matrix.mapPoints(point);
 			return new Point(((int) point[0]), ((int) point[1]));
+		}
+	};
+
+	private OnClickListener clickListenerDefine = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			if (!CharacteristicsFragment.getZones().getAllSelectedZones().isEmpty()) {
+				// Show the dialog to choose the characteristics
+				TypeDialogFragment typedialog = new TypeDialogFragment();
+				typedialog.show(getFragmentManager(), "TypeFragment");
+			}
 		}
 	};
 }

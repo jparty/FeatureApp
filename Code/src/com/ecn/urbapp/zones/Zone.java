@@ -78,6 +78,26 @@ public class Zone {
 	}
 
 	/**
+	 * Setter for the type
+	 * 
+	 * @param type
+	 *            the new type
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/**
+	 * Setter for the material
+	 * 
+	 * @param material
+	 *            the new material
+	 */
+	public void setMaterial(String material) {
+		this.material = material;
+	}
+
+	/**
 	 * Getter for the color
 	 * 
 	 * @return the color

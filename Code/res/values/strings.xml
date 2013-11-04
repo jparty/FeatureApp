@@ -51,5 +51,11 @@
     
     <string name="other">Autre</string>
     <string name="not_defined">Pas défini</string>
+    <string name="type_dialog_title">Choissisez le type de surface</string>
+    <string name="material_dialog_title">Choix du matériau</string>
+    <string name="edit_dialog_title">Nom du matériau :</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
+    <string name="choose_color_message">Choisissez la couleur de la zone :</string>
 
 </resources>

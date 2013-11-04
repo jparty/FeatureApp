@@ -64,6 +64,69 @@ public class SetOfZone {
 	}
 
 	/**
+	 * Set the type of all the selected zones
+	 * 
+	 * @param zone
+	 *            the zone
+	 * @param type
+	 *            the type to set
+	 */
+	public void setTypeForSelectedZones(String type) {
+		for (Zone zone : getAllSelectedZones()) {
+			zone.setType(type);
+		}
+	}
+
+	/**
+	 * Set the material of all the selected zones
+	 * 
+	 * @param zone
+	 *            the zone
+	 * @param material
+	 *            the material to set
+	 */
+	public void setMaterialForSelectedZones(String material) {
+		for (Zone zone : getAllSelectedZones()) {
+			zone.setMaterial(material);
+		}
+	}
+
+	/**
+	 * Set the color of all the selected zones
+	 * 
+	 * @param zone
+	 *            the zone
+	 * @param color
+	 *            the color to set
+	 */
+	public void setColorForSelectedZones(int color) {
+		for (Zone zone : getAllSelectedZones()) {
+			zone.setColor(color);
+		}
+	}
+
+	/**
+	 * Return the color of all the selected zones as an int (or 0 when the zones
+	 * have not the same color)
+	 * 
+	 * @return the color as an int
+	 */
+	public Integer getColorForSelectedZones() {
+		Vector<Zone> zones = getAllSelectedZones();
+		if (zones != null && !zones.isEmpty()) {
+			int color = zones.get(0).getColor();
+			for (Zone zone : zones) {
+				if (zone.getColor() != color) {
+					color = 0;
+				}
+			}
+			return color;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
 	 * This method add the point to the last unfinished zone
 	 * 
 	 * @param point
@@ -94,7 +157,7 @@ public class SetOfZone {
 	 * 
 	 * @return zones
 	 */
-	public Vector<Zone> getFrontages() {
+	public Vector<Zone> getZones() {
 		return this.zones;
 	}
 
@@ -114,7 +177,7 @@ public class SetOfZone {
 	 * @return the number of the smallest zone that contains the point and -1
 	 *         otherwise
 	 */
-	public int isInsideFrontage(Point point) {
+	public int isInsideZone(Point point) {
 		int result = -1;
 		for (int i = 0; i < zones.size(); i++) {
 			if (zones.get(i).containPoint(point)) {
