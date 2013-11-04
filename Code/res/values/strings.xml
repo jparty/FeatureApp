@@ -48,4 +48,7 @@
     <string name="save_textStatus">None</string>
     <string name="save_buttonSync">Synchroniser</string>
     
+    <string name="other">Autre</string>
+    <string name="not_defined">Pas défini</string>
+
 </resources>
