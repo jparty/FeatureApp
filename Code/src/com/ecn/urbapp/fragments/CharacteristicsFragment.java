@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.dialogs.SummaryDialogFragment;
 import com.ecn.urbapp.dialogs.TypeDialogFragment;
 import com.ecn.urbapp.utils.DrawImageView;
 import com.ecn.urbapp.zones.SetOfZone;
@@ -121,6 +122,7 @@ public class CharacteristicsFragment extends Fragment {
 	    selectConfirm.setOnClickListener(clickListenerSelectConfirm);
 	    define.setOnClickListener(clickListenerDefine);
 	    delete.setOnClickListener(clickListenerDelete);
+	    recap.setOnClickListener(clickListenerRecap);
 
 		return v;
 	}
@@ -241,6 +243,18 @@ public class CharacteristicsFragment extends Fragment {
 			// Unselect all the zones and draw the image again
 			CharacteristicsFragment.getZones().unselectAll();
 			CharacteristicsFragment.getMyImage().invalidate();
+		}
+	};
+
+	/**
+	 * Open a Dialog window that summarize the characteristics of the selected zones.
+	 */
+	private OnClickListener clickListenerRecap = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+				SummaryDialogFragment summarydialog = new SummaryDialogFragment();
+				summarydialog.show(getFragmentManager(), "TypeFragment");
 		}
 	};
 }

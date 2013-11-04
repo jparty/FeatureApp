@@ -35,8 +35,13 @@ knowledge of the CeCILL license and that you accept its terms.
 
 package com.ecn.urbapp.zones;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
+import com.ecn.urbapp.R;
+
+import android.content.res.Resources;
 import android.graphics.Point;
 
 /**
@@ -239,6 +244,52 @@ public class SetOfZone {
 			}
 		}
 		return selectedZonesNumbers;
+	}
+
+	/**
+	 * This method return a HashMap with two keys :  types and materials,
+	 * and whose values are HashMaps using the kind of materials (or types) as keys and the
+	 * percentage of presence of these materials (or types) along the selected zones as values.
+	 * 
+	 * @param res
+	 */
+	public Map<String, HashMap<String, Float>> getStatsForSelectedZones(
+			Resources res) {
+		Vector<Zone> selectedZones = getAllSelectedZones();
+		if (selectedZones.isEmpty()) {
+			selectedZones = zones;
+		}
+		float totalArea = 0f;
+		HashMap<String, Float> types = new HashMap<String, Float>();
+		HashMap<String, Float> materials = new HashMap<String, Float>();
+		for (Zone zone : selectedZones) {
+			String type = zone.getTypeToText(res);
+			Float currentArea = types.get(type);
+			if (currentArea != null) {
+				types.put(type, currentArea + zone.area());
+			} else {
+				types.put(type, zone.area());
+			}
+			String material = zone.getMaterialToText(res);
+			currentArea = materials.get(material);
+			if (currentArea != null) {
+				materials.put(material, currentArea + zone.area());
+			} else {
+				materials.put(material, zone.area());
+			}
+			totalArea += zone.area();
+		}
+		for (String key : materials.keySet()) {
+			materials.put(key, materials.get(key) / totalArea);
+		}
+
+		for (String key : types.keySet()) {
+			types.put(key, types.get(key) / totalArea);
+		}
+		HashMap<String, HashMap<String, Float>> summary = new HashMap<String, HashMap<String, Float>>();
+		summary.put(res.getString(R.string.type), types);
+		summary.put(res.getString(R.string.materials), materials);
+		return summary;
 	}
 
 }
