@@ -120,6 +120,7 @@ public class CharacteristicsFragment extends Fragment {
 	    select.setOnClickListener(clickListenerSelect);
 	    selectConfirm.setOnClickListener(clickListenerSelectConfirm);
 	    define.setOnClickListener(clickListenerDefine);
+	    delete.setOnClickListener(clickListenerDelete);
 
 		return v;
 	}
@@ -209,6 +210,9 @@ public class CharacteristicsFragment extends Fragment {
 		}
 	};
 
+	/**
+	 * Open Dialog windows to characterize zones. These classes are issued of the original FeatureApp project.
+	 */
 	private OnClickListener clickListenerDefine = new View.OnClickListener() {
 
 		@Override
@@ -218,6 +222,25 @@ public class CharacteristicsFragment extends Fragment {
 				TypeDialogFragment typedialog = new TypeDialogFragment();
 				typedialog.show(getFragmentManager(), "TypeFragment");
 			}
+		}
+	};
+
+	/**
+	 * Delete all characteristics of the selected zones. No confirmation is asked to the user.
+	 */
+	private OnClickListener clickListenerDelete = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// Unset the type of the zone
+			CharacteristicsFragment.getZones().setTypeForSelectedZones(null);
+			// Unset the material of the zone
+			CharacteristicsFragment.getZones().setMaterialForSelectedZones(null);
+			// Unset the color of the zone
+			CharacteristicsFragment.getZones().setColorForSelectedZones(0);
+			// Unselect all the zones and draw the image again
+			CharacteristicsFragment.getZones().unselectAll();
+			CharacteristicsFragment.getMyImage().invalidate();
 		}
 	};
 }
