@@ -92,6 +92,9 @@ public class DrawImageView extends Drawable {
 			if (!zones.getZones().get(i).isSelected()) {
 				// Paint in a different color depending on its state
 				if (zones.getZones().get(i).isFinished()) {
+					if (zones.getZones().get(i).getColor() != 0) {
+						finishedPaint.setColor(zones.getZones().get(i).getColor());
+					}
 					// Add all the lines of the polygon
 					for (int j = 0; j < zones.getZones().get(i).frontage
 							.size() - 1; j++) {
@@ -103,6 +106,7 @@ public class DrawImageView extends Drawable {
 										.get(i).frontage.get(j + 1).y,
 								finishedPaint);
 					}
+					finishedPaint.setColor(Color.GREEN);
 				} else {
 					// Add all the lines of the polygon
 					for (int j = 0; j < zones.getZones().get(i).frontage
@@ -132,8 +136,13 @@ public class DrawImageView extends Drawable {
 							zones.getZones().get(i).frontage.get(j).y);
 				}
 
+				if (zones.getZones().get(i).getColor() != 0) {
+					fillPaint.setColor(zones.getZones().get(i).getColor());
+				}
 				// Draw the polygon
 				canvas.drawPath(polyPath, fillPaint);
+				fillPaint.setColor(Color.GREEN);
+				fillPaint.setAlpha(50);
 			}
 		}
 	}
