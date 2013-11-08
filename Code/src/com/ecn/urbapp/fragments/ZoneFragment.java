@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.ecn.urbapp.R;
 
 /**
- * @author	COHENDET Sébastien
+ * @author	COHENDET Sï¿½bastien
  * 			DAVID Nicolas
  * 			GUILBART Gabriel
  * 			PALOMINOS Sylvain
@@ -24,6 +24,7 @@ import com.ecn.urbapp.R;
 
 public class ZoneFragment extends Fragment{
 
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}

@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * @author	COHENDET Sébastien
+ * @author	COHENDET Sï¿½bastien
  * 			DAVID Nicolas
  * 			GUILBART Gabriel
  * 			PALOMINOS Sylvain
@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 
 public class SaveFragment extends Fragment{
 	
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}

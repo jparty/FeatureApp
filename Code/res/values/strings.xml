@@ -61,5 +61,9 @@
     <string name="type">Type</string>
     <string name="materials">Matériaux</string>
     <string name="color">Couleur</string>
+    <string name="satellite">satellite</string>
+    <string name="plan">plan</string>
+    
+    <string name="hybrid">hybride</string>
 
 </resources>

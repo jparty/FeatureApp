@@ -63,6 +63,7 @@ public class TypeDialogFragment extends DialogFragment {
 		// Add the list to choose from to the dialog
 		builder.setItems(R.array.type, new DialogInterface.OnClickListener() {
 
+			@Override
 			public void onClick(DialogInterface dialog, int item) {
 
 				TypedArray type = getResources().obtainTypedArray(R.array.type);
