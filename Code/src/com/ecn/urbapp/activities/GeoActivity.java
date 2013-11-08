@@ -359,9 +359,7 @@ OnClickListener{
 */
         public void onClick(View v) {
         	Intent i = new Intent(this, MainActivity.class);
-        	MarkerPos markpos = new MarkerPos(markers.get(markers.size()-1), markers.get(markers.size()-1).getPosition());
-        	getAddress(markpos);
-        	i.putExtra("addr", markpos.getAdresse());
+        	i.putExtra("addr", markers.get(markers.size()-1).getSnippet());
         	i.putExtra("fragment", 2);
 			startActivity(i);
         }
