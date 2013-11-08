@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+ * This layout is used in the zone fragment. The sizes will be be defined by the java code.
+ *
+ * @author	COHENDET Sébastien
+ * 			DAVID Nicolas
+ * 			GUILBART Gabriel
+ * 			PALOMINOS Sylvain
+ * 			PARTY Jules
+ * 			RAMBEAU Merwan
+ * 
+ */
+ -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <Button 
+        android:id="@+id/zone_button_create"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/zone_create"/>
+    
+    <Button 
+        android:id="@+id/zone_button_suppress"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/zone_button_create"
+        android:text="@string/zone_suppress"/>
+    
+    <Button 
+        android:id="@+id/zone_button_edit"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/zone_button_suppress"
+        android:text="@string/zone_edit"/>
+
+</RelativeLayout>
