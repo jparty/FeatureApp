@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.ecn.urbapp.R;
 
 /**
- * @author	COHENDET Sébastien
+ * @author	COHENDET Sï¿½bastien
  * 			DAVID Nicolas
  * 			GUILBART Gabriel
  * 			PALOMINOS Sylvain
@@ -18,7 +18,7 @@ import com.ecn.urbapp.R;
  * 
  * ZoneFragment class
  * 
- * This is the fragment used to define the differents zones.
+ * This is the fragment used to define the different zones.
  * 			
  */
 
@@ -32,5 +32,7 @@ public class ZoneFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_zone, null);
 		return v;
-	}
+	}	
+	
+	
 }
