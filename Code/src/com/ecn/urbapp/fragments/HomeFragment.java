@@ -22,6 +22,7 @@ import com.ecn.urbapp.R;
 
 public class HomeFragment extends Fragment{
 	
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}

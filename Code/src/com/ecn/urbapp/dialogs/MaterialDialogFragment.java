@@ -85,6 +85,7 @@ public class MaterialDialogFragment extends DialogFragment {
 		// Add the list to choose from to the dialog
 		builder.setItems(arrayNumber, new DialogInterface.OnClickListener() {
 
+			@Override
 			public void onClick(DialogInterface dialog, int item) {
 
 				TypedArray materials = getResources().obtainTypedArray(
