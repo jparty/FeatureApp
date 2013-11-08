@@ -38,7 +38,7 @@
         <activity android:name=".activities.GeoActivity"></activity>
         <meta-data
          android:name="com.google.android.maps.v2.API_KEY"
-         android:value="AIzaSyCYV9CuH2c44alvhuDZfSDuC4JCJqC17zo"/>
+         android:value="AIzaSyA08kqR5o9DKZDohLB9DgPpgTI3ZLhwWnw"/>
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
     </application>
 
