@@ -118,13 +118,13 @@ public class MainActivity extends Activity {
 	
 	//TODO dessin de zones directement dans la vue de gestion de zones ! 
 	
-	/****zone creation main****/
+	/****zone creation main****//*
 	//buttons' actions mostly at the bottom of this file
 	public void zone_button_create (View view){//called by matching xml onclick
 		
-		Log.d("UrbApp","Créer zone");
+		//Log.d("UrbApp","Créer zone");
 		final Zone zone = new Zone();
-		setContentView(R.layout.layout_zone_create);
+		//setContentView(R.layout.layout_zone_create);
 		
 		//TODO mettre par défaut dans le layout ?
 		findViewById(R.id.zone_create_button_validate).setEnabled(false);
@@ -135,7 +135,7 @@ public class MainActivity extends Activity {
 
 		/** ATTENTION ATTENTION !!!
 		 *  PLACER UN FICHIER Images.jpeg dans le Download de l'appareil
-		 */
+		 *//*
 		String youFilePath = Environment.getExternalStorageDirectory().toString()+"/Download/Images.jpeg";
 		photo=new File(youFilePath);
 	
@@ -188,9 +188,9 @@ public class MainActivity extends Activity {
 				setContentView(R.layout.layout_zone);
 			}
 		});
-	}
+	}*/
 	
-	/***** zone edition main *****/
+	/***** zone edition main *****//*
 	public void zone_button_edit (View view){//called by matching xml onclick
 		Log.d("UrbApp","Créer zone");
 		final Zone zone = new Zone();
@@ -327,9 +327,9 @@ public class MainActivity extends Activity {
 					myImage.invalidate();
 				}
 			});
-	}
+	}*/
 	
-	/***** delete zone main *****/
+	/***** delete zone main *****//*
 	public void zone_button_delete (View view){//called by matching xml onclick
 		Log.d("UrbApp","Créer zone");
 		final Zone zone = new Zone();
@@ -389,7 +389,7 @@ public class MainActivity extends Activity {
 			});
 	}
 	
-	/*create actions*/
+	/*create actions*//*
 	public void zone_create_button_back (View view){//appelée par le xml onclick
 		Log.d("UrbApp","Annuler action");
 	}
@@ -424,7 +424,7 @@ public class MainActivity extends Activity {
 		//TODO check polygon intersections
 		//voir JTS
 		return false;
-	}
+	}*/
 
 
 }
