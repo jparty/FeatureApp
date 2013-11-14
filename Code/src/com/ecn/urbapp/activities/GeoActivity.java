@@ -355,11 +355,16 @@ OnClickListener{
                 }
         };
         /**
-* Listener for validation the selection (very simplevertion, juste for the demonstration)
+* Listener for validation the selection (very simple version, just for the demonstration)
 */
         public void onClick(View v) {
         	Intent i = new Intent(this, MainActivity.class);
+        	try {
         	i.putExtra("addr", markers.get(markers.size()-1).getSnippet());
+        	}
+        	catch (ArrayIndexOutOfBoundsException e) {
+        		Log.e(getLocalClassName(), "Pas de points !");
+        	}
         	i.putExtra("fragment", 2);
 			startActivity(i);
         }
@@ -545,16 +550,16 @@ OnClickListener{
              // Create a list to contain the result address
              List<Address> addresses = null;
              try {
-                 /*
-* Return 1 address.
-*/
+                /*
+				* Return 1 address.
+				*/
                  addresses = geocoder.getFromLocation(loc.latitude,
                          loc.longitude, 1);
              } catch (IOException e1) {
              Log.e("LocationSampleActivity",
                      "IO Exception in getFromLocation()");
              e1.printStackTrace();
-             markpos.setAdresse("IO Exception trying to get address");
+             markpos.setAdresse("Impossible d'avoir l'adresse. Vérifier connexion réseau");
              return markpos;
              } catch (IllegalArgumentException e2) {
              // Error message to post in the log
@@ -637,12 +642,12 @@ OnClickListener{
              // Show the activity indicator
              mActivityIndicator.setVisibility(View.VISIBLE);
              /*
-* Reverse geocoding is long-running and synchronous.
-* Run it on a background thread.
-* Pass the current location to the background task.
-* When the task finishes,
-* onPostExecute() displays the address.
-*/
+			* Reverse geocoding is long-running and synchronous.
+			* Run it on a background thread.
+			* Pass the current location to the background task.
+			* When the task finishes,
+			* onPostExecute() displays the address.
+			*/
              (new GetAddressTask(this)).execute(markpos);
          }
      }
