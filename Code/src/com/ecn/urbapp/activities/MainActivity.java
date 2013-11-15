@@ -3,16 +3,21 @@ package com.ecn.urbapp.activities;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 
 import com.ecn.urbapp.R;
-import com.ecn.urbapp.fragments.*;
+import com.ecn.urbapp.fragments.CharacteristicsFragment;
+import com.ecn.urbapp.fragments.HomeFragment;
+import com.ecn.urbapp.fragments.InformationFragment;
+import com.ecn.urbapp.fragments.SaveFragment;
+import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 
 /**
- * @author	COHENDET Sébastien
+ * @author	COHENDET SÃ©bastien
  * 			DAVID Nicolas
  * 			GUILBART Gabriel
  * 			PALOMINOS Sylvain
@@ -55,7 +60,7 @@ public class MainActivity extends Activity {
 		Tab tabInformation =  bar.newTab();
 		tabInformation.setText(R.string.informationFragment);
 		InformationFragment information = new InformationFragment();
-		tabInformation.setTabListener(new MyTabListener(information));
+		tabInformation.setTabListener((new MyTabListener(information)));
 		bar.addTab(tabInformation);
 		
 		//Zone tab
@@ -78,6 +83,13 @@ public class MainActivity extends Activity {
 		SaveFragment save = new SaveFragment();
 		tabSave.setTabListener(new MyTabListener(save));
 		bar.addTab(tabSave);
+		
+		Intent i = getIntent();
+		switch(i.getIntExtra("fragment", -1)){
+		case 2:
+			bar.selectTab(tabInformation);
+			break;
+		}
 	}
 
 	@Override

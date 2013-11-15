@@ -25,7 +25,6 @@ import com.ecn.urbapp.utils.ImageDownloader;
  */
 
 public class HomeFragment extends Fragment{
-	
 	private Button downloadImage;
 	private final ImageDownloader imageDownloader = new ImageDownloader();
 	private ImageView image;
@@ -36,6 +35,7 @@ public class HomeFragment extends Fragment{
 			"http://www.spaycificzoo.com/wp-content/uploads/2011/11/loutre_naine1-300x232.jpg"
 	};
 	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

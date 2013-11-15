@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <array name="frontagematerial">
+        <item> Acier </item>
+        <item> Béton </item>
+        <item> Bois </item>
+        <item>@string/glass</item>
+        <item>@string/other</item>
+    </array>
+    <array name="groundmaterial">
+        <item> Enrobé </item>
+        <item> Goudron </item>
+        <item> Herbe </item>
+        <item> Terre </item>
+        <item>@string/other</item>
+    </array>
+    <array name="roofmaterial">
+        <item> Ardoises </item>
+        <item> Cuivre </item>
+        <item> Tuiles </item>
+        <item>@string/other</item>
+    </array>
+    <array name="type">
+        <item>@string/frontage</item>
+        <item name="ground"> Sol </item>
+        <item name="roof"> Toit </item>
+    </array>
+
+    <string name="frontage">Façade</string>
+    <string name="glass">Verre</string>
+
+</resources>
