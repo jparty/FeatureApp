@@ -1,5 +1,7 @@
 package com.ecn.urbapp.fragments;
 
+import java.util.ArrayList;
+
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +13,13 @@ import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.utils.ImageDownloader;
+
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+
 
 /**
  * This is the fragment used to make the user choose between the differents type of project.
@@ -29,12 +38,19 @@ public class HomeFragment extends Fragment{
 	private final ImageDownloader imageDownloader = new ImageDownloader();
 	private ImageView image;
 	
+
+	private Button downloadImage;
+	private ImageView image;
+	
+
 	private String[] URLs={
 			"http://static.tumblr.com/604c1f8526cf8f5511c6d7a5e32f9abd/u00yntv/2wEmlbf4d/tumblr_static_baby_otter.jpg",
 			"http://axemdo.files.wordpress.com/2010/07/loutre1.jpg",
 			"http://www.spaycificzoo.com/wp-content/uploads/2011/11/loutre_naine1-300x232.jpg"
 	};
 	
+
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,8 +72,6 @@ public class HomeFragment extends Fragment{
         public void onClick(View v) {
         	imageDownloader.download(URLs[(int) (Math.random()*3)], image);
         }
-};
+    };
 
-
-	
 }
