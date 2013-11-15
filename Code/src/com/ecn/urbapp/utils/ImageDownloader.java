@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 public class ImageDownloader {
-		
+	
     public void download(String url, ImageView imageView) {
             BitmapDownloaderTask task = new BitmapDownloaderTask(imageView);
             task.execute(url);
@@ -29,7 +29,7 @@ public class ImageDownloader {
 
 
 static Bitmap downloadBitmap(String url) {
-    final AndroidHttpClient client = AndroidHttpClient.newInstance("PictureLoader");
+    final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
     final HttpGet getRequest = new HttpGet(url);
 
     try {
