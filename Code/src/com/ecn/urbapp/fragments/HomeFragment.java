@@ -1,7 +1,5 @@
 package com.ecn.urbapp.fragments;
 
-import java.util.ArrayList;
-
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,13 +8,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.utils.ImageDownloader;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 
 /**
  * This is the fragment used to make the user choose between the differents type of project.
