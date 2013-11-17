@@ -25,7 +25,7 @@
     <string name="save">Sauvegarder</string>
 
     <string name="zone_create">Créer</string>
-    <string name="zone_suppress">Supprimer</string>
+    <string name="zone_delete">Supprimer</string>
     <string name="zone_edit">Editer</string>
     
     <string name="definition_select">Sélectionner</string>
@@ -48,6 +48,12 @@
     
     <string name="save_textStatus">None</string>
     <string name="save_buttonSync">Synchroniser</string>
+    <string name="back">Annuler dernière action</string>
+    <string name="cancel">Quitter sans sauvegarder</string>
+    <string name="help">Aide</string>
+    <string name="validate">Valider</string>
+    <string name="zone_edit_button_delete_point">Supprimer le point</string>
+    <string name="zone_edit_button_release_point">Lâcher le point</string>
     
     <string name="other">Autre</string>
     <string name="not_defined">Pas défini</string>
