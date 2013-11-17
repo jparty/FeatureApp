@@ -138,6 +138,7 @@ public class DrawImageView extends Drawable {
 
 				if (zones.getZones().get(i).getColor() != 0) {
 					fillPaint.setColor(zones.getZones().get(i).getColor());
+					fillPaint.setAlpha(50);
 				}
 				// Draw the polygon
 				canvas.drawPath(polyPath, fillPaint);

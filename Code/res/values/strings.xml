@@ -49,17 +49,16 @@
     <string name="save_textStatus">None</string>
     <string name="save_buttonSync">Synchroniser</string>
     
-    <string name="other">Autre</string>
-    <string name="not_defined">Pas défini</string>
-    <string name="type_dialog_title">Choissisez le type de surface</string>
-    <string name="material_dialog_title">Choix du matériau</string>
-    <string name="edit_dialog_title">Nom du matériau :</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Annuler</string>
-    <string name="choose_color_message">Choisissez la couleur de la zone :</string>
-    <string name="information_about_frontage">Informations sur cette zone</string>
     <string name="type">Type</string>
     <string name="materials">Matériaux</string>
     <string name="color">Couleur</string>
+    <string name="not_defined">Pas défini</string>
+    <string name="definition_dialog_title">Choix des caractéristiques des zones sélectionnées</string>
+    <string name="definition_dialog_type">Type de la zone :</string>
+    <string name="definition_dialog_material">Matériau de la zone :</string>
+    <string name="definition_dialog_color">Couleur de la zone :</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
+    <string name="information_about_frontage">Informations sur cette zone</string>
 
 </resources>

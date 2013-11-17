@@ -38,6 +38,7 @@ package com.ecn.urbapp.zones;
 import java.util.Vector;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Point;
 import com.ecn.urbapp.*;
 
@@ -75,6 +76,7 @@ public class Zone {
 		frontage = new Vector<Point>();
 		finished = false;
 		selected = false;
+		color = Color.RED;
 	}
 
 	/**
