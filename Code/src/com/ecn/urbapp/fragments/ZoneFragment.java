@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.Zone;
@@ -126,7 +127,10 @@ public class ZoneFragment extends Fragment{
 		edit_deletePoint.setOnClickListener(editDeletePointListener);
 		edit_releasePoint.setOnClickListener(editReleasePointListener);
 
-		zones = new Vector<Zone>(); zone = new Zone(); selected = new Point(0,0); 
+		if(MainActivity.zones==null){
+			zones = new Vector<Zone>();
+		}
+		zone = new Zone(); selected = new Point(0,0); 
 		
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 
@@ -141,6 +145,7 @@ public class ZoneFragment extends Fragment{
 					photo.getAbsolutePath(), 1000, 1000)), drawzoneview
 				};
 		myImage.setImageDrawable(new LayerDrawable(drawables));
+		MainActivity.myImage = myImage;
 		myImage.setOnTouchListener(deleteImageTouchListener);
 		
 		return v;
@@ -467,5 +472,10 @@ public class ZoneFragment extends Fragment{
 		}
 	};
 	
+	@Override
+	public void onStop(){
+		super.onStop();
+		MainActivity.zones=zones;
+	}
 
 }

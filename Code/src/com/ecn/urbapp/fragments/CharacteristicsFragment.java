@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
 import com.ecn.urbapp.utils.DrawImageView;
@@ -100,7 +101,8 @@ public class CharacteristicsFragment extends Fragment {
 		if (zones == null) {
 			zones = new SetOfZone();
 		}
-
+		zones = new SetOfZone(MainActivity.zones);
+/*
 		zones.addEmpty();
 		zones.addPoint(new Point(200, 200), 10);
 		zones.addPoint(new Point(400, 200), 10);
@@ -112,7 +114,7 @@ public class CharacteristicsFragment extends Fragment {
 		zones.addPoint(new Point(900, 200), 10);
 		zones.addPoint(new Point(900, 400), 10);
 		zones.addPoint(new Point(600, 400), 10);
-		zones.addPoint(new Point(600, 200), 10);
+		zones.addPoint(new Point(600, 200), 10);*/
 
 		DrawImageView view = new DrawImageView(zones);
 		Drawable[] drawables = {view};

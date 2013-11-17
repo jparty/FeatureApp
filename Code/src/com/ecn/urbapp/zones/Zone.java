@@ -14,7 +14,7 @@ public class Zone {
 	/**
 	 * List of the points composing the polygon; the last point is listed twice
 	 */
-	public Vector<Point> frontage;
+	public Vector<Point> points;
 
 	/** The state of the zone (finished or unfinished) */
 	protected boolean finished;
@@ -31,14 +31,13 @@ public class Zone {
 	/** Color of this zone */
 	protected int color;
 	
-	protected Vector<Point> points;
 	protected Vector<Point> middles;//useful for updateMiddles
 
 	/**
-	 * Constructor of a new frontage (unfinished by default)
+	 * Constructor of a new points (unfinished by default)
 	 */
 	public Zone() {
-		frontage = new Vector<Point>();
+		points = new Vector<Point>();
 		finished = false;
 		selected = false;
 		points = new Vector<Point>();
@@ -174,7 +173,7 @@ public class Zone {
 	 *            point that will be added
 	 */
 	public void addPoint(Point point) {
-		frontage.add(point);
+		points.add(point);
 		points.add(point);
 	}
 	
@@ -190,19 +189,10 @@ public class Zone {
 	 * @return true if the point is inside the zone and false otherwise
 	 */
 	public boolean containPoint(Point point) {
-		int j = frontage.size() - 1;
+		int j = points.size() - 1;
 		boolean contain = false;
 
-		for (int i = 0; i < frontage.size(); i++) {
-			if (((frontage.get(i).y > point.y) != (frontage.get(j).y > point.y))
-					&& (point.x < (frontage.get(j).x - frontage.get(i).x)
-							* (point.y - frontage.get(i).y)
-							/ (frontage.get(j).y - frontage.get(i).y)
-							+ frontage.get(i).x)) {
-				contain = (!contain);
-			}
-			j = i;
-		}for (int i = 0; i < points.size(); i++) {
+		for (int i = 0; i < points.size(); i++) {
 			if (((points.get(i).y > point.y) != (points.get(j).y > point.y))
 					&& (point.x < (points.get(j).x - points.get(i).x)
 							* (point.y - points.get(i).y)
@@ -223,9 +213,9 @@ public class Zone {
 	 */
 	public float area() {
 		float result = 0;
-		for (int i = 0; i < frontage.size() - 1; i++) {
-			result = result + frontage.get(i).x * frontage.get(i + 1).y
-					- frontage.get(i + 1).x * frontage.get(i).y;
+		for (int i = 0; i < points.size() - 1; i++) {
+			result = result + points.get(i).x * points.get(i + 1).y
+					- points.get(i + 1).x * points.get(i).y;
 		}
 
 		result = (float) (0.5 * Math.abs(result));

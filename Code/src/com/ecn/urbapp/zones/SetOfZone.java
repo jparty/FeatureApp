@@ -62,10 +62,16 @@ public class SetOfZone {
 	public int type;
 
 	/**
-	 * Constructor of a new empty SetOfFrontage
+	 * Constructor of a new empty SetOfpoints
 	 */
 	public SetOfZone() {
 		zones = new Vector<Zone>();
+	}
+	/**
+	 * Constructor of a copy SetOfpoints
+	 */
+	public SetOfZone(Vector<Zone> z) {
+		zones = z;
 	}
 
 	/**
@@ -142,18 +148,18 @@ public class SetOfZone {
 	 */
 	public void addPoint(Point point, float accuracy) {
 		// Get the last zone (there is at least an empty one)
-		Zone lastFrontage = zones.get(zones.size() - 1);
+		Zone lastpoints = zones.get(zones.size() - 1);
 		// Finish the zone if the touch point is near the first point of the
 		// zone (check if there is at least one point before)
-		if ((lastFrontage.frontage.size() != 0)
-				&& ((Math.abs(lastFrontage.frontage.get(0).x - point.x) < accuracy) && (Math
-						.abs(lastFrontage.frontage.get(0).y - point.y) < accuracy))) {
+		if ((lastpoints.points.size() != 0)
+				&& ((Math.abs(lastpoints.points.get(0).x - point.x) < accuracy) && (Math
+						.abs(lastpoints.points.get(0).y - point.y) < accuracy))) {
 			// Add the first point to complete the polygon
-			lastFrontage.addPoint(lastFrontage.frontage.get(0));
-			lastFrontage.finished = true;
+			lastpoints.addPoint(lastpoints.points.get(0));
+			lastpoints.finished = true;
 		} else {
 			// Add the point if the zone is not finished
-			lastFrontage.addPoint(point);
+			lastpoints.addPoint(point);
 		}
 	}
 

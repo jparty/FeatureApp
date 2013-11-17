@@ -71,12 +71,12 @@ public class DrawImageView extends Drawable {
 	 */
 	@Override
 	public void draw(Canvas canvas) {
-		// Paint for unfinished frontage
+		// Paint for unfinished points
 		Paint unfinishedPaint = new Paint();
 		unfinishedPaint.setColor(Color.RED);
 		unfinishedPaint.setStyle(Paint.Style.STROKE);
 
-		// Paint for finished frontage
+		// Paint for finished points
 		Paint finishedPaint = new Paint();
 		finishedPaint.setColor(Color.GREEN);
 		finishedPaint.setStyle(Paint.Style.STROKE);
@@ -96,27 +96,26 @@ public class DrawImageView extends Drawable {
 						finishedPaint.setColor(zones.getZones().get(i).getColor());
 					}
 					// Add all the lines of the polygon
-					for (int j = 0; j < zones.getZones().get(i).frontage
+					for (int j = 0; j < zones.getZones().get(i).points
 							.size() - 1; j++) {
 						canvas.drawLine(
-								zones.getZones().get(i).frontage.get(j).x,
-								zones.getZones().get(i).frontage.get(j).y,
-								zones.getZones().get(i).frontage
+								zones.getZones().get(i).points.get(j).x,
+								zones.getZones().get(i).points.get(j).y,
+								zones.getZones().get(i).points
 										.get(j + 1).x, zones.getZones()
-										.get(i).frontage.get(j + 1).y,
+										.get(i).points.get(j + 1).y,
 								finishedPaint);
 					}
 					finishedPaint.setColor(Color.GREEN);
 				} else {
 					// Add all the lines of the polygon
-					for (int j = 0; j < zones.getZones().get(i).frontage
-							.size() - 1; j++) {
+					for (int j = 0; j < zones.getZones().get(i).points.size() - 1; j++) {
 						canvas.drawLine(
-								zones.getZones().get(i).frontage.get(j).x,
-								zones.getZones().get(i).frontage.get(j).y,
-								zones.getZones().get(i).frontage
+								zones.getZones().get(i).points.get(j).x,
+								zones.getZones().get(i).points.get(j).y,
+								zones.getZones().get(i).points
 										.get(j + 1).x, zones.getZones()
-										.get(i).frontage.get(j + 1).y,
+										.get(i).points.get(j + 1).y,
 								unfinishedPaint);
 					}
 
@@ -127,13 +126,13 @@ public class DrawImageView extends Drawable {
 				// Create a closed path for the polygon
 				Path polyPath = new Path();
 				polyPath.moveTo(
-						zones.getZones().get(i).frontage.get(0).x,
-						zones.getZones().get(i).frontage.get(0).y);
-				for (int j = 0; j < zones.getZones().get(i).frontage
+						zones.getZones().get(i).points.get(0).x,
+						zones.getZones().get(i).points.get(0).y);
+				for (int j = 0; j < zones.getZones().get(i).points
 						.size(); j++) {
 					polyPath.lineTo(
-							zones.getZones().get(i).frontage.get(j).x,
-							zones.getZones().get(i).frontage.get(j).y);
+							zones.getZones().get(i).points.get(j).x,
+							zones.getZones().get(i).points.get(j).y);
 				}
 
 				if (zones.getZones().get(i).getColor() != 0) {

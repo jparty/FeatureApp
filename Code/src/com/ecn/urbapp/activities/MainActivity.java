@@ -56,8 +56,8 @@ public class MainActivity extends Activity {
 	 * bar represent the action bar of the application
 	 */
 	ActionBar bar;
-	public ImageView myImage; public File photo;
-	public Vector<Zone> zones; public Zone zoneToDelete ;
+	public File photo;
+	public Zone zoneToDelete ;
 	
 	/**
 	 * attributs for the local database
@@ -72,6 +72,9 @@ public class MainActivity extends Activity {
 	public static String device = "";
 	public static String project = "";
 	public static String address = "";
+
+	public static Vector<Zone> zones=null;
+	public static ImageView myImage=null;
 	
 	
 	@Override
