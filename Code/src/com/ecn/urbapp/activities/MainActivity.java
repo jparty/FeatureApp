@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.fragments.HomeFragment;
 import com.ecn.urbapp.fragments.InformationFragment;
@@ -38,6 +39,13 @@ public class MainActivity extends Activity {
 	 */
 	ActionBar bar;
 	
+	/**
+	 * attributs for the local database
+	 */
+	public static LocalDataSource datasource;
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,6 +55,9 @@ public class MainActivity extends Activity {
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		bar.setDisplayHomeAsUpEnabled(true);
 
+		//initialization of the local database
+		datasource = new LocalDataSource(this);
+		
 		//Setting of the different tab of the bar
 		
 		//Home tab
