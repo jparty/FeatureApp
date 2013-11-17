@@ -86,14 +86,14 @@ public class Test extends ListActivity {
     			int nextInt = new Random().nextInt(3);
     			
     		GpsGeom gps1=null;
-    			String coord = new String("47.249069//-1.54820");
+    			String[] coord = { new String("47.249069//-1.54820"),new String("50.249069//-8.54820"),new String("20.249069//41.54820")} ;
   
     			//save the new Project to database
     			p1 = datasource.createProject(Projects[nextInt]);
     			//save the gpsgeom to database & project
     				//TODO CREATE A TRANSACTION THE SQL
     			
-    			gps1 = datasource.createGPSGeom(coord,p1.getProjectId());
+    			gps1 = datasource.createGPSGeom(coord[(int) (Math.random()*3)],p1.getProjectId());
     			//updating p1 attributes
     			p1.setGpsGeom_id(gps1.getGpsGeomsId());
     			

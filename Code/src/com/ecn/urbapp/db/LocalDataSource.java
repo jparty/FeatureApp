@@ -168,8 +168,12 @@ public class LocalDataSource {
     Project p1 = new Project();
     p1.setProjectId(cursor.getLong(0));
     p1.setProjectName(cursor.getString(1));
-    p1.setGpsGeom_id(cursor.getLong(2));
-    p1.setExt_GpsGeomCoord(cursor.getString(4));
+    p1.setGpsGeom_id(cursor.getLong(2)); 
+    //TODO créer 2 fonctions, une pour l'instanciation du projet, une pour la recopie des gpsgeom
+    try{
+    	p1.setExt_GpsGeomCoord(cursor.getString(4));
+    }
+    catch (Exception e){};
     return p1;
 	
   }

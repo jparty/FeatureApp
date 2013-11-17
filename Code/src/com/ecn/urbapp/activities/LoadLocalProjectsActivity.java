@@ -92,7 +92,7 @@ public class LoadLocalProjectsActivity extends Activity {
 				long id) {
 			String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
 			LatLng coordProjet = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
-			//GeoActivity.init();
+			GeoActivity displayedMap = new GeoActivity(false, coordProjet, map);
     		Toast.makeText(getApplicationContext(), coordProjet.toString(), Toast.LENGTH_LONG).show();                  
 			
 		}

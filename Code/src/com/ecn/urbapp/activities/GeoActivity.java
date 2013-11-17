@@ -253,10 +253,31 @@ OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_geo);
         needCurrentPos=true;
+        
+        satellite = (Button)findViewById(R.id.satellite);
+        plan = (Button)findViewById(R.id.plan);
+        hybrid = (Button)findViewById(R.id.hybrid);
+        validate = (Button)findViewById(R.id.validate);
+        
+        //Listeners on switch button
+        satellite.setOnClickListener(toSatellite);
+        plan.setOnClickListener(toPlan);
+        hybrid.setOnClickListener(toHybrid);
+        validate.setOnClickListener(this);
+        
+      //for reverse adresses
+        mActivityIndicator =
+                (ProgressBar) findViewById(R.id.address_progress);
+        map.setOnMarkerDragListener(markerDrag);
+        
         // Get a handle to the Map Fragment
         map = ((MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map)).getMap();
         geoActivityInit(true, defaultPos, map);
+    }
+    
+    public GeoActivity(Boolean needCurrentPos, LatLng pos, GoogleMap map){
+    	geoActivityInit(needCurrentPos, pos, map);
     }
     
     public void geoActivityInit(Boolean needCurrentPos, LatLng pos, GoogleMap map){
@@ -274,25 +295,9 @@ OnClickListener{
         map.setMyLocationEnabled(true);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15));
         
-        satellite = (Button)findViewById(R.id.satellite);
-        plan = (Button)findViewById(R.id.plan);
-        hybrid = (Button)findViewById(R.id.hybrid);
-        validate = (Button)findViewById(R.id.validate);
-        
-        //Listeners on switch button
-        satellite.setOnClickListener(toSatellite);
-        plan.setOnClickListener(toPlan);
-        hybrid.setOnClickListener(toHybrid);
-        validate.setOnClickListener(this);
-        
         
         map.setOnMapClickListener(ajoutPoints);
-        
-        //for reverse adresses
-        mActivityIndicator =
-                (ProgressBar) findViewById(R.id.address_progress);
-        map.setOnMarkerDragListener(markerDrag);
-        
+
         }
     }
     
