@@ -3,7 +3,7 @@ package com.ecn.urbapp.zones;
 import java.util.Vector;
 
 import android.graphics.Point;
-import android.graphics.PointF;
+import android.graphics.Point;
 import android.util.Log;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -31,8 +31,8 @@ public class Zone {
 	/** Color of this zone */
 	protected int color;
 	
-	protected Vector<PointF> points;
-	protected Vector<PointF> middles;//useful for updateMiddles
+	protected Vector<Point> points;
+	protected Vector<Point> middles;//useful for updateMiddles
 
 	/**
 	 * Constructor of a new frontage (unfinished by default)
@@ -41,8 +41,8 @@ public class Zone {
 		frontage = new Vector<Point>();
 		finished = false;
 		selected = false;
-		points = new Vector<PointF>();
-		middles = new Vector<PointF>();
+		points = new Vector<Point>();
+		middles = new Vector<Point>();
 		color = Color.RED;
 	}
 	
@@ -50,20 +50,16 @@ public class Zone {
 		this.setZone(zone);
 	}
 	
-	public Vector<PointF> getPoints(){
+	public Vector<Point> getPoints(){
 		return points;
 	}
 	
-	 public Vector<PointF> getMiddles(){
+	 public Vector<Point> getMiddles(){
 		buildMiddles();
 		return middles;
 	}
 	
-	public void addPoint(PointF point){
-		points.add(point);
-	}
-	
-	public boolean updatePoint(PointF oldPoint, PointF newPoint){
+	public boolean updatePoint(Point oldPoint, Point newPoint){
 		try{
 			points.setElementAt(newPoint,points.indexOf(oldPoint));
 			return true;
@@ -72,11 +68,11 @@ public class Zone {
 		}
 	}
 	
-	public void deletePoint(PointF point){
+	public void deletePoint(Point point){
 		points.remove(point);
 	}
 	
-	public void updateMiddle(PointF oldMiddle, PointF newPoint){
+	public void updateMiddle(Point oldMiddle, Point newPoint){
 		points.insertElementAt(newPoint, middles.indexOf(oldMiddle)+1);
 	}/**
 	 * Setter for the type
@@ -179,10 +175,11 @@ public class Zone {
 	 */
 	public void addPoint(Point point) {
 		frontage.add(point);
+		points.add(point);
 	}
 	
 	public void setZone(Zone zone){
-		this.points = (Vector<PointF>) zone.points.clone();
+		this.points = (Vector<Point>) zone.points.clone();
 	}
 	/**
 	 * This method return true if the point in parameter is inside the polygon
@@ -205,17 +202,7 @@ public class Zone {
 				contain = (!contain);
 			}
 			j = i;
-		}
-
-		return contain;
-	}	
-	
-	public boolean containPointF(PointF point) {
-		//de FeatureApp
-		int j = points.size() - 1;
-		boolean contain = false;
-
-		for (int i = 0; i < points.size(); i++) {
+		}for (int i = 0; i < points.size(); i++) {
 			if (((points.get(i).y > point.y) != (points.get(j).y > point.y))
 					&& (point.x < (points.get(j).x - points.get(i).x)
 							* (point.y - points.get(i).y)
@@ -247,11 +234,11 @@ public class Zone {
 	}
 
 	public void buildMiddles(){
-		middles=new Vector<PointF>();//points.size());
+		middles=new Vector<Point>();//points.size());
 		if(points.size()>2){
 			for(int i=0;i<points.size()-1; i++){
 				middles.add(
-					new PointF(
+					new Point(
 						(points.get(i).x + points.get(i+1).x)/2,
 						(points.get(i).y + points.get(i+1).y)/2)
 				);
@@ -259,15 +246,15 @@ public class Zone {
 		}
 		if(points.size()>1){
 			middles.add(
-			new PointF(
+			new Point(
 				(points.lastElement().x + points.get(0).x)/2,
 				(points.lastElement().y + points.get(0).y)/2)
 			);
 		}
 	}
 	
-	/*public Vector<PointF> isSelfIntersecting(){
-		Vector<PointF> result = new Vector<PointF>();
+	/*public Vector<Point> isSelfIntersecting(){
+		Vector<Point> result = new Vector<Point>();
 		points.add(points.get(0));//temporarily copying the first point at the end to avoid bounds' problems
 		for(int i=0; i<points.size()-1 ; i++){
 			for(int j=0; j<points.size()-1 ; j++){
@@ -286,8 +273,8 @@ public class Zone {
 		return result;//possibly null
 	}*/
 	
-	public Vector<PointF> isSelfIntersecting(){
-		Vector<PointF> result = new Vector<PointF>();
+	public Vector<Point> isSelfIntersecting(){
+		Vector<Point> result = new Vector<Point>();
 		for(int i=0; i<points.size()-4 ; i++){
 			for(int j=i+2; j<points.size()-2 ; j++){
 				if(intersect(points.get(i),points.get(i+1),points.get(j),points.get(j+1))){
@@ -310,7 +297,7 @@ public class Zone {
 	}
 	
 	 //méthode de Jules
-	 /* public boolean intersect(PointF p11, PointF p12, PointF p21, PointF p22){
+	 /* public boolean intersect(Point p11, Point p12, Point p21, Point p22){
 		double denominateur = (p22.x - p21.x) * (p12.y - p11.y) - (p12.x - p11.x) * (p22.y - p21.y);
 		Log.d("Intersect","den:"+denominateur);
 		if (denominateur != 0.0) {
@@ -342,8 +329,8 @@ public class Zone {
 	}*/
 	
 	// méthode d'un forum Google
-	private boolean intersect(PointF start1,
-			PointF end1, PointF start2, PointF end2) {
+	private boolean intersect(Point start1,
+			Point end1, Point start2, Point end2) {
 
 			// First find Ax+By=C values for the two lines
 			double A1 = end1.y - start1.y;
@@ -419,7 +406,7 @@ public class Zone {
 
 
 	/*
-	public static boolean isInSegment(double x, double y, PointF p1, PointF p2) {
+	public static boolean isInSegment(double x, double y, Point p1, Point p2) {
 		return ((p2.x - p1.x) * (y - p1.y) + (p2.y - p1.y) * (x - p1.x) == 0
 		&& (Math.min(p1.x, p2.x) <= x) && (Math.max(p1.x, p2.x) >= x)
 		&& (Math.min(p1.y, p2.y) <= y) && (Math.max(p1.y, p2.y) >= y));

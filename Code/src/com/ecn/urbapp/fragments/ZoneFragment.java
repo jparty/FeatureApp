@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import android.app.Fragment;
 import android.graphics.Matrix;
-import android.graphics.PointF;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -65,7 +65,7 @@ public class ZoneFragment extends Fragment{
 	private ImageView myImage; private File photo;
 	private Vector<Zone> zones; private Zone zoneCache ;
 	private Zone zone;
-	private PointF selected;
+	private Point selected;
 	private DrawZoneView drawzoneview;
 
 	@Override
@@ -126,7 +126,7 @@ public class ZoneFragment extends Fragment{
 		edit_deletePoint.setOnClickListener(editDeletePointListener);
 		edit_releasePoint.setOnClickListener(editReleasePointListener);
 
-		zones = new Vector<Zone>(); zone = new Zone(); selected = new PointF(0,0); 
+		zones = new Vector<Zone>(); zone = new Zone(); selected = new Point(0,0); 
 		
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 
@@ -189,8 +189,8 @@ public class ZoneFragment extends Fragment{
 			}
 		});
 		zone.setZone(new Zone());
-		selected.set(new PointF(0,0));
-		drawzoneview.setIntersections(new Vector<PointF>());
+		selected.set(0,0);
+		drawzoneview.setIntersections(new Vector<Point>());
 		myImage.invalidate();
 	}
 	
@@ -246,14 +246,14 @@ public class ZoneFragment extends Fragment{
 					
 				}
 				matrix.mapPoints(coord);//apply matrix transformation on points coord
-				zone.addPoint(new PointF(coord[0],coord[1]));
+				zone.addPoint(new Point((int)coord[0],(int)coord[1]));
 				refreshCreate();//display new point, refresh buttons' availabilities					
 			}
 			return true;
 		}
 	};
     public void refreshCreate(){
-		Vector<PointF> points = zone.getPoints();
+		Vector<Point> points = zone.getPoints();
 		if(! points.isEmpty()){
 			getView().findViewById(R.id.zone_create_button_back).setEnabled(false);
 			if(points.size()>1){							
@@ -262,13 +262,10 @@ public class ZoneFragment extends Fragment{
 				if(points.size()>2){
 					getView().findViewById(R.id.zone_create_button_validate).setEnabled(true);
 					if(points.size()>3){
-						Vector<PointF> intersections = new Vector<PointF>(zone.isSelfIntersecting());
+						Log.d("Intersect","enough points to test !");
+						Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting());
 						if(!intersections.isEmpty()){
-							//Log.d("Intersection","true");
 							getView().findViewById(R.id.zone_create_button_validate).setEnabled(false);
-							
-						}else{
-							//Log.d("Intersection","false");
 						}
 						drawzoneview.setIntersections(intersections);
 					}
@@ -278,7 +275,7 @@ public class ZoneFragment extends Fragment{
 		myImage.invalidate();
 	}
     public void refreshEdit(){
-		Vector<PointF> points = zone.getPoints();
+		Vector<Point> points = zone.getPoints();
 		if(points.size()<3){
 			getView().findViewById(R.id.zone_edit_button_validate).setEnabled(false);
 		}
@@ -286,7 +283,7 @@ public class ZoneFragment extends Fragment{
 			if(points.size()>2){
 				getView().findViewById(R.id.zone_edit_button_validate).setEnabled(true);
 				if(points.size()>3){
-					Vector<PointF> intersections = new Vector<PointF>(zone.isSelfIntersecting());
+					Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting());
 					if(!intersections.isEmpty()){
 						getView().findViewById(R.id.zone_edit_button_validate).setEnabled(false);
 					}
@@ -331,12 +328,12 @@ public class ZoneFragment extends Fragment{
 				}
 				matrix.mapPoints(coord);
 				Log.d("UrbApp","Après x:"+coord[0]+";y:"+coord[1]);
-				PointF touch = new PointF(coord[0],coord[1]);
+				Point touch = new Point((int)coord[0],(int)coord[1]);
 				
 				//If no zone has been selected yet, try to select one
 				if(zone.getPoints().isEmpty()){
 					for(Zone test : zones){
-						if(test.containPointF(touch)){
+						if(test.containPoint(touch)){
 							zoneCache = test;
 							zone.setZone(test);
 							zones.remove(test);//zone.setZone(test);
@@ -358,22 +355,22 @@ public class ZoneFragment extends Fragment{
 					}
 					//If a zone is selected, but none of its points, is the touch point a normal or middle point ?
 					else{
-						for(PointF p : zone.getPoints()){//is the touched point a normal point ?
+						for(Point p : zone.getPoints()){//is the touched point a normal point ?
 							float dx=Math.abs(p.x-touch.x);
 							float dy=Math.abs(p.y-touch.y);
 							if((dx*dx+dy*dy)<10*10){//10 radius tolerance
-								selected.set(p);
+								selected.set(p.x,p.y);
 								//enable point deleting or releasing
 								getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(true);
 								getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(true);
 							}
 						}
 						if(selected.x == 0 && selected.y == 0){//is the touched point a middle point ?
-							for(PointF p : zone.getMiddles()){
+							for(Point p : zone.getMiddles()){
 								float dx=Math.abs(p.x-touch.x);
 								float dy=Math.abs(p.y-touch.y);
 								if((dx*dx+dy*dy)<10*10){
-									selected.set(p);
+									selected.set(p.x,p.y);
 									//impossible to delete a middle point, but enable releasing
 									getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(true);
 								}
@@ -406,7 +403,7 @@ public class ZoneFragment extends Fragment{
 		@Override
 		public void onClick(View v) {
 			zone.deletePoint(selected);
-			selected.set(new PointF(0,0));//no selected point anymore
+			selected.set(0,0);//no selected point anymore
 			getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(false);
 			getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(false);
 			myImage.invalidate();//refresh image
@@ -415,7 +412,7 @@ public class ZoneFragment extends Fragment{
 	private OnClickListener editReleasePointListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			selected.set(new PointF(0,0));
+			selected.set(0,0);
 			getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(false);
 			getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(false);
 			myImage.invalidate();
@@ -447,10 +444,10 @@ public class ZoneFragment extends Fragment{
 							.invert(matrix);
 				}
 				matrix.mapPoints(coord);
-				PointF touch = new PointF(coord[0],coord[1]);
+				Point touch = new Point((int)coord[0],(int)coord[1]);
 				if(zone.getPoints().isEmpty()){
 					for(Zone test : zones){
-						if(test.containPointF(touch)){
+						if(test.containPoint(touch)){
 							zoneCache = test;
 						}
 					}
