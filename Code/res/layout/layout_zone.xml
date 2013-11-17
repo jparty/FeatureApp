@@ -83,6 +83,14 @@
         android:onClick="zone_create_button_validate"
         android:text="@string/validate" />
     
+      <Button 
+        android:id="@+id/zone_create_button_edit"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:onClick="zone_button_edit"
+        android:layout_toRightOf="@+id/zone_create_button_validate"
+        android:text="@string/zone_edit"/>
+    
     <!-- the following elements are for the deletion of a zone -->
     <Button
         android:id="@+id/zone_delete_button_cancel"
