@@ -16,17 +16,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.ecn.urbapp.db.LocalDataSource;
-import com.ecn.urbapp.db.MainActivity;
-import com.ecn.urbapp.db.Project;
-import com.ecn.urbapp.db.R;
-
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.LocalDataSource;
+import com.ecn.urbapp.db.MainActivity;
+import com.ecn.urbapp.db.Project;
 
 
 

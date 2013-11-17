@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.ecn.urbapp.R;
 import com.ecn.urbapp.syncToExt.BackTaskExport;
 import com.ecn.urbapp.syncToExt.BackTaskExportAllDB;
 import com.ecn.urbapp.syncToLocal.BackTaskImport;

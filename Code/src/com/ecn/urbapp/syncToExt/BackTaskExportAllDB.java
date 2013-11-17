@@ -2,40 +2,30 @@ package com.ecn.urbapp.syncToExt;
 
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.MainActivity;
 import com.ecn.urbapp.db.MySQLiteHelper;
 import com.ecn.urbapp.db.Project;
-import com.ecn.urbapp.db.R;
-import com.google.gson.GsonBuilder;
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
+
 
 
 public class BackTaskExportAllDB extends AsyncTask<Void, Integer, Integer> {
