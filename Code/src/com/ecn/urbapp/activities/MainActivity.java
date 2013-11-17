@@ -3,6 +3,7 @@ package com.ecn.urbapp.activities;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -38,9 +39,17 @@ public class MainActivity extends Activity {
 	 */
 	ActionBar bar;
 	
+	/**
+	 * baseContext to get the static context of app anywhere (for file)
+	 */
+    public static Context baseContext;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		//Setting the Context of app
+		baseContext = getBaseContext();
 		
 		//Setting the Activity bar
 		bar = getActionBar();
