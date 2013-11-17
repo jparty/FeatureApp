@@ -17,8 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
-import com.ecn.urbapp.dialogs.TypeDialogFragment;
 import com.ecn.urbapp.utils.DrawImageView;
 import com.ecn.urbapp.zones.SetOfZone;
 
@@ -221,8 +221,8 @@ public class CharacteristicsFragment extends Fragment {
 		public void onClick(View v) {
 			if (!CharacteristicsFragment.getZones().getAllSelectedZones().isEmpty()) {
 				// Show the dialog to choose the characteristics
-				TypeDialogFragment typedialog = new TypeDialogFragment();
-				typedialog.show(getFragmentManager(), "TypeFragment");
+				CharacteristicsDialogFragment typedialog = new CharacteristicsDialogFragment();
+				typedialog.show(getFragmentManager(), "CharacteristicsDialogFragment");
 			}
 		}
 	};

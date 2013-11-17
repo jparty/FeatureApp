@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.Log;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Point;
 import com.ecn.urbapp.*;
 
@@ -42,6 +43,7 @@ public class Zone {
 		selected = false;
 		points = new Vector<PointF>();
 		middles = new Vector<PointF>();
+		color = Color.RED;
 	}
 	
 	public Zone(Zone zone){
