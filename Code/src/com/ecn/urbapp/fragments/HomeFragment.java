@@ -1,8 +1,7 @@
 package com.ecn.urbapp.fragments;
 
-import java.util.ArrayList;
-
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +9,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.ecn.urbapp.R;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.ecn.urbapp.activities.LoadLocalProjectsActivity;
+import com.ecn.urbapp.activities.Test;
 
 /**
  * This is the fragment used to make the user choose between the differents type of project.
@@ -29,7 +26,13 @@ import com.google.android.gms.maps.MapFragment;
  * 			
  */
 
-public class HomeFragment extends Fragment{
+public class HomeFragment extends Fragment implements OnClickListener{
+	
+	/**
+	 * creating the interface
+	 */
+	private Button loadLocal = null ;
+	private Button test = null ;
 	
 	private Button downloadImage;
 	private ImageView image;
@@ -49,7 +52,31 @@ public class HomeFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_home, null);
 
+		loadLocal=(Button)v.findViewById(R.id.home_loadLocalProject);
+		loadLocal.setOnClickListener(this);
+		test=(Button)v.findViewById(R.id.home_test);
+		test.setOnClickListener(this);
+		
 		return v;
+		
 	}
 	
+	@Override
+	public void onClick(View v) {
+		Intent i = null;
+		switch (v.getId()) {
+		case R.id.home_loadLocalProject:
+			i = new Intent(this.getActivity(), LoadLocalProjectsActivity.class);
+			startActivity(i);			
+			break;
+			
+		case R.id.home_test:
+			i = new Intent(this.getActivity(), Test.class);
+			startActivity(i);			
+			break;
+
+		default:
+			break;
+		}
+	}
 }

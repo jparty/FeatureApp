@@ -72,6 +72,14 @@
          android:layout_below="@+id/home_image_loadLocalProject"
          android:layout_alignParentLeft="true"
          android:text="@string/loadLocalProject"/>
+         
+         <Button
+         android:id="@+id/home_test"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/home_loadLocalProject"
+         android:layout_alignParentLeft="true"
+         android:text="test"/>
             
         </RelativeLayout>
         
