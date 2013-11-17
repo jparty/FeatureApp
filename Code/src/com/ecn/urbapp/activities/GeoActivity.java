@@ -216,7 +216,7 @@ OnClickListener{
         // Check that Google Play services is available
         int resultCode =
                 GooglePlayServicesUtil.
-                        isGooglePlayServicesAvailable(this);
+                        isGooglePlayServicesAvailable(MainActivity.baseContext);
         // If Google Play services is available
         if (ConnectionResult.SUCCESS == resultCode) {
             // In debug mode, log the status

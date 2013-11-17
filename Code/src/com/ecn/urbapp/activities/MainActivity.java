@@ -3,6 +3,7 @@ package com.ecn.urbapp.activities;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -38,13 +39,14 @@ public class MainActivity extends Activity {
 	 * bar represent the action bar of the application
 	 */
 	ActionBar bar;
+
+	public static Context baseContext;
 	
 	/**
 	 * attributs for the local database
 	 */
 	public static LocalDataSource datasource;
-	
-	
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,10 @@ public class MainActivity extends Activity {
 		bar = getActionBar();
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		bar.setDisplayHomeAsUpEnabled(true);
-
+		
+		//Setting the Context of app
+		baseContext = getBaseContext();
+		
 		//initialization of the local database
 		datasource = new LocalDataSource(this);
 		
