@@ -42,7 +42,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
@@ -54,7 +54,7 @@ import android.util.Log;
  */
 //la méthode draw dessine en fonction des informations dont elle dispose, qui sont apportées via les différents constructeur
 public class DrawZoneView extends Drawable {
-	private Zone zone; private Vector<Zone> zones; private PointF selected; private Vector<PointF> intersections;
+	private Zone zone; private Vector<Zone> zones; private Point selected; private Vector<Point> intersections;
 	private boolean edit; private boolean create; Paint paintLastPoint; Paint paintFirstPoint;
 
 	public DrawZoneView() {
@@ -71,13 +71,13 @@ public class DrawZoneView extends Drawable {
 		this.zone = zone; this.zones = zones; 
 	}
 	
-	public DrawZoneView(Vector<Zone> zones, Zone zone, PointF selected) {
+	public DrawZoneView(Vector<Zone> zones, Zone zone, Point selected) {
 		super();
-		this.zone = zone; this.zones = zones; this.selected = selected; this.intersections = new Vector<PointF>();
+		this.zone = zone; this.zones = zones; this.selected = selected; this.intersections = new Vector<Point>();
 		this.edit = false; this.create = false;
 	}
 	
-	public void setIntersections(Vector<PointF> intersections){
+	public void setIntersections(Vector<Point> intersections){
 		this.intersections = intersections;
 	}
 	
@@ -131,8 +131,8 @@ public class DrawZoneView extends Drawable {
 		paintFillZone.setStyle(Paint.Style.FILL);
 		paintFillZone.setAlpha(50);
 		
-		Vector<PointF> points = zone.getPoints();
-		Vector<PointF> middles = zone.getMiddles();
+		Vector<Point> points = zone.getPoints();
+		Vector<Point> middles = zone.getMiddles();
 		
 		if(! points.isEmpty()){
 			canvas.drawCircle(points.get(0).x, points.get(0).y, 2, paintLastPoint);
@@ -173,7 +173,7 @@ public class DrawZoneView extends Drawable {
 			if(!zones.isEmpty()){
 				for(Zone polygon : zones){
 					Path polyPath = new Path();
-					Vector<PointF> points2 = polygon.getPoints();
+					Vector<Point> points2 = polygon.getPoints();
 					polyPath.moveTo(points2.get(0).x, points2.get(0).y);			
 					for(int i=1; i<points2.size(); i++){
 						polyPath.lineTo(points2.get(i).x, points2.get(i).y);
