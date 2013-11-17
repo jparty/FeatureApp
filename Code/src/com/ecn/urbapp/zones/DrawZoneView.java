@@ -54,7 +54,8 @@ import android.util.Log;
  */
 //la méthode draw dessine en fonction des informations dont elle dispose, qui sont apportées via les différents constructeur
 public class DrawZoneView extends Drawable {
-	private Zone zone; private Vector<Zone> zones; private PointF selected;
+	private Zone zone; private Vector<Zone> zones; private PointF selected; private Vector<PointF> intersections;
+	private boolean edit; private boolean create; Paint paintLastPoint; Paint paintFirstPoint;
 
 	public DrawZoneView() {
 		super();
@@ -67,62 +68,104 @@ public class DrawZoneView extends Drawable {
 	
 	public DrawZoneView(Vector<Zone> zones, Zone zone) {
 		super();
-		this.zone = zone; this.zones = zones;
+		this.zone = zone; this.zones = zones; 
 	}
 	
 	public DrawZoneView(Vector<Zone> zones, Zone zone, PointF selected) {
 		super();
-		this.zone = zone; this.zones = zones; this.selected = selected;
+		this.zone = zone; this.zones = zones; this.selected = selected; this.intersections = new Vector<PointF>();
+		this.edit = false; this.create = false;
 	}
-
+	
+	public void setIntersections(Vector<PointF> intersections){
+		this.intersections = intersections;
+	}
+	
+	public void onCreateMode(){
+		create = true;
+		edit = false;
+	}
+	
+	public void onEditMode(){
+		create = false;
+		edit = true;
+	}
+	
+	public void onZonePage(){
+		create = false;
+		edit = false;
+	}
+	
 	/**
 	 * This method is called to draw the zones
 	 */
 	@Override
 	public void draw(Canvas canvas) {
-		// Paint for unfinished frontage
-		Paint paintred = new Paint();
-		paintred.setColor(Color.RED);
-		paintred.setStyle(Paint.Style.FILL);
-		paintred.setAlpha(255);
+		Paint paintNormal = new Paint();
+		paintNormal.setColor(Color.RED);
+		paintNormal.setStyle(Paint.Style.FILL);
+		paintNormal.setAlpha(255);
 		
-		Paint paintmagenta = new Paint();
-		paintmagenta.setColor(Color.MAGENTA);
-		paintmagenta.setStyle(Paint.Style.FILL);
-		paintmagenta.setAlpha(255);
+		if(create){
+			paintLastPoint = new Paint();
+			paintLastPoint.setColor(Color.MAGENTA);
+			paintLastPoint.setStyle(Paint.Style.FILL);
+			paintLastPoint.setAlpha(255);
+			
+			paintFirstPoint = new Paint();
+			paintFirstPoint.setColor(Color.YELLOW);
+			paintFirstPoint.setStyle(Paint.Style.FILL);
+			paintFirstPoint.setAlpha(255);
+		}else{
+			paintLastPoint = new Paint(paintNormal);
+			paintFirstPoint = new Paint(paintNormal);
+		}
 		
-		Paint paintyellow = new Paint();
-		paintyellow.setColor(Color.YELLOW);
-		paintyellow.setStyle(Paint.Style.FILL);
-		paintyellow.setAlpha(255);
+		Paint paintIntersections = new Paint();
+		paintIntersections.setColor(Color.BLUE);
+		paintIntersections.setStyle(Paint.Style.STROKE);
+		paintIntersections.setAlpha(255);
 		
-		Paint paintfill = new Paint();
-		paintfill.setColor(Color.BLUE);
-		paintfill.setStyle(Paint.Style.FILL);
-		paintfill.setAlpha(50);
+		Paint paintFillZone = new Paint();
+		paintFillZone.setColor(Color.BLUE);
+		paintFillZone.setStyle(Paint.Style.FILL);
+		paintFillZone.setAlpha(50);
 		
 		Vector<PointF> points = zone.getPoints();
 		Vector<PointF> middles = zone.getMiddles();
 		
 		if(! points.isEmpty()){
-			try{Log.d("selected",selected.toString());}catch(Exception e){}
-			canvas.drawCircle(points.get(0).x, points.get(0).y, 2, paintmagenta);
+			canvas.drawCircle(points.get(0).x, points.get(0).y, 2, paintLastPoint);
 			if(points.size()>1){
-				canvas.drawCircle(points.lastElement().x, points.lastElement().y, 2, paintyellow);
-				canvas.drawLine(points.get(points.size()-2).x, points.get(points.size()-2).y, points.lastElement().x, points.lastElement().y, paintred);
-				canvas.drawCircle(middles.get(0).x, middles.get(0).y, 1, paintred);
+				canvas.drawCircle(points.lastElement().x, points.lastElement().y, 2, paintFirstPoint);
+				canvas.drawLine(points.get(points.size()-2).x, points.get(points.size()-2).y, points.lastElement().x, points.lastElement().y, paintNormal);
+				if(edit){
+					canvas.drawCircle(middles.get(0).x, middles.get(0).y, 1, paintNormal);
+				}
 				if(points.size()>2){
 					for(int i=1; i<points.size()-1; i++){
-						canvas.drawCircle(points.get(i).x, points.get(i).y, 2, paintred);
-						canvas.drawLine(points.get(i-1).x, points.get(i-1).y, points.get(i).x, points.get(i).y, paintred);
-						canvas.drawCircle(middles.get(i).x, middles.get(i).y, 1, paintred);
+						canvas.drawCircle(points.get(i).x, points.get(i).y, 2, paintNormal);
+						canvas.drawLine(points.get(i-1).x, points.get(i-1).y, points.get(i).x, points.get(i).y, paintNormal);
+						if(edit){
+							canvas.drawCircle(middles.get(i).x, middles.get(i).y, 1, paintNormal);
+						}
 					}
-					canvas.drawCircle(middles.lastElement().x, middles.lastElement().y, 1, paintyellow);
-					canvas.drawLine(points.get(points.size()-1).x, points.get(points.size()-1).y, points.get(0).x, points.get(0).y, paintyellow);
+					if(edit){
+						canvas.drawCircle(middles.lastElement().x, middles.lastElement().y, 1, paintFirstPoint);
+					}
+					canvas.drawLine(points.get(points.size()-1).x, points.get(points.size()-1).y, points.get(0).x, points.get(0).y, paintFirstPoint);
 					try{if(selected.x != 0 && selected.y != 0){
-						canvas.drawCircle(selected.x, selected.y, 5, paintred);
+						canvas.drawCircle(selected.x, selected.y, 5, paintNormal);
 					}}catch(Exception e){}
 				}
+			}
+		}
+		try{Log.d("Intersection",intersections.toString());}catch(Exception e){}
+		if(! intersections.isEmpty()){
+			for(int i=0;i<intersections.size();i=i+2){
+				canvas.drawCircle(intersections.get(i).x, intersections.get(i).y, 2, paintIntersections);
+				canvas.drawLine(intersections.get(i).x, intersections.get(i).y, intersections.get(i+1).x, intersections.get(i+1).y, paintIntersections);
+				canvas.drawCircle(intersections.get(i+1).x, intersections.get(i+1).y, 2, paintIntersections);
 			}
 		}
 		
@@ -137,7 +180,7 @@ public class DrawZoneView extends Drawable {
 					}
 
 					// Draw the polygon
-					canvas.drawPath(polyPath, paintfill);
+					canvas.drawPath(polyPath, paintFillZone);
 				}
 			}
 	}

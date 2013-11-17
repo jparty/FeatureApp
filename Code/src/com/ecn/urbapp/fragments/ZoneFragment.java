@@ -42,7 +42,7 @@ import com.ecn.urbapp.zones.Zone;
 
 public class ZoneFragment extends Fragment{
 	
-	private Button create;
+	private Button create; 
 	private Button edit;
 	private Button delete;
 
@@ -50,7 +50,7 @@ public class ZoneFragment extends Fragment{
 	private Button create_help;
 	private Button create_cancel;
 	private Button create_validate;
-	
+	private Button create_edit;	
 
 	private Button delete_cancel;
 	private Button delete_help;
@@ -62,10 +62,11 @@ public class ZoneFragment extends Fragment{
 	private Button edit_help;
 	
 
-	public ImageView myImage; public File photo;
-	public Vector<Zone> zones; public Zone zoneToDelete ;
+	private ImageView myImage; private File photo;
+	private Vector<Zone> zones; private Zone zoneCache ;
 	private Zone zone;
 	private PointF selected;
+	private DrawZoneView drawzoneview;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,15 +87,18 @@ public class ZoneFragment extends Fragment{
 		create_help = (Button) v.findViewById(R.id.zone_create_button_help);
 		create_cancel = (Button) v.findViewById(R.id.zone_create_button_cancel);
 		create_validate = (Button) v.findViewById(R.id.zone_create_button_validate);
+		create_edit = (Button) v.findViewById(R.id.zone_create_button_edit);
 		
 		create_back.setVisibility(View.GONE);
 		create_help.setVisibility(View.GONE);
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
+		create_edit.setVisibility(View.GONE);
 
 		create_back.setOnClickListener(createBackListener);
 		create_cancel.setOnClickListener(createCancelListener);
 		create_validate.setOnClickListener(createValidateListener);
+		create_edit.setOnClickListener(editListener);
 
 		delete_cancel = (Button) v.findViewById(R.id.zone_delete_button_cancel);
 		delete_help = (Button) v.findViewById(R.id.zone_delete_button_help);
@@ -121,9 +125,72 @@ public class ZoneFragment extends Fragment{
 		edit_deletePoint.setOnClickListener(editDeletePointListener);
 		edit_releasePoint.setOnClickListener(editReleasePointListener);
 
-		zones = new Vector<Zone>();
+		zones = new Vector<Zone>(); zone = new Zone(); selected = new PointF(0,0); 
+		
+		myImage = (ImageView) v.findViewById(R.id.image_zone);
+
+		String youFilePath = Environment.getExternalStorageDirectory().toString()+"/Download/Images.jpeg";
+		photo=new File(youFilePath);
+	
+		drawzoneview = new DrawZoneView(zones, zone, selected) ;
+		Drawable[] drawables = {
+			new BitmapDrawable(
+				getResources(),
+				BitmapLoader.decodeSampledBitmapFromFile(
+					photo.getAbsolutePath(), 1000, 1000)), drawzoneview
+				};
+		myImage.setImageDrawable(new LayerDrawable(drawables));
+		myImage.setOnTouchListener(deleteImageTouchListener);
 		
 		return v;
+	}
+	private void enterAction(){
+		//invisible, not gone, to keep buttons outside the picture
+		//TODO there are probably better ways :)
+		create.setVisibility(View.INVISIBLE);
+        edit.setVisibility(View.INVISIBLE);
+        delete.setVisibility(View.INVISIBLE);
+        //in case we're coming switching from create
+        create_back.setVisibility(View.GONE);
+		create_help.setVisibility(View.GONE);
+		create_cancel.setVisibility(View.GONE);
+		create_validate.setVisibility(View.GONE);
+		create_edit.setVisibility(View.GONE);
+	}
+	
+	private void exitAction(){
+        drawzoneview.onZonePage();
+		
+        create.setVisibility(View.VISIBLE);
+        edit.setVisibility(View.VISIBLE);
+        delete.setVisibility(View.VISIBLE);
+
+		create_back.setVisibility(View.GONE);
+		create_help.setVisibility(View.GONE);
+		create_cancel.setVisibility(View.GONE);
+		create_validate.setVisibility(View.GONE);
+		create_edit.setVisibility(View.GONE);
+		
+		edit_cancel.setVisibility(View.GONE);
+		edit_validate.setVisibility(View.GONE);
+		edit_deletePoint.setVisibility(View.GONE);
+		edit_releasePoint.setVisibility(View.GONE);
+		edit_help.setVisibility(View.GONE);
+
+		delete_cancel.setVisibility(View.GONE);
+		delete_help.setVisibility(View.GONE);
+		
+		myImage.setOnTouchListener(new View.OnTouchListener() {
+		//just erasing previous listeners 	
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return false;
+			}
+		});
+		zone.setZone(new Zone());
+		selected.set(new PointF(0,0));
+		drawzoneview.setIntersections(new Vector<PointF>());
+		myImage.invalidate();
 	}
 	
 	/** Declarations for create zone **/
@@ -131,101 +198,60 @@ public class ZoneFragment extends Fragment{
 
         @Override
         public void onClick(View v) {
-            create.setVisibility(View.GONE);
-            edit.setVisibility(View.GONE);
-            delete.setVisibility(View.GONE);
+            enterAction();
+            drawzoneview.onCreateMode();
 
     		create_back.setVisibility(View.VISIBLE);
     		create_help.setVisibility(View.VISIBLE);
     		create_cancel.setVisibility(View.VISIBLE);
     		create_validate.setVisibility(View.VISIBLE);
+            create_edit.setVisibility(View.VISIBLE);
     		
-    		//Log.d("UrbApp","Créer zone");
-    		zone = new Zone();
-    		//setContentView(R.layout.layout_zone_create);
-    		
-    		//TODO mettre par défaut dans le layout ?
     		getView().findViewById(R.id.zone_create_button_validate).setEnabled(false);
     		getView().findViewById(R.id.zone_create_button_back).setEnabled(false);
     		
-    		//Image drawing plus its zones
-    		myImage = (ImageView) getView().findViewById(R.id.image_zone);
-
-    		/** ATTENTION ATTENTION !!!
-    		 *  PLACER UN FICHIER Images.jpeg dans le Download de l'appareil
-    		 */
-    		String youFilePath = Environment.getExternalStorageDirectory().toString()+"/Download/Images.jpeg";
-    		photo=new File(youFilePath);
-    	
-    		Drawable[] drawables = {
-    			new BitmapDrawable(
-    				getResources(),
-    				BitmapLoader.decodeSampledBitmapFromFile(
-    					photo.getAbsolutePath(), 1000, 1000)), 
-    				new DrawZoneView(zones, zone) };
-    		//TODO Problem for the displaying of the image
-    		myImage.setImageDrawable(new LayerDrawable(drawables));
-    		
-    		//Button back action
-    		//TODO implémenter la même chose avec le back générique Android
-    		myImage.setOnTouchListener(imageTouchListener);
+    		myImage.setOnTouchListener(imageCreateTouchListener);
         }
 	};
     private OnClickListener createBackListener = new View.OnClickListener() {
     	@Override
 		public void onClick(View v) {
 			zone.getPoints().remove(zone.getPoints().lastElement());
-			refreshCreate(zone);
+			refreshCreate();
 		}
     };
     private OnClickListener createValidateListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			zones.add(zone);
-            create.setVisibility(View.VISIBLE);
-            edit.setVisibility(View.VISIBLE);
-            delete.setVisibility(View.VISIBLE);
-
-    		create_back.setVisibility(View.GONE);
-    		create_help.setVisibility(View.GONE);
-    		create_cancel.setVisibility(View.GONE);
-    		create_validate.setVisibility(View.GONE);
+			zones.add(new Zone(zone));
+			exitAction();
 		}
 	};
 	private OnClickListener createCancelListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-            create.setVisibility(View.VISIBLE);
-            edit.setVisibility(View.VISIBLE);
-            delete.setVisibility(View.VISIBLE);
-
-    		create_back.setVisibility(View.GONE);
-    		create_help.setVisibility(View.GONE);
-    		create_cancel.setVisibility(View.GONE);
-    		create_validate.setVisibility(View.GONE);
+			exitAction();
 		}
 	};
-	private OnTouchListener imageTouchListener = new ImageView.OnTouchListener() {
+	private OnTouchListener imageCreateTouchListener = new ImageView.OnTouchListener() {
 		protected Matrix matrix;
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				Log.d("UrbApp","Avant x:"+event.getX()+";y:"+event.getY());
 				float[] coord = {event.getX(),event.getY()};//get touched point coord
 				if (matrix == null) {//create matrix that transforms point coord into image base 
 					matrix = new Matrix();
 					((ImageView) getView().findViewById(R.id.image_zone)).getImageMatrix().invert(matrix);
-					Log.d("Matrix",matrix.toString());
+					
 				}
 				matrix.mapPoints(coord);//apply matrix transformation on points coord
-				Log.d("UrbApp","Après x:"+coord[0]+";y:"+coord[1]);
 				zone.addPoint(new PointF(coord[0],coord[1]));
-				refreshCreate(zone);//display new point, refresh buttons' availabilities					
+				refreshCreate();//display new point, refresh buttons' availabilities					
 			}
 			return true;
 		}
 	};
-    public void refreshCreate(Zone zone){
+    public void refreshCreate(){
 		Vector<PointF> points = zone.getPoints();
 		if(! points.isEmpty()){
 			getView().findViewById(R.id.zone_create_button_back).setEnabled(false);
@@ -234,21 +260,48 @@ public class ZoneFragment extends Fragment{
 				getView().findViewById(R.id.zone_create_button_back).setEnabled(true);
 				if(points.size()>2){
 					getView().findViewById(R.id.zone_create_button_validate).setEnabled(true);
+					if(points.size()>3){
+						Vector<PointF> intersections = new Vector<PointF>(zone.isSelfIntersecting());
+						if(!intersections.isEmpty()){
+							//Log.d("Intersection","true");
+							getView().findViewById(R.id.zone_create_button_validate).setEnabled(false);
+							
+						}else{
+							//Log.d("Intersection","false");
+						}
+						drawzoneview.setIntersections(intersections);
+					}
+				}
+			}
+		}
+		myImage.invalidate();
+	}
+    public void refreshEdit(){
+		Vector<PointF> points = zone.getPoints();
+		if(points.size()<3){
+			getView().findViewById(R.id.zone_edit_button_validate).setEnabled(false);
+		}
+		else{
+			if(points.size()>2){
+				getView().findViewById(R.id.zone_edit_button_validate).setEnabled(true);
+				if(points.size()>3){
+					Vector<PointF> intersections = new Vector<PointF>(zone.isSelfIntersecting());
+					if(!intersections.isEmpty()){
+						getView().findViewById(R.id.zone_edit_button_validate).setEnabled(false);
+					}
+					drawzoneview.setIntersections(intersections);
 				}
 			}
 		}
 		myImage.invalidate();
 	}
     
-    
     /***** zone edition main *****/
     private OnClickListener editListener = new View.OnClickListener(){
     	@Override
         public void onClick(View v) {
-    		
-            create.setVisibility(View.GONE);
-            edit.setVisibility(View.GONE);
-            delete.setVisibility(View.GONE);
+    		enterAction();
+            drawzoneview.onEditMode();
 
     		edit_cancel.setVisibility(View.VISIBLE);
     		edit_validate.setVisibility(View.VISIBLE);
@@ -256,31 +309,9 @@ public class ZoneFragment extends Fragment{
     		edit_releasePoint.setVisibility(View.VISIBLE);
     		edit_help.setVisibility(View.VISIBLE);
             
-    		Log.d("UrbApp","Créer zone");
-    		zone = new Zone();
-    		selected = new PointF();
-    		//setContentView(R.layout.layout_zone_edit);
-    		
-    		//TODO inclure par défaut dans le layout ?
     		getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(false);
     		getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(false);
-    		
-    		//display image plus its zones
-    		//TODO synergie affichages !
-    		myImage = (ImageView) getView().findViewById(R.id.image_zone);
 
-    		String youFilePath = Environment.getExternalStorageDirectory().toString()+"/Download/Images.jpeg";
-    		photo=new File(youFilePath);
-    	
-    		Drawable[] drawables = {
-    			new BitmapDrawable(
-    				getResources(),
-    				BitmapLoader.decodeSampledBitmapFromFile(
-    					photo.getAbsolutePath(), 1000, 1000)), 
-    				new DrawZoneView(zones, zone, selected) };
-    		myImage.setImageDrawable(new LayerDrawable(drawables));
-    			
-    		//image touched
     		myImage.setOnTouchListener(imageEditTouchListener); 
     	}
     };
@@ -290,25 +321,25 @@ public class ZoneFragment extends Fragment{
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				Log.d("UrbApp","Avant x:"+event.getX()+";y:"+event.getY());
 				float[] coord = {event.getX(),event.getY()};//get touched point coord
 				//TODO synergie création matrice, récupération de coordonnées !
 				if (matrix == null) {
 					matrix = new Matrix();
 					((ImageView) getView().findViewById(R.id.image_zone)).getImageMatrix()
 							.invert(matrix);
-					Log.d("Matrix",matrix.toString());
 				}
 				matrix.mapPoints(coord);
 				Log.d("UrbApp","Après x:"+coord[0]+";y:"+coord[1]);
 				PointF touch = new PointF(coord[0],coord[1]);
 				
-				//If no zone has been selected, try to select one
+				//If no zone has been selected yet, try to select one
 				if(zone.getPoints().isEmpty()){
 					for(Zone test : zones){
 						if(test.containPointF(touch)){
+							zoneCache = test;
 							zone.setZone(test);
-							zoneToDelete = test;
+							zones.remove(test);//zone.setZone(test);
+							
 						}
 					}
 				}
@@ -317,6 +348,7 @@ public class ZoneFragment extends Fragment{
 					if(selected.x != 0 && selected.y != 0){
 						if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
 							zone.updateMiddle(selected, touch);	//If not it's a "middle" point, and it's upgraded to normal
+							//TODO transfer to zone
 						}
 						selected.set(0, 0);//No selected point anymore
 						//Disable point delete or release actions 
@@ -348,8 +380,8 @@ public class ZoneFragment extends Fragment{
 						}
 					}							
 				}
-				myImage.invalidate();//refresh points' displaying
-				
+				//myImage.invalidate();//refresh points' displaying
+				refreshEdit();
 			}
 			return true;
 		}
@@ -357,33 +389,16 @@ public class ZoneFragment extends Fragment{
 	private OnClickListener editValidateListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			zones.remove(zoneToDelete);//delete original  
-			zones.add(zone);//save edited
-			
-            create.setVisibility(View.VISIBLE);
-            edit.setVisibility(View.VISIBLE);
-            delete.setVisibility(View.VISIBLE);
-			
-			edit_cancel.setVisibility(View.GONE);
-			edit_validate.setVisibility(View.GONE);
-			edit_deletePoint.setVisibility(View.GONE);
-			edit_releasePoint.setVisibility(View.GONE);
-			edit_help.setVisibility(View.GONE);
+			//zones.remove(zoneCache);//delete original 
+			zones.add(new Zone(zone));//save edited
+			exitAction();
 		}
 	};
 	private OnClickListener editCancelListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-
-            create.setVisibility(View.VISIBLE);
-            edit.setVisibility(View.VISIBLE);
-            delete.setVisibility(View.VISIBLE);
-			
-			edit_cancel.setVisibility(View.GONE);
-			edit_validate.setVisibility(View.GONE);
-			edit_deletePoint.setVisibility(View.GONE);
-			edit_releasePoint.setVisibility(View.GONE);
-			edit_help.setVisibility(View.GONE);
+			zones.add(new Zone(zoneCache));//save original
+            exitAction();
 		}
 	};
 	private OnClickListener editDeletePointListener = new View.OnClickListener() {			
@@ -406,33 +421,15 @@ public class ZoneFragment extends Fragment{
 		}
 	};
 	
-	
+	/**** deletion part *****/
 	private OnClickListener deleteListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			Log.d("UrbApp","Créer zone");
-			final Zone zone = new Zone();
-			final PointF selected = new PointF();
-			
-            create.setVisibility(View.GONE);
-            edit.setVisibility(View.GONE);
-            delete.setVisibility(View.GONE);
+			enterAction();
 
     		delete_cancel.setVisibility(View.VISIBLE);
     		delete_help.setVisibility(View.VISIBLE);
 			
-			myImage = (ImageView) getView().findViewById(R.id.image_zone);
-
-			String youFilePath = Environment.getExternalStorageDirectory().toString()+"/Download/Images.jpeg";
-			photo=new File(youFilePath);
-		
-			Drawable[] drawables = {
-				new BitmapDrawable(
-					getResources(),
-					BitmapLoader.decodeSampledBitmapFromFile(
-						photo.getAbsolutePath(), 1000, 1000)), 
-					new DrawZoneView(zones, zone, selected) };
-			myImage.setImageDrawable(new LayerDrawable(drawables));
 			myImage.setOnTouchListener(deleteImageTouchListener);
 		}
 	};
@@ -442,32 +439,23 @@ public class ZoneFragment extends Fragment{
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				Log.d("UrbApp","Avant x:"+event.getX()+";y:"+event.getY());
 				float[] coord = {event.getX(),event.getY()};
 				if (matrix == null) {
 					matrix = new Matrix();
 					((ImageView) getView().findViewById(R.id.image_zone)).getImageMatrix()
 							.invert(matrix);
-					Log.d("Matrix",matrix.toString());
 				}
 				matrix.mapPoints(coord);
-				Log.d("UrbApp","Après x:"+coord[0]+";y:"+coord[1]);
 				PointF touch = new PointF(coord[0],coord[1]);
 				if(zone.getPoints().isEmpty()){
 					for(Zone test : zones){
 						if(test.containPointF(touch)){
-							zoneToDelete = test;
+							zoneCache = test;
 						}
 					}
-					if(zoneToDelete != null){
-						zones.remove(zoneToDelete);
-						
-			            create.setVisibility(View.VISIBLE);
-			            edit.setVisibility(View.VISIBLE);
-			            delete.setVisibility(View.VISIBLE);
-
-			    		delete_cancel.setVisibility(View.GONE);
-			    		delete_help.setVisibility(View.GONE);
+					if(zoneCache != null){
+						zones.remove(zoneCache);						
+			            exitAction();
 					}
 				}
 			}
@@ -477,33 +465,9 @@ public class ZoneFragment extends Fragment{
 	private OnClickListener deleteCancelListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-            create.setVisibility(View.VISIBLE);
-            edit.setVisibility(View.VISIBLE);
-            delete.setVisibility(View.VISIBLE);
-
-    		delete_cancel.setVisibility(View.GONE);
-    		delete_help.setVisibility(View.GONE);
+            exitAction();
 		}
 	};
 	
-	/*create actions*//*
-	public void zone_create_button_back (View view){//appelée par le xml onclick
-		Log.d("UrbApp","Annuler action");
-	}
-	public void zone_create_button_cancel (View view){//appelée par le xml onclick
-		Log.d("UrbApp","Annuler création");
-		setContentView(R.layout.layout_zone);
-	}
-	public void zone_create_button_validate (View view){//appelée par le xml onclick
-		Log.d("UrbApp","Valider");
-	}
-	public void zone_create_button_help (View view){//appelée par le xml onclick
-		Log.d("UrbApp","Help !");
-	}*/
-	
-	public boolean intersect(PointF a, PointF b, PointF c, PointF d){
-		//TODO check polygon intersections
-		//voir JTS
-		return false;
-	}
+
 }
