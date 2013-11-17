@@ -32,6 +32,7 @@
     <string name="definition_define">Définir</string>
     <string name="definition_delete">Supprimer</string>
     <string name="definition_recap">Récapitulatif</string>
+    <string name="definition_select_text">Cliquer sur les zones à sélectionner.</string>
     
     <string name="info_text_author">Auteur :</string>
     <string name="info_text_deviceName">Nom de l\'appareil :</string>
@@ -48,4 +49,16 @@
     <string name="save_textStatus">None</string>
     <string name="save_buttonSync">Synchroniser</string>
     
+    <string name="type">Type</string>
+    <string name="materials">Matériaux</string>
+    <string name="color">Couleur</string>
+    <string name="not_defined">Pas défini</string>
+    <string name="definition_dialog_title">Choix des caractéristiques des zones sélectionnées</string>
+    <string name="definition_dialog_type">Type de la zone :</string>
+    <string name="definition_dialog_material">Matériau de la zone :</string>
+    <string name="definition_dialog_color">Couleur de la zone :</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
+    <string name="information_about_frontage">Informations sur cette zone</string>
+
 </resources>
