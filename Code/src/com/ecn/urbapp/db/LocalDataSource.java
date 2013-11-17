@@ -66,6 +66,8 @@ public class LocalDataSource {
 		return newProject;
 	}
 	
+
+	
 	//surcharge
 	public Project createProject (long id, String str){
         Boolean exist = existProjectWithId(id);
@@ -129,10 +131,27 @@ public class LocalDataSource {
 		database.delete(MySQLiteHelper.TABLE_PROJECT, MySQLiteHelper.COLUMN_PROJECTID+" = "+ id, null);
 	}
 	
+	/**
+	 * query to get project information
+	 * 
+	 */
+	private static final String
+		GETALLPROJECTS = 
+			"SELECT * FROM "
+			+ MySQLiteHelper.TABLE_PROJECT 
+			+ " INNER JOIN " + MySQLiteHelper.TABLE_GPSGEOM 
+			+" ON "+MySQLiteHelper.TABLE_PROJECT+"."+MySQLiteHelper.COLUMN_GPSGEOMID+"="+MySQLiteHelper.TABLE_GPSGEOM+"."+MySQLiteHelper.COLUMN_GPSGEOMID
+			+";"
+		;
+	
+	/**
+	 * execution of the query
+	 * @return
+	 */
 	public List<Project> getAllProjects(){
 		List<Project> projectsList = new ArrayList<Project>();
 		
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_PROJECT, allColumnsProject, null, null, null, null, null);
+		Cursor cursor = database.rawQuery(GETALLPROJECTS,null);
 		
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast()){
@@ -149,7 +168,47 @@ public class LocalDataSource {
     Project p1 = new Project();
     p1.setProjectId(cursor.getLong(0));
     p1.setProjectName(cursor.getString(1));
+    p1.setGpsGeom_id(cursor.getLong(2));
+    p1.setExt_GpsGeomCoord(cursor.getString(4));
     return p1;
 	
   }
+  
+  
+  
+	/**
+	 * creating a new gpsgeom in the database
+	 * @param str
+	 * @return
+	 */
+	public GpsGeom createGPSGeom (String str, long id){
+		ContentValues values = new ContentValues(); 
+		values.put(MySQLiteHelper.COLUMN_GPSGEOMCOORD, str);
+		long insertId = database.insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);
+		//TODO check the utily of autoincrement
+		Cursor cursor = 
+				database.query(
+						MySQLiteHelper.TABLE_GPSGEOM,
+						allColumnsGpsGeom,
+						MySQLiteHelper.COLUMN_GPSGEOMID+" = "+insertId,
+						null, null, null, null);
+		cursor.moveToFirst();
+		GpsGeom newGpsGeom = cursorToGpsGeom(cursor);//method at the end of the class
+		cursor.close();
+		//TODO TRANSACTION
+		 ContentValues args = new ContentValues();
+		 args.put(MySQLiteHelper.COLUMN_GPSGEOMID, newGpsGeom.getGpsGeomsId());
+		 int d = database.update(MySQLiteHelper.TABLE_PROJECT, args, MySQLiteHelper.COLUMN_PROJECTID +"=" + id, null);
+		
+		return newGpsGeom;
+	}
+  
+	
+  private GpsGeom cursorToGpsGeom(Cursor cursor) {
+	    GpsGeom p1 = new GpsGeom();
+	    p1.setGpsGeomId(cursor.getLong(0));
+	    p1.setGpsGeomCoord(cursor.getString(1));
+	    return p1;
+		
+	  }
 }

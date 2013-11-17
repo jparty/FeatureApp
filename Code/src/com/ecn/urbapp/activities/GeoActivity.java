@@ -89,14 +89,19 @@ OnClickListener{
         private LocationClient mLocationClient = null;
         
         /**
-         * define if we search for photo localisation or current position
-         */
-        private Boolean needCurrentPos = true;
-        
-        /**
          * number of markers to display (4 for a zone, 2 for a facade)
          */
         private int nbPoints=4;
+        
+        /**
+         * Centrale Nantes GPS centered
+         */
+        private LatLng defaultPos=new LatLng(47.249069, -1.54820);
+        
+        /**
+         * For the localisation of tablets
+         */
+        private Boolean needCurrentPos;
         
     /**
 * Global constants
@@ -247,14 +252,14 @@ OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_geo);
-        
-        LatLng latLng=null;
-        
+        needCurrentPos=true;
         // Get a handle to the Map Fragment
         map = ((MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map)).getMap();
-        
-        latLng = new LatLng(47.249069, -1.54820);
+        geoActivityInit(true, defaultPos, map);
+    }
+    
+    public void geoActivityInit(Boolean needCurrentPos, LatLng pos, GoogleMap map){
         
         if (needCurrentPos) {
          /*
@@ -267,7 +272,7 @@ OnClickListener{
                 
         if (servicesConnected()){ //check
         map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15));
         
         satellite = (Button)findViewById(R.id.satellite);
         plan = (Button)findViewById(R.id.plan);

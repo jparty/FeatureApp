@@ -1,42 +1,56 @@
 package com.ecn.urbapp.activities;
 
 import java.util.List;
-import java.util.Random;
 
+import android.app.Activity;
 import android.app.ListActivity;
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.LocalDataSource;
-import com.ecn.urbapp.db.MySQLiteHelper;
 import com.ecn.urbapp.db.Project;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
-public class LoadLocalProjectsActivity extends ListActivity {
+public class LoadLocalProjectsActivity extends Activity {
 
-	//creating datasource
+	/**
+	 * creating datasource
+	 */
 	private LocalDataSource datasource;
-	
-	//creating buttons for the TEST
-	Button add = null;
-	Button delete = null;
-	
+	/**
+	 * Contains all the projects attributes
+	 */
+	private List<Project> refreshedValues;
+	/**
+	 * displayable project list
+	 */
+	private ListView listeProjects = null;	
+    /**
+     * The google map object
+     */
+    private GoogleMap map = null;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_loadlocaldb);
-        
         datasource=MainActivity.datasource;
         datasource.open();
+        
+        map = ((MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map)).getMap();
+        
+        listeProjects = (ListView) findViewById(R.id.listView);
         refreshList();
-        
-        
+        listeProjects.setOnItemClickListener(selectedProject);
     }
     
     protected void onClose() {      
@@ -61,10 +75,26 @@ public class LoadLocalProjectsActivity extends ListActivity {
      */
     public void refreshList(){      
     	
-    	List<Project> values = recupProject();
+    	refreshedValues = recupProject();
     	
-        ArrayAdapter<Project> adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_expandable_list_item_1,values);
-        setListAdapter(adapter);  
+        ArrayAdapter<Project> adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_list_item_1, refreshedValues);
+        listeProjects.setAdapter(adapter);
+        
    }
+    /**
+     *  get the project selected in listview and show its position on the map 
+     */
     
+    public OnItemClickListener selectedProject = new OnItemClickListener()
+    {
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View v, int position,
+				long id) {
+			String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
+			LatLng coordProjet = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
+			//GeoActivity.init();
+    		Toast.makeText(getApplicationContext(), coordProjet.toString(), Toast.LENGTH_LONG).show();                  
+			
+		}
+    };
 }

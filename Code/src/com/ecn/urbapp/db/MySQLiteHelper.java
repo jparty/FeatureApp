@@ -195,6 +195,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			database.execSQL(getDatabaseCreate8());
 		}
 
+		
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.w(MySQLiteHelper.class.getName(), 
