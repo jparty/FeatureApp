@@ -51,7 +51,7 @@ public class MainActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LinearLayout layout = null;
-        layout = (LinearLayout) LinearLayout.inflate(this, R.layout.activity_main, null);
+        layout = (LinearLayout) LinearLayout.inflate(this, R.layout.layout_loadlocaldb, null);
         setContentView(layout);
         
         //Link to id the Widget for updating database in local
@@ -68,8 +68,7 @@ public class MainActivity extends ListActivity {
 	    
         datasource = new LocalDataSource(this);
         datasource.open();
-        String test = ((MySQLiteHelper)datasource.getDbHelper()).getDatabaseCreate();
-        Log.w("test1","debug");
+
         List<Project> values = recupProject();
         
         //use the SimpleCursorAdapter to show the elements in a ListView

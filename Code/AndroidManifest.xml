@@ -36,6 +36,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.GeoActivity"></activity>
+        <activity android:name=".activities.LoadLocalProjectsActivity"></activity>
+        <activity android:name=".activities.Test"></activity>
         <meta-data
          android:name="com.google.android.maps.v2.API_KEY"
          android:value="AIzaSyA08kqR5o9DKZDohLB9DgPpgTI3ZLhwWnw"/>
