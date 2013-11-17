@@ -64,6 +64,14 @@ public class MainActivity extends Activity {
 	 */
 	public static LocalDataSource datasource;
 	
+	/**
+	 * Attributs for the project information
+	 */
+
+	public static String author = "";
+	public static String device = "";
+	public static String project = "";
+	public static String address = "";
 	
 	
 	@Override
