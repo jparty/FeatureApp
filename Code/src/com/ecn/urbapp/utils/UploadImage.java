@@ -60,7 +60,7 @@ public class UploadImage extends Activity {
 	{
 	    super.onStart();
 
-	    registerButtonCallbacks();
+	    //registerButtonCallbacks();
 	}
 	
 	/**
@@ -77,6 +77,7 @@ public class UploadImage extends Activity {
 	    mConfirm = (Button) findViewById(R.id.upload_send_confirm);
 	    mCancel = (Button) findViewById(R.id.upload_send_cancel);
 	    setResult(RESULT_CANCELED);
+	    
 	    Bundle b = getIntent().getExtras();
 	    String imageToUploadUrl = b.getString("imageUrl");
 	    mImage = new File(imageToUploadUrl);

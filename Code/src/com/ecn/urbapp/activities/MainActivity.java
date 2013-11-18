@@ -1,11 +1,24 @@
 package com.ecn.urbapp.activities;
 
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -16,6 +29,7 @@ import com.ecn.urbapp.fragments.InformationFragment;
 import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
+import com.ecn.urbapp.utils.ConnexionCheck;
 
 /**
  * @author	COHENDET Sébastien
@@ -44,12 +58,20 @@ public class MainActivity extends Activity {
 	 */
     public static Context baseContext;
 
+	private static Builder alertDialog;
+    
+    public static final String CONNECTIVITY_URL="http://clients3.google.com/generate_204";
+    
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		//Setting the Context of app
 		baseContext = getBaseContext();
+		
+		alertDialog = new AlertDialog.Builder(MainActivity.this);
+		isInternetOn();
 		
 		//Setting the Activity bar
 		bar = getActionBar();
@@ -108,5 +130,29 @@ public class MainActivity extends Activity {
 		inflater.inflate(R.menu.menu_main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
+	
+	public final void isInternetOn() {
 
+		ConnectivityManager con=(ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
+        boolean wifi=con.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnectedOrConnecting();
+        boolean mobile = false;
+        
+        try {
+         mobile=con.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
+        }
+        catch (NullPointerException e){
+        	mobile=false;
+        }
+        boolean internet=wifi|mobile;
+        if (internet)
+        	 new ConnexionCheck().Connectivity();
+        	
+
+	}
+
+	public static void errorConnect() {
+		alertDialog.setTitle("Pas de connexion internet de disponible. Relancer l'application, une fois internet fonctionnel");
+		alertDialog.show();		
+	}
+	
 }
