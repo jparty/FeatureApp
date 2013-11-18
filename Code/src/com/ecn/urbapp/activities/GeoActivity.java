@@ -463,7 +463,7 @@ OnClickListener{
          Toast.makeText(MainActivity.baseContext, "Position ok", Toast.LENGTH_LONG).show();
         }
         else {
-                final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+                final LocationManager manager = (LocationManager) getSystemService( MainActivity.baseContext.LOCATION_SERVICE );
 
             if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
                 buildAlertMessageNoGps();
