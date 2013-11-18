@@ -1,6 +1,7 @@
 package com.ecn.urbapp.fragments;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -51,6 +52,8 @@ public class HomeFragment extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_home, null);
+		Intent i = getActivity().getIntent();
+		
 		downloadImage = (Button) v.findViewById(R.id.home_loadDistantlProject);
 		downloadImage.setOnClickListener(getImage);
 		uploadImageButton = (Button) v.findViewById(R.id.home_loadPicture);
@@ -63,7 +66,7 @@ public class HomeFragment extends Fragment{
         
         @Override
         public void onClick(View v) {
-        	imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "loutre.png");
+        	imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "loutre1.png");
         }
     };
 
@@ -72,8 +75,12 @@ public class HomeFragment extends Fragment{
         @Override
         public void onClick(View v) {
         	image.buildDrawingCache();
+        	
         	Bitmap bmap = image.getDrawingCache();
-        	UploadImage envoi = new UploadImage(imageStoredUrl);
+        	Intent i = new Intent(getActivity(), UploadImage.class);
+			i.putExtra("imageUrl", imageStoredUrl);
+			
+			startActivity(i);
         }
     };
 }

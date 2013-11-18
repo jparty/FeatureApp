@@ -51,6 +51,10 @@ public class UploadImage extends Activity {
 		mImage = new File(imageToUploadUrl);
 		new UploadImageTask().execute(mImage);
 	}
+	
+	public UploadImage() {
+		super();
+	}
 
 	public void onStart()
 	{
@@ -70,7 +74,13 @@ public class UploadImage extends Activity {
 	    requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	    setContentView(R.layout.layout_upload);
 
+	    mConfirm = (Button) findViewById(R.id.upload_send_confirm);
+	    mCancel = (Button) findViewById(R.id.upload_send_cancel);
 	    setResult(RESULT_CANCELED);
+	    Bundle b = getIntent().getExtras();
+	    String imageToUploadUrl = b.getString("imageUrl");
+	    mImage = new File(imageToUploadUrl);
+		new UploadImageTask().execute(mImage);
 
 	}
 
@@ -168,7 +178,7 @@ public class UploadImage extends Activity {
 	class UploadImageTask extends AsyncTask<File, Integer, Boolean> {
 
 	    /** Upload file to this url */
-	    private static final String UPLOAD_URL = "http://192.168.34.1/index.php";
+	    private static final String UPLOAD_URL = "http://192.168.177.1//index.php";
 
 	    /** Send the file with this form name */
 	    private static final String FIELD_FILE = "file";
@@ -180,10 +190,10 @@ public class UploadImage extends Activity {
 	    @Override
 	    protected void onPreExecute() {
 	        super.onPreExecute();
-	       // setProgressBarIndeterminateVisibility(true);
-	        //mConfirm.setEnabled(false);
-	        //mCancel.setEnabled(false);
-	        //showDialog(UPLOAD_PROGRESS_DIALOG);
+	        setProgressBarIndeterminateVisibility(true);
+	        mConfirm.setEnabled(false);
+	        mCancel.setEnabled(false);
+	        showDialog(UPLOAD_PROGRESS_DIALOG);
 	    }
 
 	    /**
@@ -192,15 +202,15 @@ public class UploadImage extends Activity {
 	    @Override
 	    protected void onPostExecute(Boolean result) {
 	        super.onPostExecute(result);
-	        //setProgressBarIndeterminateVisibility(false);
-	       // mConfirm.setEnabled(true);
-	       // mDialog.dismiss();
+	        setProgressBarIndeterminateVisibility(false);
+	        mConfirm.setEnabled(true);
+	        mDialog.dismiss();
 
 	        if (result) {
-	            //showDialog(UPLOAD_SUCCESS_DIALOG);
+	            showDialog(UPLOAD_SUCCESS_DIALOG);
 	        	Log.w("DFHUPLOAD", "Bim, c'est bon ça");
 	        } else {
-	            //showDialog(UPLOAD_ERROR_DIALOG);
+	            showDialog(UPLOAD_ERROR_DIALOG);
 	        	Log.e("DFHUPLOAD","Error fuck it");
 	        }
 	    }
@@ -215,10 +225,10 @@ public class UploadImage extends Activity {
 	        super.onProgressUpdate(values);
 
 	        if (values[0] == 0) {
-	           // mDialog.setTitle(getString(R.string.progress_dialog_title_uploading));
+	            mDialog.setTitle(getString(R.string.progress_dialog_title_uploading));
 	        }
 
-	       // mDialog.setProgress(values[0]);
+	        mDialog.setProgress(values[0]);
 	    }
 
 
