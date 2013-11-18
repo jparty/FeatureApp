@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.MySQLiteHelper;
 import com.ecn.urbapp.db.Project;
@@ -79,12 +80,24 @@ public class Test extends ListActivity {
     private OnClickListener clickListenerBoutonsAdd = new OnClickListener(){
     	public void onClick(View view){
     		ArrayAdapter<Project> adapter = (ArrayAdapter<Project>) getListAdapter();
-    		Project Project = null;
+    		
+    		Project p1 = null;
     			String[] Projects = new String[] {"Cool", "Very nice", "Hate it"};
     			int nextInt = new Random().nextInt(3);
+    			
+    		GpsGeom gps1=null;
+    			String[] coord = { new String("47.249069//-1.54820"),new String("50.249069//-8.54820"),new String("20.249069//41.54820")} ;
+  
     			//save the new Project to database
-    			Project = datasource.createProject(Projects[nextInt]);
-    			adapter.add(Project);
+    			p1 = datasource.createProject(Projects[nextInt]);
+    			//save the gpsgeom to database & project
+    				//TODO CREATE A TRANSACTION THE SQL
+    			
+    			gps1 = datasource.createGPSGeom(coord[(int) (Math.random()*3)],p1.getProjectId());
+    			//updating p1 attributes
+    			p1.setGpsGeom_id(gps1.getGpsGeomsId());
+    			
+    			adapter.add(p1);
     			adapter.notifyDataSetChanged();
     	};
     };
