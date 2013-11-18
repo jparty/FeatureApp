@@ -254,33 +254,36 @@ OnClickListener{
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_geo);
-        needCurrentPos=true;
-        
-        satellite = (Button)findViewById(R.id.satellite);
-        plan = (Button)findViewById(R.id.plan);
-        hybrid = (Button)findViewById(R.id.hybrid);
-        validate = (Button)findViewById(R.id.validate);
-        
-        //Listeners on switch button
-        satellite.setOnClickListener(toSatellite);
-        plan.setOnClickListener(toPlan);
-        hybrid.setOnClickListener(toHybrid);
-        validate.setOnClickListener(this);
-        
-      //for reverse adresses
-        mActivityIndicator =
-                (ProgressBar) findViewById(R.id.address_progress);
-        
-        // Get a handle to the Map Fragment
-        map = ((MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map)).getMap();
-        geoActivityInit(true, defaultPos, map);
-        
-        map.setOnMapClickListener(ajoutPoints);
-        map.setOnMarkerDragListener(markerDrag);
-    }
+    	super.onCreate(savedInstanceState);
+    	setContentView(R.layout.layout_geo);
+
+    	if (servicesConnected()){
+
+    		needCurrentPos=true;
+
+    		satellite = (Button)findViewById(R.id.satellite);
+    		plan = (Button)findViewById(R.id.plan);
+    		hybrid = (Button)findViewById(R.id.hybrid);
+    		validate = (Button)findViewById(R.id.validate);
+
+    		//Listeners on switch button
+    		satellite.setOnClickListener(toSatellite);
+    		plan.setOnClickListener(toPlan);
+    		hybrid.setOnClickListener(toHybrid);
+    		validate.setOnClickListener(this);
+
+    		//for reverse adresses
+    		mActivityIndicator =
+    				(ProgressBar) findViewById(R.id.address_progress);
+
+    		// Get a handle to the Map Fragment
+    		map = ((MapFragment) getFragmentManager()
+    				.findFragmentById(R.id.map)).getMap();
+    		geoActivityInit(true, defaultPos, map);
+
+    		map.setOnMapClickListener(ajoutPoints);
+    		map.setOnMarkerDragListener(markerDrag);
+    	}}
     
     /**
      * Constructor of GeoActivity (needed in case of extern implementation)
@@ -289,9 +292,11 @@ OnClickListener{
      * @param map
      */
     public GeoActivity(Boolean needCurrentPos, LatLng pos, GoogleMap map){
-    	this.map = map;
-    	this.needCurrentPos = needCurrentPos;
-    	geoActivityInit(needCurrentPos, pos, map);
+    	if (servicesConnected()){
+    		this.map = map;
+    		this.needCurrentPos = needCurrentPos;
+    		geoActivityInit(needCurrentPos, pos, map);
+    	}
     }
     
     public GeoActivity(){
@@ -305,30 +310,30 @@ OnClickListener{
      * @param map
      */
     public void geoActivityInit(Boolean needCurrentPos, LatLng pos, GoogleMap map){
-        
-        if (needCurrentPos) {
-         /*
-         * Create a new location client, using the enclosing class to
-         * handle callbacks.
-         */
-                
-         mLocationClient = new LocationClient(MainActivity.baseContext, this, this);
-         // Connect the client.
-         mLocationClient.connect();
-         
-        }
-                
-        if (servicesConnected()){ //check
-        map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15));
-        
+    	if (needCurrentPos) {
+    		/*
+    		 * Create a new location client, using the enclosing class to
+    		 * handle callbacks.
+    		 */
 
-        }
+    		mLocationClient = new LocationClient(MainActivity.baseContext, this, this);
+
+    		// Connect the client.
+    		//TODO check the threat order
+
+
+    	}
+
+    	//check
+    	map.setMyLocationEnabled(true);
+    	map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15));
     }
     
     @Override
 	protected void onStart() {
         super.onStart();
+        if (servicesConnected())
+        	mLocationClient.connect();
     }
    
     /**
