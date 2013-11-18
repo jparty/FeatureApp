@@ -37,6 +37,7 @@
         </activity>
         <activity android:name=".activities.GeoActivity"></activity>
         <activity android:name=".activities.LoadLocalProjectsActivity"></activity>
+        <activity android:name=".activities.LoadLocalPhotosActivity"></activity>
         <activity android:name=".activities.Test"></activity>
         <activity android:name=".activities.TestPhoto"></activity>
         <meta-data
