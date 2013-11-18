@@ -38,10 +38,13 @@
         <activity android:name=".activities.GeoActivity"></activity>
         <activity android:name=".activities.LoadLocalProjectsActivity"></activity>
         <activity android:name=".activities.Test"></activity>
+        <activity android:name=".activities.TestPhoto"></activity>
         <meta-data
          android:name="com.google.android.maps.v2.API_KEY"
          android:value="AIzaSyA08kqR5o9DKZDohLB9DgPpgTI3ZLhwWnw"/>
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+        <meta-data 
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

@@ -22,7 +22,7 @@ public class LocalDataSource {
 
 
 	private String[] allColumnsProject = {MySQLiteHelper.COLUMN_PROJECTID, MySQLiteHelper.COLUMN_PROJECTNAME, MySQLiteHelper.COLUMN_GPSGEOMID};
-	private String[] allColumnsPhoto = {MySQLiteHelper.COLUMN_PHOTOID, MySQLiteHelper.COLUMN_PHOTODESCRIPTION, MySQLiteHelper.COLUMN_PHOTOAUTHOR, MySQLiteHelper.COLUMN_GPSGEOMID};
+	private String[] allColumnsPhoto = {MySQLiteHelper.COLUMN_PHOTOID, MySQLiteHelper.COLUMN_PHOTODESCRIPTION, MySQLiteHelper.COLUMN_PHOTOAUTHOR, MySQLiteHelper.COLUMN_PHOTOURL, MySQLiteHelper.COLUMN_GPSGEOMID};
 	private String[] allColumnsGpsGeom = {MySQLiteHelper.COLUMN_GPSGEOMID, MySQLiteHelper.COLUMN_GPSGEOMCOORD};
 	private String[] allColumnsPixelGeom = {MySQLiteHelper.COLUMN_PIXELGEOMID, MySQLiteHelper.COLUMN_PIXELGEOMCOORD};
 	private String[] allColumnsMaterial = {MySQLiteHelper.COLUMN_MATERIALID, MySQLiteHelper.COLUMN_MATERIALNAME};
@@ -144,6 +144,20 @@ public class LocalDataSource {
 			+";"
 		;
 	
+	
+	/**
+	 * query to get photo informations
+	 * 
+	 */
+	private static final String
+		GETALLPHOTOS = 
+			"SELECT * FROM "
+			+ MySQLiteHelper.TABLE_PHOTO 
+			+ " INNER JOIN " + MySQLiteHelper.TABLE_GPSGEOM 
+			+" ON "+MySQLiteHelper.TABLE_PHOTO+"."+MySQLiteHelper.COLUMN_GPSGEOMID+"="+MySQLiteHelper.TABLE_GPSGEOM+"."+MySQLiteHelper.COLUMN_GPSGEOMID
+			+";"
+		;
+	
 	/**
 	 * execution of the query
 	 * @return
@@ -162,6 +176,9 @@ public class LocalDataSource {
 		cursor.close();
 		return projectsList;
 	}
+	
+	
+	
 
 
   private Project cursorToProject(Cursor cursor) {
@@ -178,14 +195,106 @@ public class LocalDataSource {
 	
   }
   
+  // PHOTO METHODS
+  
+	public List<Photo> getAllPhotos(){
+		List<Photo> photosList = new ArrayList<Photo>();
+		
+		Cursor cursor = database.rawQuery(GETALLPHOTOS,null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			Photo p1 = cursorToPhoto(cursor);
+			photosList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return photosList;
+	}
+	
+	public void deletePhoto(Photo p1){
+		long id = p1.getPhoto_id();
+		System.out.println("Photo deleted with id: "+ id);
+		database.delete(MySQLiteHelper.TABLE_PHOTO, MySQLiteHelper.COLUMN_PHOTOID+" = "+ id, null);
+	}
+  
+  public Photo createPhoto (String descr, String author, String url){
+		ContentValues values = new ContentValues(); 
+		values.put(MySQLiteHelper.COLUMN_PHOTODESCRIPTION, descr);
+		values.put(MySQLiteHelper.COLUMN_PHOTOAUTHOR, author);
+		values.put(MySQLiteHelper.COLUMN_PHOTOURL, url);
+		long insertId = database.insert(MySQLiteHelper.TABLE_PHOTO, null, values);
+		//TODO check the utily of autoincrement
+		Cursor cursor = 
+				database.query(
+						MySQLiteHelper.TABLE_PHOTO,
+						allColumnsPhoto,
+						MySQLiteHelper.COLUMN_PHOTOID+" = "+insertId,
+						null, null, null, null);
+		cursor.moveToFirst();
+		Photo newPhoto = cursorToPhoto(cursor);//method at the end of the class
+		cursor.close();
+		return newPhoto;
+  }
+  
+  private Photo cursorToPhoto(Cursor cursor) {
+	    Photo p1 = new Photo();
+	    p1.setPhoto_id(cursor.getLong(0));
+	    p1.setPhoto_description(cursor.getString(1));
+	    p1.setPhoto_author(cursor.getString(2)); 
+	    p1.setPhoto_url(cursor.getString(3)); 
+	    p1.setGps_Geom_id(cursor.getLong(4)); 
+	    //TODO créer 2 fonctions, une pour l'instanciation du projet, une pour la recopie des gpsgeom
+	    try{
+	    	p1.setExt_GpsGeomCoord(cursor.getString(6));
+	    }
+	    catch (Exception e){};
+	    return p1;
+		
+	  }
   
   
+  
+  // GPS GEOM METHODS
+		
 	/**
-	 * creating a new gpsgeom in the database
+	 * create a GPSGeom in the database and update the photo tuple where photo_id = id with this gpsgeom_id
+	 * @param str
+	 * @param id
+	 * @return
+	 */
+	public GpsGeom createGPSGeomToPhoto (String str, long id){
+		GpsGeom gps1 = createGPSGeom(str);
+		//TODO TRANSACTION
+		 ContentValues args = new ContentValues();
+		 args.put(MySQLiteHelper.COLUMN_GPSGEOMID, gps1.getGpsGeomsId());
+		 int d = database.update(MySQLiteHelper.TABLE_PHOTO, args, MySQLiteHelper.COLUMN_PHOTOID +"=" + id, null);
+		 
+		 return gps1;
+	}
+
+	  
+		/**
+		 * create a GPSGeom in the database and update the project tuple where project_id = id with this gpsgeom_id
+		 * @param str
+		 * @return
+		 */
+		public GpsGeom createGPSGeomToProject (String str, long id){
+			GpsGeom gps1 = createGPSGeom(str);
+			//TODO TRANSACTION
+			 ContentValues args = new ContentValues();
+			 args.put(MySQLiteHelper.COLUMN_GPSGEOMID, gps1.getGpsGeomsId());
+			 int d = database.update(MySQLiteHelper.TABLE_PROJECT, args, MySQLiteHelper.COLUMN_PROJECTID +"=" + id, null);
+			
+			return gps1;
+		}
+	
+	/**
+	 * create a GPSGeom with the gpsgeom_coord str
 	 * @param str
 	 * @return
 	 */
-	public GpsGeom createGPSGeom (String str, long id){
+	public GpsGeom createGPSGeom (String str){
 		ContentValues values = new ContentValues(); 
 		values.put(MySQLiteHelper.COLUMN_GPSGEOMCOORD, str);
 		long insertId = database.insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);
@@ -199,20 +308,20 @@ public class LocalDataSource {
 		cursor.moveToFirst();
 		GpsGeom newGpsGeom = cursorToGpsGeom(cursor);//method at the end of the class
 		cursor.close();
-		//TODO TRANSACTION
-		 ContentValues args = new ContentValues();
-		 args.put(MySQLiteHelper.COLUMN_GPSGEOMID, newGpsGeom.getGpsGeomsId());
-		 int d = database.update(MySQLiteHelper.TABLE_PROJECT, args, MySQLiteHelper.COLUMN_PROJECTID +"=" + id, null);
-		
 		return newGpsGeom;
 	}
-  
 	
-  private GpsGeom cursorToGpsGeom(Cursor cursor) {
-	    GpsGeom p1 = new GpsGeom();
-	    p1.setGpsGeomId(cursor.getLong(0));
-	    p1.setGpsGeomCoord(cursor.getString(1));
-	    return p1;
-		
-	  }
+	/**
+	 * convert the cursor to the object gpsGeom
+	 * @param cursor
+	 * @return
+	 */
+	  private GpsGeom cursorToGpsGeom(Cursor cursor) {
+		    GpsGeom p1 = new GpsGeom();
+		    p1.setGpsGeomId(cursor.getLong(0));
+		    p1.setGpsGeomCoord(cursor.getString(1));
+		    return p1;
+			
+		  }
+	
 }

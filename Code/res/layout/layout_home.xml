@@ -80,6 +80,14 @@
          android:layout_below="@+id/home_loadLocalProject"
          android:layout_alignParentLeft="true"
          android:text="test"/>
+         
+                  <Button
+         android:id="@+id/home_test_photo"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/home_test"
+         android:layout_alignParentLeft="true"
+         android:text="test photo"/>
             
         </RelativeLayout>
         

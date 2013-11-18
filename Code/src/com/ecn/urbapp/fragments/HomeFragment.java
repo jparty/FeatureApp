@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.LoadLocalProjectsActivity;
 import com.ecn.urbapp.activities.Test;
+import com.ecn.urbapp.activities.TestPhoto;
 
 /**
  * This is the fragment used to make the user choose between the differents type of project.
@@ -33,6 +34,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	 */
 	private Button loadLocal = null ;
 	private Button test = null ;
+	private Button testPhoto = null ;
 	
 	private Button downloadImage;
 	private ImageView image;
@@ -57,6 +59,9 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		test=(Button)v.findViewById(R.id.home_test);
 		test.setOnClickListener(this);
 		
+		testPhoto=(Button)v.findViewById(R.id.home_test_photo);
+		testPhoto.setOnClickListener(this);
+		
 		return v;
 		
 	}
@@ -72,6 +77,11 @@ public class HomeFragment extends Fragment implements OnClickListener{
 			
 		case R.id.home_test:
 			i = new Intent(this.getActivity(), Test.class);
+			startActivity(i);			
+			break;
+			
+		case R.id.home_test_photo:
+			i = new Intent(this.getActivity(), TestPhoto.class);
 			startActivity(i);			
 			break;
 

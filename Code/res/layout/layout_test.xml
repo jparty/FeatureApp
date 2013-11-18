@@ -15,11 +15,13 @@
             android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/add"
+                android:id="@+id/addProject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onClick"
-                android:text="Add New" />
+                android:text="Add New Project" />
+            
+
             
             <EditText 
 			    android:id="@+id/nameToAdd"
