@@ -127,8 +127,10 @@ public class ZoneFragment extends Fragment{
 		edit_deletePoint.setOnClickListener(editDeletePointListener);
 		edit_releasePoint.setOnClickListener(editReleasePointListener);
 
-		if(MainActivity.zones==null){
+		if (MainActivity.zones==null) {
 			zones = new Vector<Zone>();
+		} else {
+			zones = MainActivity.zones;
 		}
 		zone = new Zone(); selected = new Point(0,0); 
 		

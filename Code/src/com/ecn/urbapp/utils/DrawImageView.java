@@ -73,16 +73,16 @@ public class DrawImageView extends Drawable {
 	public void draw(Canvas canvas) {
 		// Paint for unfinished points
 		Paint unfinishedPaint = new Paint();
-		unfinishedPaint.setColor(Color.RED);
+		unfinishedPaint.setColor(Color.BLACK);
 		unfinishedPaint.setStyle(Paint.Style.STROKE);
 
 		// Paint for finished points
 		Paint finishedPaint = new Paint();
-		finishedPaint.setColor(Color.GREEN);
+		finishedPaint.setColor(Color.RED);
 		finishedPaint.setStyle(Paint.Style.STROKE);
 
 		Paint fillPaint = new Paint();
-		fillPaint.setColor(Color.GREEN);
+		fillPaint.setColor(Color.RED);
 		fillPaint.setStyle(Style.FILL);
 		fillPaint.setAlpha(50);
 
@@ -106,7 +106,7 @@ public class DrawImageView extends Drawable {
 										.get(i).points.get(j + 1).y,
 								finishedPaint);
 					}
-					finishedPaint.setColor(Color.GREEN);
+					finishedPaint.setColor(Color.RED);
 				} else {
 					// Add all the lines of the polygon
 					for (int j = 0; j < zones.getZones().get(i).points.size() - 1; j++) {
@@ -141,7 +141,7 @@ public class DrawImageView extends Drawable {
 				}
 				// Draw the polygon
 				canvas.drawPath(polyPath, fillPaint);
-				fillPaint.setColor(Color.GREEN);
+				fillPaint.setColor(Color.RED);
 				fillPaint.setAlpha(50);
 			}
 		}

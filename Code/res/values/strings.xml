@@ -64,11 +64,7 @@
     <string name="definition_dialog_material">Matériau de la zone :</string>
     <string name="definition_dialog_color">Couleur de la zone :</string>
     <string name="ok">OK</string>
-    <string name="cancel">Annuler</string>
     <string name="information_about_frontage">Informations sur cette zone</string>
-    <string name="type">Type</string>
-    <string name="materials">Matériaux</string>
-    <string name="color">Couleur</string>
     <string name="satellite">satellite</string>
     <string name="plan">plan</string>
     
