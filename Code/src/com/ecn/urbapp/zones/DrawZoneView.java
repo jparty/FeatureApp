@@ -161,7 +161,7 @@ public class DrawZoneView extends Drawable {
 			}
 		}
 		try{Log.d("Intersection",intersections.toString());}catch(Exception e){}
-		if(! intersections.isEmpty()){
+		if(intersections != null && !intersections.isEmpty()){
 			for(int i=0;i<intersections.size();i=i+2){
 				canvas.drawCircle(intersections.get(i).x, intersections.get(i).y, 2, paintIntersections);
 				canvas.drawLine(intersections.get(i).x, intersections.get(i).y, intersections.get(i+1).x, intersections.get(i+1).y, paintIntersections);

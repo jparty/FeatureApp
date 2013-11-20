@@ -40,12 +40,12 @@ public class Zone {
 		points = new Vector<Point>();
 		finished = false;
 		selected = false;
-		points = new Vector<Point>();
 		middles = new Vector<Point>();
 		color = Color.RED;
 	}
 	
 	public Zone(Zone zone){
+		this();
 		this.setZone(zone);
 	}
 	
@@ -174,7 +174,9 @@ public class Zone {
 	 */
 	public void addPoint(Point point) {
 		points.add(point);
-		points.add(point);
+		if (point.x == points.get(0).x && point.y == points.get(0).y) {
+			this.finished = true;
+		}
 	}
 	
 	public void setZone(Zone zone){

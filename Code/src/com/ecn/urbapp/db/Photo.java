@@ -6,6 +6,35 @@ public class Photo {
 	private long photo_id;
 	private String photo_description;
 	private String photo_author;
+	private String photo_url;
+	private long gpsGeom_id;
+	
+	public long getGpsGeom_id() {
+		return gpsGeom_id;
+	}
+
+	public void setGpsGeom_id(long gpsGeom_id) {
+		this.gpsGeom_id = gpsGeom_id;
+	}
+
+	private String Ext_GpsGeomCoord;
+	
+	public String getExt_GpsGeomCoord() {
+		return Ext_GpsGeomCoord;
+	}
+
+	public void setExt_GpsGeomCoord(String ext_GpsGeomCoord) {
+		Ext_GpsGeomCoord = ext_GpsGeomCoord;
+	}
+
+	public String getPhoto_url() {
+		return photo_url;
+	}
+
+	public void setPhoto_url(String photo_url) {
+		this.photo_url = photo_url;
+	}
+
 	private long gps_Geom_id;
 	
 	
@@ -45,6 +74,9 @@ public class Photo {
 	public String toString() {
 		return "Photo [photo_id=" + photo_id + ", photo_description="
 				+ photo_description + ", photo_author=" + photo_author
-				+ ", gps_Geom_id=" + gps_Geom_id + "]";
+				+ ", photo_url=" + photo_url + ", gps_Geom_id=" + gps_Geom_id +"&" + "  position =" + this.Ext_GpsGeomCoord
+				+ "]";
 	}
+
+
 }

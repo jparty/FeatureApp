@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 * Implements the Google Maps in a fragment.
 * User can select up to 2 or 4 points, linked by line.
 * Each point is georeferenced in GPS and a marker shows the real address.
+* Can be called from an other activity (so no more markers)
 *
 * @author Sébastien
 *
@@ -89,14 +90,19 @@ OnClickListener{
         private LocationClient mLocationClient = null;
         
         /**
-         * define if we search for photo localisation or current position
-         */
-        private Boolean needCurrentPos = true;
-        
-        /**
          * number of markers to display (4 for a zone, 2 for a facade)
          */
         private int nbPoints=4;
+        
+        /**
+         * Centrale Nantes GPS centered
+         */
+        public static final LatLng defaultPos=new LatLng(47.249069, -1.54820);
+        
+        /**
+         * For the localisation of tablets
+         */
+        private Boolean needCurrentPos;
         
     /**
 * Global constants
@@ -211,7 +217,7 @@ OnClickListener{
         // Check that Google Play services is available
         int resultCode =
                 GooglePlayServicesUtil.
-                        isGooglePlayServicesAvailable(this);
+                        isGooglePlayServicesAvailable(MainActivity.baseContext);
         // If Google Play services is available
         if (ConnectionResult.SUCCESS == resultCode) {
             // In debug mode, log the status
@@ -243,61 +249,91 @@ OnClickListener{
                 return false;
     }
 
+    /**
+     * For intern implementation
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_geo);
-        
-        LatLng latLng=null;
-        
-        // Get a handle to the Map Fragment
-        map = ((MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map)).getMap();
-        
-        latLng = new LatLng(47.249069, -1.54820);
-        
-        if (needCurrentPos) {
-         /*
-         * Create a new location client, using the enclosing class to
-         * handle callbacks.
-         */
-                
-         mLocationClient = new LocationClient(this, this, this);
-        }
-                
-        if (servicesConnected()){ //check
-        map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-        
-        satellite = (Button)findViewById(R.id.satellite);
-        plan = (Button)findViewById(R.id.plan);
-        hybrid = (Button)findViewById(R.id.hybrid);
-        validate = (Button)findViewById(R.id.validate);
-        
-        //Listeners on switch button
-        satellite.setOnClickListener(toSatellite);
-        plan.setOnClickListener(toPlan);
-        hybrid.setOnClickListener(toHybrid);
-        validate.setOnClickListener(this);
-        
-        
-        map.setOnMapClickListener(ajoutPoints);
-        
-        //for reverse adresses
-        mActivityIndicator =
-                (ProgressBar) findViewById(R.id.address_progress);
-        map.setOnMarkerDragListener(markerDrag);
-        
-        }
+    	super.onCreate(savedInstanceState);
+    	setContentView(R.layout.layout_geo);
+
+    	if (servicesConnected()){
+
+    		needCurrentPos=true;
+
+    		satellite = (Button)findViewById(R.id.satellite);
+    		plan = (Button)findViewById(R.id.plan);
+    		hybrid = (Button)findViewById(R.id.hybrid);
+    		validate = (Button)findViewById(R.id.validate);
+
+    		//Listeners on switch button
+    		satellite.setOnClickListener(toSatellite);
+    		plan.setOnClickListener(toPlan);
+    		hybrid.setOnClickListener(toHybrid);
+    		validate.setOnClickListener(this);
+
+    		//for reverse adresses
+    		mActivityIndicator =
+    				(ProgressBar) findViewById(R.id.address_progress);
+
+    		// Get a handle to the Map Fragment
+    		map = ((MapFragment) getFragmentManager()
+    				.findFragmentById(R.id.map)).getMap();
+    		geoActivityInit(true, defaultPos, map);
+
+    		map.setOnMapClickListener(ajoutPoints);
+    		map.setOnMarkerDragListener(markerDrag);
+    	}}
+    
+    /**
+     * Constructor of GeoActivity (needed in case of extern implementation)
+     * @param needCurrentPos
+     * @param pos
+     * @param map
+     */
+    public GeoActivity(Boolean needCurrentPos, LatLng pos, GoogleMap map){
+    	if (servicesConnected()){
+    		this.map = map;
+    		this.needCurrentPos = needCurrentPos;
+    		geoActivityInit(needCurrentPos, pos, map);
+    	}
+    }
+    
+    public GeoActivity(){
+    	
+    }
+    
+    /**
+     * 
+     * @param needCurrentPos
+     * @param pos
+     * @param map
+     */
+    public void geoActivityInit(Boolean needCurrentPos, LatLng pos, GoogleMap map){
+    	if (needCurrentPos) {
+    		/*
+    		 * Create a new location client, using the enclosing class to
+    		 * handle callbacks.
+    		 */
+
+    		mLocationClient = new LocationClient(MainActivity.baseContext, this, this);
+
+    		// Connect the client.
+    		//TODO check the threat order
+
+
+    	}
+
+    	//check
+    	map.setMyLocationEnabled(true);
+    	map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15));
     }
     
     @Override
 	protected void onStart() {
         super.onStart();
-        if (needCurrentPos) {
-         // Connect the client.
-         mLocationClient.connect();
-                }
+        if (servicesConnected())
+        	mLocationClient.connect();
     }
    
     /**
@@ -315,43 +351,40 @@ OnClickListener{
     /**
 * Listener for switching to Satellite map, if click on the button for.
 */
-    private OnClickListener toSatellite = new OnClickListener() {
+    public OnClickListener toSatellite = new OnClickListener() {
                 
                 @Override
                 public void onClick(View v) {
-                        map = ((MapFragment) getFragmentManager()
-         .findFragmentById(R.id.map)).getMap();
+
                  // Other supported types include: MAP_TYPE_NORMAL,
          // MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID and MAP_TYPE_NONE
          map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-         Toast.makeText(getBaseContext(), "Passage à la carte Satellite", Toast.LENGTH_SHORT).show();
+         Toast.makeText(MainActivity.baseContext, "Passage à la carte Satellite", Toast.LENGTH_SHORT).show();
                         
                 }
         };
         /**
 * Listener for switching to Plan (normal) map, if click on the button for.
 */
-    private OnClickListener toPlan = new OnClickListener() {
+     public OnClickListener toPlan = new OnClickListener() {
                 
                 @Override
                 public void onClick(View v) {
-                        map = ((MapFragment) getFragmentManager()
-         .findFragmentById(R.id.map)).getMap();
+
          map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-         Toast.makeText(getBaseContext(), "Passage à la carte Plan", Toast.LENGTH_SHORT).show();
+         Toast.makeText(MainActivity.baseContext, "Passage à la carte Plan", Toast.LENGTH_SHORT).show();
                 }
         };
         /**
 * Listener for switching to hybrid map, if click on the button for.
 */
-    private OnClickListener toHybrid = new OnClickListener() {
+     public OnClickListener toHybrid = new OnClickListener() {
                 
                 @Override
                 public void onClick(View v) {
-                        map = ((MapFragment) getFragmentManager()
-         .findFragmentById(R.id.map)).getMap();
+
          map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-         Toast.makeText(getBaseContext(), "Passage à la carte Hybride", Toast.LENGTH_SHORT).show();
+         Toast.makeText(MainActivity.baseContext, "Passage à la carte Hybride", Toast.LENGTH_SHORT).show();
                 }
         };
         /**
@@ -433,10 +466,10 @@ OnClickListener{
          LatLng latLng = new LatLng(latitude, longitude);
         
          map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-         Toast.makeText(getApplicationContext(), "Position ok", Toast.LENGTH_LONG).show();
+         Toast.makeText(MainActivity.baseContext, "Position ok", Toast.LENGTH_LONG).show();
         }
         else {
-                final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+                final LocationManager manager = (LocationManager) getSystemService( MainActivity.baseContext.LOCATION_SERVICE );
 
             if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
                 buildAlertMessageNoGps();

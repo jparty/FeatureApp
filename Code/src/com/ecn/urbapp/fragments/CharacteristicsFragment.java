@@ -22,6 +22,7 @@ import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
 import com.ecn.urbapp.utils.DrawImageView;
 import com.ecn.urbapp.zones.SetOfZone;
+import com.ecn.urbapp.zones.Zone;
 
 /**
  * @author	COHENDET Sébastien
@@ -98,10 +99,14 @@ public class CharacteristicsFragment extends Fragment {
 		// (or with an empty list if this creation does not correspond to a
 		// screen rotation)
 		zones = (SetOfZone) getActivity().getLastNonConfigurationInstance();
-		if (zones == null) {
+		if (MainActivity.zones == null) {
 			zones = new SetOfZone();
+		} else {
+			zones = new SetOfZone(MainActivity.zones);
+			for (Zone zone : zones.getZones()) {
+				zone.addPoint(zone.getPoints().get(0));
+			}
 		}
-		zones = new SetOfZone(MainActivity.zones);
 /*
 		zones.addEmpty();
 		zones.addPoint(new Point(200, 200), 10);

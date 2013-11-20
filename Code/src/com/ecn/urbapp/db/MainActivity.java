@@ -55,7 +55,7 @@ public class MainActivity extends ListActivity {
         setContentView(layout);
         
         //Link to id the Widget for updating database in local
-        add = (Button)findViewById(R.id.add);
+        add = (Button)findViewById(R.id.addProject);
         delete = (Button)findViewById(R.id.delete);
         toFile = (EditText)findViewById(R.id.toExterneFile);
         
