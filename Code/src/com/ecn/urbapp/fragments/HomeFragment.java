@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	private Button test = null ;
 	private Button testPhoto = null ;
 	private Button downloadImage;
-	private final ImageDownloader imageDownloader = new ImageDownloader();
+	private ImageDownloader imageDownloader = new ImageDownloader();
 	private ImageView image;
 	private Button uploadImageButton;
 	private String imageStoredUrl;
@@ -115,7 +115,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
         
         @Override
         public void onClick(View v) {
-        	imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "loutre"+Math.random()*5+".png");
+        	imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "img"+((int)(Math.random()*3+1))+".png");
         }
     };
 
