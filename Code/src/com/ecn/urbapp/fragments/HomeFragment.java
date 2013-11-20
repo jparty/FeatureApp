@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment{
 		
 		downloadImage = (Button) v.findViewById(R.id.home_loadDistantlProject);
 		downloadImage.setOnClickListener(getImage);
-		uploadImageButton = (Button) v.findViewById(R.id.home_loadPicture);
+		uploadImageButton = (Button) v.findViewById(R.id.home_savePicture);
 		uploadImageButton.setOnClickListener(uploadImage);
 		image = (ImageView) v.findViewById(R.id.home_image_loadDistantProject);
 		return v;
@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment{
         
         @Override
         public void onClick(View v) {
-        	imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "loutre1.png");
+        	imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "loutre"+Math.random()*5+".png");
         }
     };
 

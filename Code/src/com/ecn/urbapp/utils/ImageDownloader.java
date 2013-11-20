@@ -44,7 +44,17 @@ public class ImageDownloader {
     public String download(String url, ImageView imageView, String name) {
     		this.name=name;
             BitmapDownloaderTask task = new BitmapDownloaderTask(imageView);
-            task.execute(url);
+            
+            //check if file already exists. If so, displays it !
+            File imgFile = new  File(path+"/"+name);
+        	if(imgFile.exists()){
+
+        	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        	    imageView.setImageBitmap(myBitmap);
+
+        	}
+        	else
+        		task.execute(url); //download image !
             return path+"/"+name;
         }
 
@@ -151,14 +161,7 @@ static Bitmap downloadBitmap(String url) {
 	        if (imageViewReference != null) {
 	            ImageView imageView = imageViewReference.get();
 	            if (imageView != null) {
-	            	File imgFile = new  File(path+"/"+name);
-	            	if(imgFile.exists()){
-
-	            	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-	            	    imageView.setImageBitmap(myBitmap);
-
-	            	}
-	            	//imageView.setImageBitmap(bitmap);
+	            	imageView.setImageBitmap(bitmap);
 	                
 	                //save file on cache data of the app
 	                BitmapToFile(bitmap);

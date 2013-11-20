@@ -1,14 +1,5 @@
 package com.ecn.urbapp.activities;
 
-import java.io.IOException;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
@@ -18,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -131,6 +121,9 @@ public class MainActivity extends Activity {
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	/**
+	 * Method to check if internet is available (and no portal !)
+	 */
 	public final void isInternetOn() {
 
 		ConnectivityManager con=(ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -150,6 +143,9 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * Method if no internet connectivity to print a Dialog.
+	 */
 	public static void errorConnect() {
 		alertDialog.setTitle("Pas de connexion internet de disponible. Relancer l'application, une fois internet fonctionnel");
 		alertDialog.show();		
