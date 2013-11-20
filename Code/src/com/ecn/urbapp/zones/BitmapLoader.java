@@ -23,12 +23,13 @@ import android.graphics.BitmapFactory;
  * 
  */
 public class BitmapLoader {
-
+	public static int height; public static int width;
+	
 	public static int calculateInSampleSize(BitmapFactory.Options options,
 			int reqWidth, int reqHeight) {
 		// Raw height and width of image
-		final int height = options.outHeight;
-		final int width = options.outWidth;
+		height = options.outHeight;
+		width = options.outWidth;
 		int inSampleSize = 1;
 
 		if (height > reqHeight || width > reqWidth) {
@@ -65,5 +66,11 @@ public class BitmapLoader {
 		options.inJustDecodeBounds = false;
 		return BitmapFactory.decodeFile(file, options);
 	}
-
+	
+	public static int getWidth(){
+		return width;
+	}
+	public static int getHeight(){
+		return height;
+	}
 }

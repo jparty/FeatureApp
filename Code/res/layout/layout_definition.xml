@@ -20,7 +20,8 @@
     <ImageView
         android:id="@+id/image"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/definition_button_select"/>
     
     <Button 
         android:id="@+id/definition_button_select"

@@ -1,11 +1,15 @@
 package com.ecn.urbapp.fragments;
 
+import java.io.File;
+
 import android.app.Fragment;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +25,8 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
 import com.ecn.urbapp.utils.DrawImageView;
+import com.ecn.urbapp.zones.BitmapLoader;
+import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.SetOfZone;
 import com.ecn.urbapp.zones.Zone;
 
@@ -120,9 +126,18 @@ public class CharacteristicsFragment extends Fragment {
 		zones.addPoint(new Point(900, 400), 10);
 		zones.addPoint(new Point(600, 400), 10);
 		zones.addPoint(new Point(600, 200), 10);*/
-
+		
+		if(MainActivity.photo==null){//why here and not in main activity ? it just doesn't work
+			MainActivity.photo=new File(MainActivity.photoPath);
+		}	
 		DrawImageView view = new DrawImageView(zones);
-		Drawable[] drawables = {view};
+		Drawable[] drawables = {
+				new BitmapDrawable(
+					getResources(),
+					BitmapLoader.decodeSampledBitmapFromFile(
+						MainActivity.photo.getAbsolutePath(), 1000, 1000)), view
+					};
+
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 
 	    select.setOnClickListener(clickListenerSelect);
@@ -143,9 +158,9 @@ public class CharacteristicsFragment extends Fragment {
 		@Override
 		public void onClick(View v) {
 			myImage.setOnTouchListener(touchListenerSelectImage);
-			select.setVisibility(View.GONE);
-			define.setVisibility(View.GONE);
-			delete.setVisibility(View.GONE);
+			select.setVisibility(View.INVISIBLE);//important : let invisible ! image located below it
+			define.setVisibility(View.INVISIBLE);
+			delete.setVisibility(View.INVISIBLE);
 			recap.setVisibility(View.GONE);
 			selectConfirm.setVisibility(View.VISIBLE);
 			text.setVisibility(View.VISIBLE);
@@ -264,4 +279,10 @@ public class CharacteristicsFragment extends Fragment {
 				summarydialog.show(getFragmentManager(), "TypeFragment");
 		}
 	};
+	
+	@Override
+	public void onStop(){
+		super.onStop();
+		MainActivity.zones=zones.getZones();
+	}
 }

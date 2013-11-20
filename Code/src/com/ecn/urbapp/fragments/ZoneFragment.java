@@ -42,6 +42,7 @@ import com.ecn.urbapp.zones.Zone;
  */
 
 public class ZoneFragment extends Fragment{
+	private int TOUCH_RADIUS_TOLERANCE = 6;//only for catching points in edit mode
 	
 	private Button create; 
 	private Button edit;
@@ -63,13 +64,13 @@ public class ZoneFragment extends Fragment{
 	private Button edit_help;
 	
 
-	private ImageView myImage; private File photo;
-	private Vector<Zone> zones; private Zone zoneCache ;
+	private ImageView myImage; private Matrix matrix;
+	private Vector<Zone> zones; private Zone zoneCache ; 
 	private Zone zone;
 	private Point selected;
 	private DrawZoneView drawzoneview;
+	private int imageHeight; private int imageWidth;
 
-	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
@@ -100,7 +101,7 @@ public class ZoneFragment extends Fragment{
 		create_back.setOnClickListener(createBackListener);
 		create_cancel.setOnClickListener(createCancelListener);
 		create_validate.setOnClickListener(createValidateListener);
-		create_edit.setOnClickListener(editListener);
+		create_edit.setOnClickListener(editListener);//TODO change listener !
 
 		delete_cancel = (Button) v.findViewById(R.id.zone_delete_button_cancel);
 		delete_help = (Button) v.findViewById(R.id.zone_delete_button_help);
@@ -132,26 +133,29 @@ public class ZoneFragment extends Fragment{
 		} else {
 			zones = MainActivity.zones;
 		}
-		zone = new Zone(); selected = new Point(0,0); 
+		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
 		
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
-
-		String youFilePath = Environment.getExternalStorageDirectory().toString()+"/Download/Images.jpeg";
-		photo=new File(youFilePath);
-	
+		
+		if(MainActivity.photo==null){//why here and not in main activity ? it just doesn't work
+			MainActivity.photo=new File(MainActivity.photoPath);
+		}	
 		drawzoneview = new DrawZoneView(zones, zone, selected) ;
 		Drawable[] drawables = {
 			new BitmapDrawable(
 				getResources(),
 				BitmapLoader.decodeSampledBitmapFromFile(
-					photo.getAbsolutePath(), 1000, 1000)), drawzoneview
+					MainActivity.photo.getAbsolutePath(), 1000, 1000)), drawzoneview
 				};
+		imageWidth = BitmapLoader.getWidth();
+		imageHeight = BitmapLoader.getHeight();
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		MainActivity.myImage = myImage;
 		myImage.setOnTouchListener(deleteImageTouchListener);
 		
 		return v;
 	}
+	
 	private void enterAction(){
 		//invisible, not gone, to keep buttons outside the picture
 		//TODO there are probably better ways :)
@@ -196,6 +200,7 @@ public class ZoneFragment extends Fragment{
 			}
 		});
 		zone.setZone(new Zone());
+		zoneCache.setZone(new Zone());
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
 		myImage.invalidate();
@@ -242,23 +247,48 @@ public class ZoneFragment extends Fragment{
 		}
 	};
 	private OnTouchListener imageCreateTouchListener = new ImageView.OnTouchListener() {
-		protected Matrix matrix;
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				float[] coord = {event.getX(),event.getY()};//get touched point coord
-				if (matrix == null) {//create matrix that transforms point coord into image base 
-					matrix = new Matrix();
-					((ImageView) getView().findViewById(R.id.image_zone)).getImageMatrix().invert(matrix);
-					
-				}
-				matrix.mapPoints(coord);//apply matrix transformation on points coord
-				zone.addPoint(new Point((int)coord[0],(int)coord[1]));
+	    		if(matrix == null){//tried to create it at fragment's beginning but doesn't work at all
+	    			matrix = new Matrix();
+	    			myImage.getImageMatrix().invert(matrix);
+	    		}
+				zone.addPoint(getTouchedPoint(event));
 				refreshCreate();//display new point, refresh buttons' availabilities					
 			}
 			return true;
 		}
 	};
+	public Point getTouchedPoint(MotionEvent event){
+		float[] coord = {event.getX(),event.getY()};//get touched point coord
+
+		matrix.mapPoints(coord);//apply matrix transformation on points coord
+		int pointX = (int)coord[0]; int pointY = (int)coord[1];
+		if(pointX<0){
+			pointX=0;
+		}else{
+			if(pointX>imageWidth){
+				pointX=imageWidth;
+			}
+		}
+		if(pointY<0){
+			pointY=0;
+		}else{
+			if(pointY>imageHeight){
+				pointY=imageHeight;
+			}
+		}
+		return(new Point(pointX,pointY));
+	}
+	
+	public void getMatrix(){
+		if(matrix == null){//tried to create it at fragment's beginning but doesn't work at all
+			matrix = new Matrix();
+			myImage.getImageMatrix().invert(matrix);
+		}
+	}
+	
     public void refreshCreate(){
 		Vector<Point> points = zone.getPoints();
 		if(! points.isEmpty()){
@@ -322,20 +352,11 @@ public class ZoneFragment extends Fragment{
     };
     
     private ImageView.OnTouchListener imageEditTouchListener = new ImageView.OnTouchListener() {
-		protected Matrix matrix;
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				float[] coord = {event.getX(),event.getY()};//get touched point coord
-				//TODO synergie création matrice, récupération de coordonnées !
-				if (matrix == null) {
-					matrix = new Matrix();
-					((ImageView) getView().findViewById(R.id.image_zone)).getImageMatrix()
-							.invert(matrix);
-				}
-				matrix.mapPoints(coord);
-				Log.d("UrbApp","Après x:"+coord[0]+";y:"+coord[1]);
-				Point touch = new Point((int)coord[0],(int)coord[1]);
+	    		getMatrix();
+				Point touch = getTouchedPoint(event);
 				
 				//If no zone has been selected yet, try to select one
 				if(zone.getPoints().isEmpty()){
@@ -365,7 +386,7 @@ public class ZoneFragment extends Fragment{
 						for(Point p : zone.getPoints()){//is the touched point a normal point ?
 							float dx=Math.abs(p.x-touch.x);
 							float dy=Math.abs(p.y-touch.y);
-							if((dx*dx+dy*dy)<10*10){//10 radius tolerance
+							if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
 								selected.set(p.x,p.y);
 								//enable point deleting or releasing
 								getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(true);
@@ -402,7 +423,9 @@ public class ZoneFragment extends Fragment{
 	private OnClickListener editCancelListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			zones.add(new Zone(zoneCache));//save original
+			if(zoneCache != null){//if user is coming from CreateZone there is no original to save
+				zones.add(new Zone(zoneCache));//save original
+			}
             exitAction();
 		}
 	};
@@ -440,18 +463,11 @@ public class ZoneFragment extends Fragment{
 	};
 	
 	private OnTouchListener deleteImageTouchListener = new ImageView.OnTouchListener() {
-		protected Matrix matrix;
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				float[] coord = {event.getX(),event.getY()};
-				if (matrix == null) {
-					matrix = new Matrix();
-					((ImageView) getView().findViewById(R.id.image_zone)).getImageMatrix()
-							.invert(matrix);
-				}
-				matrix.mapPoints(coord);
-				Point touch = new Point((int)coord[0],(int)coord[1]);
+				getMatrix();
+				Point touch = getTouchedPoint(event);
 				if(zone.getPoints().isEmpty()){
 					for(Zone test : zones){
 						if(test.containPoint(touch)){
@@ -479,5 +495,6 @@ public class ZoneFragment extends Fragment{
 		super.onStop();
 		MainActivity.zones=zones;
 	}
+	
 
 }
