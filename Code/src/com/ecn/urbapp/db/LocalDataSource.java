@@ -324,4 +324,32 @@ public class LocalDataSource {
 			
 		  }
 	
+	  // methods related to Composed.java that represents the link between Photos and projects
+	  public Composed createLink (long proj_id, long photo_id){
+			ContentValues values = new ContentValues(); 
+			values.put(MySQLiteHelper.COLUMN_PROJECTID, proj_id);
+			values.put(MySQLiteHelper.COLUMN_PHOTOID, photo_id);
+			database.insert(MySQLiteHelper.TABLE_COMPOSED, null, values);
+			//TODO check the utily of autoincrement
+			Cursor cursor = 
+					database.query(
+							MySQLiteHelper.TABLE_COMPOSED,
+							allColumnsGpsGeom,
+							MySQLiteHelper.COLUMN_PROJECTID+" = "+proj_id +" AND "+MySQLiteHelper.COLUMN_PHOTOID+" = "+photo_id,
+							null, null, null, null);
+			cursor.moveToFirst();
+			Composed link1 = cursorToComposed(cursor);//method at the end of the class
+			cursor.close();
+			return link1;
+		}
+	  
+	  private Composed cursorToComposed(Cursor cursor) {
+		    Composed link1 = new Composed();
+		    link1.setProject_id(cursor.getLong(0));
+		    link1.setPhoto_id(cursor.getLong(1));
+		    return link1;
+			
+		  }
+	  
+	  
 }
