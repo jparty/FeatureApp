@@ -17,10 +17,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
-import com.ecn.urbapp.dialogs.TypeDialogFragment;
 import com.ecn.urbapp.utils.DrawImageView;
 import com.ecn.urbapp.zones.SetOfZone;
+import com.ecn.urbapp.zones.Zone;
 
 /**
  * @author	COHENDET Sébastien
@@ -97,10 +99,15 @@ public class CharacteristicsFragment extends Fragment {
 		// (or with an empty list if this creation does not correspond to a
 		// screen rotation)
 		zones = (SetOfZone) getActivity().getLastNonConfigurationInstance();
-		if (zones == null) {
+		if (MainActivity.zones == null) {
 			zones = new SetOfZone();
+		} else {
+			zones = new SetOfZone(MainActivity.zones);
+			for (Zone zone : zones.getZones()) {
+				zone.addPoint(zone.getPoints().get(0));
+			}
 		}
-
+/*
 		zones.addEmpty();
 		zones.addPoint(new Point(200, 200), 10);
 		zones.addPoint(new Point(400, 200), 10);
@@ -112,7 +119,7 @@ public class CharacteristicsFragment extends Fragment {
 		zones.addPoint(new Point(900, 200), 10);
 		zones.addPoint(new Point(900, 400), 10);
 		zones.addPoint(new Point(600, 400), 10);
-		zones.addPoint(new Point(600, 200), 10);
+		zones.addPoint(new Point(600, 200), 10);*/
 
 		DrawImageView view = new DrawImageView(zones);
 		Drawable[] drawables = {view};
@@ -221,8 +228,8 @@ public class CharacteristicsFragment extends Fragment {
 		public void onClick(View v) {
 			if (!CharacteristicsFragment.getZones().getAllSelectedZones().isEmpty()) {
 				// Show the dialog to choose the characteristics
-				TypeDialogFragment typedialog = new TypeDialogFragment();
-				typedialog.show(getFragmentManager(), "TypeFragment");
+				CharacteristicsDialogFragment typedialog = new CharacteristicsDialogFragment();
+				typedialog.show(getFragmentManager(), "CharacteristicsDialogFragment");
 			}
 		}
 	};

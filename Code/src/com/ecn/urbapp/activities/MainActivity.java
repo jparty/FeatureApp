@@ -1,5 +1,8 @@
 package com.ecn.urbapp.activities;
 
+import java.io.File;
+import java.util.Vector;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
@@ -8,9 +11,21 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Matrix;
+import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.LocalDataSource;
@@ -21,6 +36,9 @@ import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 import com.ecn.urbapp.utils.ConnexionCheck;
+import com.ecn.urbapp.zones.BitmapLoader;
+import com.ecn.urbapp.zones.DrawZoneView;
+import com.ecn.urbapp.zones.Zone;
 
 /**
  * @author	COHENDET Sébastien
@@ -33,7 +51,7 @@ import com.ecn.urbapp.utils.ConnexionCheck;
  * MainActivity class
  * 
  * This is the main activity of the application.
- * It contains an action bar filled with the differents fragments
+ * It contains an action bar filled with the different fragments
  * 			
  */
 
@@ -43,6 +61,8 @@ public class MainActivity extends Activity {
 	 * bar represent the action bar of the application
 	 */
 	ActionBar bar;
+	public File photo;
+	public Zone zoneToDelete ;
 	
 	/**
 	 * attributs for the local database
@@ -51,6 +71,7 @@ public class MainActivity extends Activity {
 
 	
 	/**
+
 	 * baseContext to get the static context of app anywhere (for file)
 	 */
     public static Context baseContext;
@@ -59,7 +80,18 @@ public class MainActivity extends Activity {
     
     public static final String CONNECTIVITY_URL="http://clients3.google.com/generate_204";
     
+    /**
+	 * Attributs for the project information
+	 */
 
+	public static String author = "";
+	public static String device = "";
+	public static String project = "";
+	public static String address = "";
+
+	public static Vector<Zone> zones=null;
+	public static ImageView myImage=null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -118,12 +150,8 @@ public class MainActivity extends Activity {
 		tabSave.setTabListener(new MyTabListener(save));
 		bar.addTab(tabSave);
 		
-		Intent i = getIntent();
-		switch(i.getIntExtra("fragment", -1)){
-		case 2:
-			bar.selectTab(tabInformation);
-			break;
-		}
+		//create zones' list for new image
+		zones = new Vector<Zone>();
 	}
 
 	@Override
@@ -133,7 +161,7 @@ public class MainActivity extends Activity {
 		inflater.inflate(R.menu.menu_main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	/**
 	 * Method to check if internet is available (and no portal !)
 	 */
@@ -152,8 +180,6 @@ public class MainActivity extends Activity {
         boolean internet=wifi|mobile;
         if (internet)
         	 new ConnexionCheck().Connectivity();
-        	
-
 	}
 
 	/**

@@ -90,21 +90,21 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		Intent i = null;
-		switch (v.getId()) {
-		case R.id.home_loadLocalProject:
-			i = new Intent(this.getActivity(), LoadLocalProjectsActivity.class);
-			startActivity(i);			
-			break;
-			
-		case R.id.home_test:
-			i = new Intent(this.getActivity(), Test.class);
-			startActivity(i);			
-			break;
+        switch (v.getId()) {
+        case R.id.home_loadLocalProject:
+                i = new Intent(this.getActivity(), LoadLocalProjectsActivity.class);
+                startActivity(i);                        
+                break;
 			
 		case R.id.home_test_photo:
 			i = new Intent(this.getActivity(), TestPhoto.class);
 			startActivity(i);			
 			break;
+			
+        case R.id.home_test:
+            i = new Intent(this.getActivity(), Test.class);
+            startActivity(i);                        
+            break;
 
 		default:
 			break;

@@ -25,7 +25,7 @@
     <string name="save">Sauvegarder</string>
 
     <string name="zone_create">Créer</string>
-    <string name="zone_suppress">Supprimer</string>
+    <string name="zone_delete">Supprimer</string>
     <string name="zone_edit">Editer</string>
     
     <string name="definition_select">Sélectionner</string>
@@ -48,25 +48,28 @@
     
     <string name="save_textStatus">None</string>
     <string name="save_buttonSync">Synchroniser</string>
+    <string name="back">Annuler dernière action</string>
+    <string name="cancel">Quitter</string>
+    <string name="help">Aide</string>
+    <string name="validate">Valider</string>
+    <string name="zone_edit_button_delete_point">Supprimer le point</string>
+    <string name="zone_edit_button_release_point">Lâcher le point</string>
     
-    <string name="other">Autre</string>
-    <string name="not_defined">Pas défini</string>
-    <string name="type_dialog_title">Choissisez le type de surface</string>
-    <string name="material_dialog_title">Choix du matériau</string>
-    <string name="edit_dialog_title">Nom du matériau :</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Annuler</string>
-    <string name="choose_color_message">Choisissez la couleur de la zone :</string>
-    <string name="information_about_frontage">Informations sur cette zone</string>
     <string name="type">Type</string>
     <string name="materials">Matériaux</string>
     <string name="color">Couleur</string>
+    <string name="not_defined">Pas défini</string>
+    <string name="definition_dialog_title">Choix des caractéristiques des zones sélectionnées</string>
+    <string name="definition_dialog_type">Type de la zone :</string>
+    <string name="definition_dialog_material">Matériau de la zone :</string>
+    <string name="definition_dialog_color">Couleur de la zone :</string>
+    <string name="ok">OK</string>
+    <string name="information_about_frontage">Informations sur cette zone</string>
     <string name="satellite">satellite</string>
     <string name="plan">plan</string>
     
     <string name="hybrid">hybride</string>
     
-    <string name="cancel">Annuler</string>
 	<string name="confirm">Confirmer</string>
 	<string name="progress_dialog_title_connecting">Début d\'envoi de l\'image</string>
 	<string name="upload_error_title">Erreur envoi</string>

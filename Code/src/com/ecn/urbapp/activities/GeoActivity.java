@@ -393,12 +393,13 @@ OnClickListener{
         public void onClick(View v) {
         	Intent i = new Intent(this, MainActivity.class);
         	try {
-        	i.putExtra("addr", markers.get(markers.size()-1).getSnippet());
+        		MainActivity.address = markers.get(markers.size()-1).getSnippet();
+        	//i.putExtra("addr", markers.get(markers.size()-1).getSnippet());
         	}
         	catch (ArrayIndexOutOfBoundsException e) {
         		Log.e(getLocalClassName(), "Pas de points !");
         	}
-        	i.putExtra("fragment", 2);
+        	//i.putExtra("fragment", 2);
 			startActivity(i);
         }
         
