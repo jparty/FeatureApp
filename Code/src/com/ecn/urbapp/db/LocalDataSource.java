@@ -158,6 +158,22 @@ public class LocalDataSource {
 			+";"
 		;
 	
+	private static final String
+	GETPHOTOLINK = 
+		"SELECT "+MySQLiteHelper.TABLE_PHOTO+".*, "+MySQLiteHelper.TABLE_GPSGEOM+".* FROM ("
+		+ MySQLiteHelper.TABLE_PHOTO 
+		+ " INNER JOIN " + MySQLiteHelper.TABLE_COMPOSED
+		+" ON "+MySQLiteHelper.TABLE_PHOTO+"."+MySQLiteHelper.COLUMN_PHOTOID+"="+MySQLiteHelper.TABLE_COMPOSED+"."+MySQLiteHelper.COLUMN_PHOTOID
+		+ ") INNER JOIN " + MySQLiteHelper.TABLE_GPSGEOM 
+		+" ON "+MySQLiteHelper.TABLE_PHOTO+"."+MySQLiteHelper.COLUMN_GPSGEOMID+"="+MySQLiteHelper.TABLE_GPSGEOM+"."+MySQLiteHelper.COLUMN_GPSGEOMID
+		+" WHERE "+MySQLiteHelper.TABLE_COMPOSED+"."+MySQLiteHelper.COLUMN_PROJECTID+" = "
+		//need to add the project id and the ";" in the method argument
+	;
+	
+
+
+	
+	
 	/**
 	 * execution of the query
 	 * @return
@@ -211,6 +227,22 @@ public class LocalDataSource {
 		cursor.close();
 		return photosList;
 	}
+	
+	public List<Photo> getAllPhotolinkedtoProject(long project_id){
+		List<Photo> photosList = new ArrayList<Photo>();
+		
+		Cursor cursor = database.rawQuery(GETPHOTOLINK+project_id+";",null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			Photo p1 = cursorToPhoto(cursor);
+			photosList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return photosList;
+	}
+	
 	
 	public void deletePhoto(Photo p1){
 		long id = p1.getPhoto_id();
@@ -334,7 +366,7 @@ public class LocalDataSource {
 			Cursor cursor = 
 					database.query(
 							MySQLiteHelper.TABLE_COMPOSED,
-							allColumnsGpsGeom,
+							allColumnsComposed,
 							MySQLiteHelper.COLUMN_PROJECTID+" = "+proj_id +" AND "+MySQLiteHelper.COLUMN_PHOTOID+" = "+photo_id,
 							null, null, null, null);
 			cursor.moveToFirst();

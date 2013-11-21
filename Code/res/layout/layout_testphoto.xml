@@ -82,6 +82,7 @@
 	            android:layout_height="wrap_content"
 	            android:layout_margin="10dp"
 			    android:hint="project_id"
+			    android:inputType="numberDecimal"
 		    />
             
            <TextView
@@ -91,11 +92,12 @@
             android:text="and" />
             
             <EditText 
-			    android:id="@+id/test_photo__photoidtolink"
+			    android:id="@+id/test_photo_photo_idtolink"
 			    android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_margin="10dp"
 			    android:hint="photo_id"
+			    android:inputType="numberDecimal"
 		    />
 
             <Button

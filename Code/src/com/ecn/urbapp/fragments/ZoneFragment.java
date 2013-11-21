@@ -4,41 +4,12 @@ import java.io.File;
 import java.util.Vector;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.ecn.urbapp.R;
-import com.ecn.urbapp.activities.MainActivity;
-import com.ecn.urbapp.zones.BitmapLoader;
-import com.ecn.urbapp.zones.DrawZoneView;
-import com.ecn.urbapp.zones.Zone;
-
-import java.io.File;
-import java.util.Vector;
-
-import android.app.Fragment;
-import android.graphics.Matrix;
-import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
