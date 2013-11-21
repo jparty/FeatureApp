@@ -1,5 +1,4 @@
 package com.ecn.urbapp.activities;
-
 import java.io.File;
 import java.util.Vector;
 
@@ -51,7 +50,6 @@ public class MainActivity extends Activity {
 	 * bar represent the action bar of the application
 	 */
 	ActionBar bar;
-	public File photo;
 	public Zone zoneToDelete ;
 	
 	/**
@@ -83,6 +81,7 @@ public class MainActivity extends Activity {
 	public static ImageView myImage=null;
 	
 	public static String pathImage=null;
+	public static File photo=null;
 	//TODO add the set of this boolinto each function loading a photo
 	//TODO add the block function into the listener 
 	public static boolean isPhoto=false;

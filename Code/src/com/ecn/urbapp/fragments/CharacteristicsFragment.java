@@ -9,6 +9,36 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
+import com.ecn.urbapp.dialogs.SummaryDialogFragment;
+import com.ecn.urbapp.utils.DrawImageView;
+import com.ecn.urbapp.zones.BitmapLoader;
+import com.ecn.urbapp.zones.DrawZoneView;
+import com.ecn.urbapp.zones.SetOfZone;
+import com.ecn.urbapp.zones.Zone;
+
+import java.io.File;
+
+import android.app.Fragment;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,7 +72,6 @@ import com.ecn.urbapp.zones.Zone;
  * This is the fragment used to define the differents characteristics of the zone.
  * 			
  */
-
 public class CharacteristicsFragment extends Fragment {
 
 	/** List of all the zones */
@@ -104,7 +133,7 @@ public class CharacteristicsFragment extends Fragment {
 		// (or with an empty list if this creation does not correspond to a
 		// screen rotation)
 		zones = (SetOfZone) getActivity().getLastNonConfigurationInstance();
-		if (MainActivity.zones == null) {
+		if (MainActivity.zones==null) {
 			zones = new SetOfZone();
 		} else {
 			zones = new SetOfZone(MainActivity.zones);
@@ -112,33 +141,15 @@ public class CharacteristicsFragment extends Fragment {
 				zone.addPoint(zone.getPoints().get(0));
 			}
 		}
-/*
-		zones.addEmpty();
-		zones.addPoint(new Point(200, 200), 10);
-		zones.addPoint(new Point(400, 200), 10);
-		zones.addPoint(new Point(400, 400), 10);
-		zones.addPoint(new Point(200, 400), 10);
-		zones.addPoint(new Point(200, 200), 10);
-		zones.addEmpty();
-		zones.addPoint(new Point(600, 200), 10);
-		zones.addPoint(new Point(900, 200), 10);
-		zones.addPoint(new Point(900, 400), 10);
-		zones.addPoint(new Point(600, 400), 10);
-		zones.addPoint(new Point(600, 200), 10);*/
 
-		/*DrawImageView view = new DrawImageView(zones);
-		Drawable[] drawables = {view};
-		myImage.setImageDrawable(new LayerDrawable(drawables));*/
-		String youFilePath = MainActivity.pathImage;
-		File photo=new File(youFilePath);
-		
-		DrawZoneView drawzoneview = new DrawZoneView(MainActivity.zones) ;
+		DrawImageView view = new DrawImageView(zones);
+	
 		Drawable[] drawables = {
-			new BitmapDrawable(
-				getResources(),
-				BitmapLoader.decodeSampledBitmapFromFile(
-					photo.getAbsolutePath(), 1000, 1000)), drawzoneview
-				};
+				new BitmapDrawable(
+					getResources(),
+					BitmapLoader.decodeSampledBitmapFromFile(
+							MainActivity.photo.getAbsolutePath(), 1000, 1000)), view
+		};
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		
 	    select.setOnClickListener(clickListenerSelect);
@@ -201,8 +212,7 @@ public class CharacteristicsFragment extends Fragment {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			// If the user touch inside a zone, select the zone
-			zones.select(zones.isInsideZone(this
-					.convertTouchPoint(event.getX(), event.getY())));
+			zones.select(zones.isInsideZone(this.convertTouchPoint(event.getX(), event.getY())));
 
 			// Ask to draw again
 			myImage.invalidate();
@@ -280,4 +290,10 @@ public class CharacteristicsFragment extends Fragment {
 				summarydialog.show(getFragmentManager(), "TypeFragment");
 		}
 	};
+	
+	@Override
+	public void onStop(){
+		super.onStop();
+		MainActivity.zones=zones.getZones();
+	}
 }

@@ -31,7 +31,8 @@ public class Zone {
 	/** Color of this zone */
 	protected int color;
 	
-	protected Vector<Point> middles;//useful for updateMiddles
+	/** List of small points displayed between normal points in zone edition mode **/
+	protected Vector<Point> middles;//useful for updateMiddles only, otherwise it's built everytime its getter is used
 
 	/**
 	 * Constructor of a new points (unfinished by default)
@@ -44,6 +45,10 @@ public class Zone {
 		color = Color.RED;
 	}
 	
+	/**
+	 * Constructor of a zone by copying an other
+	 * @param zone
+	 */
 	public Zone(Zone zone){
 		this();
 		this.setZone(zone);
@@ -58,6 +63,12 @@ public class Zone {
 		return middles;
 	}
 	
+	/**
+	 * Move a point to its new coordinates
+	 * @param oldPoint
+	 * @param newPoint
+	 * @return
+	 */
 	public boolean updatePoint(Point oldPoint, Point newPoint){
 		try{
 			points.setElementAt(newPoint,points.indexOf(oldPoint));
@@ -67,13 +78,24 @@ public class Zone {
 		}
 	}
 	
+	/**
+	 * Delete a point, rebuild list
+	 * @param point
+	 */
 	public void deletePoint(Point point){
 		points.remove(point);
 	}
 	
+	/**
+	 * Insert a point where a middle was
+	 * @param oldMiddle
+	 * @param newPoint
+	 */
 	public void updateMiddle(Point oldMiddle, Point newPoint){
 		points.insertElementAt(newPoint, middles.indexOf(oldMiddle)+1);
-	}/**
+	}
+	
+	/**
 	 * Setter for the type
 	 * 
 	 * @param type
@@ -178,10 +200,14 @@ public class Zone {
 			this.finished = true;
 		}
 	}
-	
+	/**
+	 * Set a zone coordinates from an other ones
+	 * @param zone
+	 */
 	public void setZone(Zone zone){
 		this.points = (Vector<Point>) zone.points.clone();
 	}
+	
 	/**
 	 * This method return true if the point in parameter is inside the polygon
 	 * of the zone
@@ -225,6 +251,9 @@ public class Zone {
 		return result;
 	}
 
+	/**
+	 * Create edition points between normal 
+	 */
 	public void buildMiddles(){
 		middles=new Vector<Point>();//points.size());
 		if(points.size()>2){
@@ -244,47 +273,26 @@ public class Zone {
 			);
 		}
 	}
-	
-	/*public Vector<Point> isSelfIntersecting(){
+	/**
+	 * Check if zone's polygon is self intersecting, segment by segment.
+	 * @return List of points involved in intersections, 4 points (2 segments) per intersection
+	 */
+	public Vector<Point> isSelfIntersecting(){
 		Vector<Point> result = new Vector<Point>();
 		points.add(points.get(0));//temporarily copying the first point at the end to avoid bounds' problems
-		for(int i=0; i<points.size()-1 ; i++){
-			for(int j=0; j<points.size()-1 ; j++){
-				if((j<i-1 || j>i+1) && (i!=points.size()-2 || j!=0) && !(i!=0 || j!=points.size()-2)){
+		for(int i=0; i<points.size()-2 ; i++){
+			for(int j=i+2; j<points.size()-1 ; j++){
+				Log.d("Intersection : test","("+i+","+(i+1)+");("+j+","+(j+1)+")");
 					if(intersect(points.get(i),points.get(i+1),points.get(j),points.get(j+1))){
 						result.add(points.get(i));
 						result.add(points.get(i+1));
 						result.add(points.get(j));
 						result.add(points.get(j+1));
-						Log.d("Intersection","("+i+","+(i+1)+");("+j+","+(j+1)+")");
+						Log.d("Intersection","oui");
 					}
 				}
-			}
 		}
 		points.remove(points.size()-1);
-		return result;//possibly null
-	}*/
-	
-	public Vector<Point> isSelfIntersecting(){
-		Vector<Point> result = new Vector<Point>();
-		for(int i=0; i<points.size()-4 ; i++){
-			for(int j=i+2; j<points.size()-2 ; j++){
-				if(intersect(points.get(i),points.get(i+1),points.get(j),points.get(j+1))){
-					result.add(points.get(i));
-					result.add(points.get(i+1));
-					result.add(points.get(j));
-					result.add(points.get(j+1));
-					Log.d("Intersection","("+i+","+(i+1)+");("+j+","+(j+1)+")");
-				}
-			}
-			if(intersect(points.get(i+1),points.get(i+2),points.get(points.size()-1),points.get(0))){
-				result.add(points.get(i));
-				result.add(points.get(i+1));
-				result.add(points.get(points.size()-1));
-				result.add(points.get(0));
-			Log.d("Intersection","("+i+","+(i+1)+");("+(points.size()-1)+","+0+")");
-			}
-		}
 		return result;//possibly null
 	}
 	
@@ -320,6 +328,14 @@ public class Zone {
 		}
 	}*/
 	
+	/**
+	 * Check if two segments, from 4 points, are intersecting.
+	 * @param start1
+	 * @param end1
+	 * @param start2
+	 * @param end2
+	 * @return
+	 */
 	// méthode d'un forum Google
 	private boolean intersect(Point start1,
 			Point end1, Point start2, Point end2) {
@@ -335,8 +351,7 @@ public class Zone {
 
 			double det = (A1 * B2) - (A2 * B1);
 
-			//TODO voir pour la pseudo colinéarité
-			if (Math.abs(det) < 10) {
+			if (Math.abs(det) < 5) {
 				// Lines are either parallel, are collinear (the exact same
 				// segment), or are overlapping partially, but not fully
 				// To see what the case is, check if the endpoints of one line

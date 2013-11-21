@@ -174,13 +174,14 @@ public class DrawZoneView extends Drawable {
 				for(Zone polygon : zones){
 					Path polyPath = new Path();
 					Vector<Point> points2 = polygon.getPoints();
-					polyPath.moveTo(points2.get(0).x, points2.get(0).y);			
-					for(int i=1; i<points2.size(); i++){
-						polyPath.lineTo(points2.get(i).x, points2.get(i).y);
-					}
-
+					if(! points2.isEmpty()){
+						polyPath.moveTo(points2.get(0).x, points2.get(0).y);			
+						for(int i=1; i<points2.size(); i++){
+							polyPath.lineTo(points2.get(i).x, points2.get(i).y);
+						}
 					// Draw the polygon
 					canvas.drawPath(polyPath, paintFillZone);
+					}
 				}
 			}
 	}
