@@ -1,8 +1,11 @@
 package com.ecn.urbapp.fragments;
 
+import java.io.File;
+
 import android.app.Fragment;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -21,6 +24,8 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
 import com.ecn.urbapp.utils.DrawImageView;
+import com.ecn.urbapp.zones.BitmapLoader;
+import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.SetOfZone;
 import com.ecn.urbapp.zones.Zone;
 
@@ -87,7 +92,7 @@ public class CharacteristicsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_definition, null);
 
-		myImage = (ImageView) v.findViewById(R.id.image);
+		myImage = (ImageView) v.findViewById(R.id.definition_image);
 		select = (Button) v.findViewById(R.id.definition_button_select);
 		selectConfirm = (Button) v.findViewById(R.id.definition_button_select_confirm);
 		text = (TextView) v.findViewById(R.id.definition_textview_select);
@@ -121,10 +126,21 @@ public class CharacteristicsFragment extends Fragment {
 		zones.addPoint(new Point(600, 400), 10);
 		zones.addPoint(new Point(600, 200), 10);*/
 
-		DrawImageView view = new DrawImageView(zones);
+		/*DrawImageView view = new DrawImageView(zones);
 		Drawable[] drawables = {view};
+		myImage.setImageDrawable(new LayerDrawable(drawables));*/
+		String youFilePath = MainActivity.pathImage;
+		File photo=new File(youFilePath);
+		
+		DrawZoneView drawzoneview = new DrawZoneView(MainActivity.zones) ;
+		Drawable[] drawables = {
+			new BitmapDrawable(
+				getResources(),
+				BitmapLoader.decodeSampledBitmapFromFile(
+					photo.getAbsolutePath(), 1000, 1000)), drawzoneview
+				};
 		myImage.setImageDrawable(new LayerDrawable(drawables));
-
+		
 	    select.setOnClickListener(clickListenerSelect);
 	    selectConfirm.setOnClickListener(clickListenerSelectConfirm);
 	    define.setOnClickListener(clickListenerDefine);
@@ -206,7 +222,7 @@ public class CharacteristicsFragment extends Fragment {
 			// Get the image matrix (if needed)
 			if (this.matrix == null) {
 				this.matrix = new Matrix();
-				((ImageView) getView().findViewById(R.id.image)).getImageMatrix()
+				((ImageView) getView().findViewById(R.id.definition_image)).getImageMatrix()
 						.invert(this.matrix);
 			}
 

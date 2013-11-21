@@ -8,23 +8,15 @@ import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.graphics.Matrix;
-import android.graphics.PointF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
@@ -36,8 +28,6 @@ import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 import com.ecn.urbapp.utils.ConnexionCheck;
-import com.ecn.urbapp.zones.BitmapLoader;
-import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.Zone;
 
 /**
@@ -92,9 +82,18 @@ public class MainActivity extends Activity {
 	public static Vector<Zone> zones=null;
 	public static ImageView myImage=null;
 	
+	public static String pathImage=null;
+	//TODO add the set of this boolinto each function loading a photo
+	//TODO add the block function into the listener 
+	public static boolean isPhoto=false;
+	
+	private Vector<Fragment> fragments=null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		fragments=new Vector<Fragment>();
 		
 		//Setting the Context of app
 		baseContext = getBaseContext();
@@ -121,6 +120,7 @@ public class MainActivity extends Activity {
 		HomeFragment home = new HomeFragment();
 		tabHome.setTabListener(new MyTabListener(home));
 		bar.addTab(tabHome);
+		fragments.add(home);
 		
 		//Information tab
 		Tab tabInformation =  bar.newTab();
@@ -128,6 +128,7 @@ public class MainActivity extends Activity {
 		InformationFragment information = new InformationFragment();
 		tabInformation.setTabListener((new MyTabListener(information)));
 		bar.addTab(tabInformation);
+		fragments.add(information);
 		
 		//Zone tab
 		Tab tabZone =  bar.newTab();
@@ -135,6 +136,7 @@ public class MainActivity extends Activity {
 		ZoneFragment zone = new ZoneFragment();
 		tabZone.setTabListener(new MyTabListener(zone));
 		bar.addTab(tabZone);
+		fragments.add(zone);
 		
 		//Definition tab
 		Tab tabDefinition =  bar.newTab();
@@ -142,6 +144,7 @@ public class MainActivity extends Activity {
 		CharacteristicsFragment definition = new CharacteristicsFragment();
 		tabDefinition.setTabListener(new MyTabListener(definition));
 		bar.addTab(tabDefinition);
+		fragments.add(definition);
 		
 		//Save tab
 		Tab tabSave =  bar.newTab();
@@ -149,6 +152,7 @@ public class MainActivity extends Activity {
 		SaveFragment save = new SaveFragment();
 		tabSave.setTabListener(new MyTabListener(save));
 		bar.addTab(tabSave);
+		fragments.add(save);
 		
 		//create zones' list for new image
 		zones = new Vector<Zone>();
@@ -189,5 +193,20 @@ public class MainActivity extends Activity {
 		alertDialog.setTitle("Pas de connexion internet de disponible. Relancer l'application, une fois internet fonctionnel");
 		alertDialog.show();		
 	}
+
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+            	FragmentManager fragmentManager = getFragmentManager();
+            	FragmentTransaction transaction = fragmentManager.beginTransaction();
+            	transaction.replace(android.R.id.content, fragments.get(requestCode+1));
+                transaction.addToBackStack(null);
+                transaction.commit();
+                getActionBar().setSelectedNavigationItem(requestCode+1);
+                MainActivity.isPhoto=true;
+            }
+        }
+    }
 	
 }

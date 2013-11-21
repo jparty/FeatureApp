@@ -4,13 +4,13 @@ import java.io.File;
 import java.util.Vector;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,6 +20,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
@@ -136,7 +137,8 @@ public class ZoneFragment extends Fragment{
 		
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 
-		String youFilePath = Environment.getExternalStorageDirectory().toString()+"/Download/Images.jpeg";
+		//String youFilePath = Environment.getExternalStorageDirectory().toString()+"/Download/Images.jpeg";
+		String youFilePath = MainActivity.pathImage;
 		photo=new File(youFilePath);
 	
 		drawzoneview = new DrawZoneView(zones, zone, selected) ;
@@ -147,7 +149,6 @@ public class ZoneFragment extends Fragment{
 					photo.getAbsolutePath(), 1000, 1000)), drawzoneview
 				};
 		myImage.setImageDrawable(new LayerDrawable(drawables));
-		MainActivity.myImage = myImage;
 		myImage.setOnTouchListener(deleteImageTouchListener);
 		
 		return v;
