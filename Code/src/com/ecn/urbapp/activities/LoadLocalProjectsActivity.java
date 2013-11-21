@@ -99,6 +99,7 @@ public class LoadLocalProjectsActivity extends Activity {
             public void onInfoWindowClick(Marker marker) {
                Toast.makeText(MainActivity.baseContext, refreshedValues.get(projectMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
    				Intent i = new Intent(getApplicationContext(), LoadLocalPhotosActivity.class);
+   				i.putExtra("SELECTED_PROJECT_ID", refreshedValues.get(projectMarkers.get(marker.getId())).getProjectId());
    				startActivity(i);
 
             }

@@ -67,21 +67,28 @@ public class LoadLocalPhotosActivity extends Activity{
      * The button for switching to hybrid view
      */
     private Button hybrid = null;
-    
+                                                                                                                                                                                                                     
+    long project_id;
+                                                                                                                      
     ImageView Photo;
-    
+
     private String[] URLs={
 			"http://static.tumblr.com/604c1f8526cf8f5511c6d7a5e32f9abd/u00yntv/2wEmlbf4d/tumblr_static_baby_otter.jpg",
-			"http://axemdo.files.wordpress.com/2010/07/loutre1.jpg",
+			"http://axemdo.files.wordpress.com/2010/07/loutre1.jpg",                
 			"http://www.spaycificzoo.com/wp-content/uploads/2011/11/loutre_naine1-300x232.jpg"}
     	;
-    
-    
+     
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_loadlocalphotos);
         datasource=MainActivity.datasource;
         datasource.open();
+        
+        /**
+         * extras that countains the project_id
+         */
+        
+        project_id = getIntent().getExtras().getLong("SELECTED_PROJECT_ID");
         
         map = ((MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map)).getMap();
@@ -99,7 +106,7 @@ public class LoadLocalPhotosActivity extends Activity{
         plan.setOnClickListener(displayedMap.toPlan);
         hybrid.setOnClickListener(displayedMap.toHybrid);
         
-        Photo = (ImageView) findViewById(R.id.loadLocalImage);
+       Photo = (ImageView) findViewById(R.id.loadLocalImage);
         
         listePhotos = (ListView) findViewById(R.id.listViewPhotos);
         refreshListPhoto();
@@ -128,9 +135,14 @@ public class LoadLocalPhotosActivity extends Activity{
      */
    public List<com.ecn.urbapp.db.Photo> recupPhoto() {
         
-        List<com.ecn.urbapp.db.Photo> values = this.datasource.getAllPhotos();
+        //List<com.ecn.urbapp.db.Photo> values = this.datasource.getAllPhotos();
+	   
+	   //TODO CATCH EXCEPTION
         
-        return values;
+            
+            List<com.ecn.urbapp.db.Photo> values = this.datasource.getAllPhotolinkedtoProject(project_id);
+            return values;
+
          
     }
     
@@ -148,14 +160,14 @@ public class LoadLocalPhotosActivity extends Activity{
         
         /**
          * Load Pictures
-         */
+         */ 
         ImageDownloader imageDownloader = new ImageDownloader();
     	imageDownloader.download(URLs[(int) (Math.random()*3)], Photo, "img"+((int)(Math.random()*3+1))+".png");
         
         /**
          * Put markers on the map
          */
-        Integer i = new Integer(0);
+       Integer i = new Integer(0);
         for (Photo enCours:refreshedValues){
         	String[] coord = enCours.getExt_GpsGeomCoord().split("//");
 			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
