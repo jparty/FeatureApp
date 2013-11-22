@@ -206,6 +206,17 @@ public class MainActivity extends Activity {
                 MainActivity.isPhoto=true;
             }
         }
+            if (requestCode == 1) {
+            	//TODO check that this is not a crash
+                                	FragmentManager fragmentManager = getFragmentManager();
+                	FragmentTransaction transaction = fragmentManager.beginTransaction();
+                	transaction.replace(android.R.id.content, fragments.get(requestCode+1));
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                    getActionBar().setSelectedNavigationItem(requestCode+1);
+                    MainActivity.isPhoto=true;
+                
+        }
     }
 	
 }

@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
         switch (v.getId()) {
         case R.id.home_loadLocalProject:
                 i = new Intent(this.getActivity(), LoadLocalProjectsActivity.class);
-                startActivity(i);                        
+                getActivity().startActivityForResult(i,1);                        
                 break;
 			
 		case R.id.home_test_photo:
