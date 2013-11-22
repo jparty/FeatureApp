@@ -142,6 +142,7 @@ public class CharacteristicsFragment extends Fragment {
 			}
 		}
 
+		MainActivity.photo=new File(MainActivity.pathImage);
 		DrawImageView view = new DrawImageView(zones);
 	
 		Drawable[] drawables = {

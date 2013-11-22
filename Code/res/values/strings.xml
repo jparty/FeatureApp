@@ -69,8 +69,8 @@
     <string name="plan">plan</string>
     
     <string name="hybrid">hybride</string>
-    
 	<string name="confirm">Confirmer</string>
+	<string name="confirm_photo">Valider le chargement</string>
 	<string name="progress_dialog_title_connecting">Début d\'envoi de l\'image</string>
 	<string name="upload_error_title">Erreur envoi</string>
 	<string name="upload_error_message">Problème de lors de l\envoi</string>

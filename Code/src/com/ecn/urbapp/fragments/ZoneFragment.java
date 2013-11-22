@@ -133,12 +133,10 @@ public class ZoneFragment extends Fragment{
 			zones = MainActivity.zones;
 		}
 		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
-		
+
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 		
-		if(MainActivity.photo==null){//why here and not in main activity ? it just doesn't work
-			MainActivity.photo=new File(MainActivity.pathImage);
-		}	
+		MainActivity.photo=new File(MainActivity.pathImage);	
 		drawzoneview = new DrawZoneView(zones, zone, selected) ;
 		Drawable[] drawables = {
 			new BitmapDrawable(

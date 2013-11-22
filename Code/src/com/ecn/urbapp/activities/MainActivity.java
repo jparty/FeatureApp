@@ -23,6 +23,8 @@ import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.LocalDataSource;
+import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
+import com.ecn.urbapp.dialogs.ConfirmPhotoDialogFragment;
 import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.fragments.HomeFragment;
 import com.ecn.urbapp.fragments.InformationFragment;
@@ -84,9 +86,9 @@ public class MainActivity extends Activity {
 	public static ImageView myImage=null;
 	
 	public static String pathImage=null;
+	public static String pathTampon=null;
 	public static File photo=null;
-	//TODO add the set of this boolinto each function loading a photo
-	//TODO add the block function into the listener 
+	//TODO add the set of this bool into each function loading a photo
 	public static boolean isPhoto=false;
 	public static boolean start = true;
 	
@@ -121,7 +123,7 @@ public class MainActivity extends Activity {
 		Tab tabHome =  bar.newTab();
 		tabHome.setText(R.string.homeFragment);
 		HomeFragment home = new HomeFragment();
-		tabHome.setTabListener(new MyTabListener(home));
+		tabHome.setTabListener(new MyTabListener(home, this));
 		bar.addTab(tabHome);
 		fragments.add(home);
 		
@@ -129,7 +131,7 @@ public class MainActivity extends Activity {
 		Tab tabInformation =  bar.newTab();
 		tabInformation.setText(R.string.informationFragment);
 		InformationFragment information = new InformationFragment();
-		tabInformation.setTabListener((new MyTabListener(information)));
+		tabInformation.setTabListener((new MyTabListener(information, this)));
 		bar.addTab(tabInformation);
 		fragments.add(information);
 		
@@ -137,7 +139,7 @@ public class MainActivity extends Activity {
 		Tab tabZone =  bar.newTab();
 		tabZone.setText(R.string.zoneFragment);
 		ZoneFragment zone = new ZoneFragment();
-		tabZone.setTabListener(new MyTabListener(zone));
+		tabZone.setTabListener(new MyTabListener(zone, this));
 		bar.addTab(tabZone);
 		fragments.add(zone);
 		
@@ -145,7 +147,7 @@ public class MainActivity extends Activity {
 		Tab tabDefinition =  bar.newTab();
 		tabDefinition.setText(R.string.definitionFragment);
 		CharacteristicsFragment definition = new CharacteristicsFragment();
-		tabDefinition.setTabListener(new MyTabListener(definition));
+		tabDefinition.setTabListener(new MyTabListener(definition, this));
 		bar.addTab(tabDefinition);
 		fragments.add(definition);
 		
@@ -153,7 +155,7 @@ public class MainActivity extends Activity {
 		Tab tabSave =  bar.newTab();
 		tabSave.setText(R.string.saveFragment);
 		SaveFragment save = new SaveFragment();
-		tabSave.setTabListener(new MyTabListener(save));
+		tabSave.setTabListener(new MyTabListener(save, this));
 		bar.addTab(tabSave);
 		fragments.add(save);
 		
@@ -201,6 +203,7 @@ public class MainActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
+            	confirm();
             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
             	transaction.replace(android.R.id.content, fragments.get(1));
@@ -213,6 +216,7 @@ public class MainActivity extends Activity {
             if (requestCode == 1) {
                 if (pathImage != null) {
             	//TODO check that this is not a crash
+                	confirm();
                                 	FragmentManager fragmentManager = getFragmentManager();
                 	FragmentTransaction transaction = fragmentManager.beginTransaction();
                 	transaction.replace(android.R.id.content, fragments.get(2));
@@ -224,6 +228,7 @@ public class MainActivity extends Activity {
         }
             if (requestCode == 2) {
                 if (resultCode == RESULT_OK) {
+                	confirm();
                 	MainActivity.pathImage = getRealPathFromURI(baseContext, data.getData());
                 	FragmentManager fragmentManager = getFragmentManager();
                 	FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -235,6 +240,15 @@ public class MainActivity extends Activity {
                 }
             }
     }
+	
+	public void confirm(){
+		if(MainActivity.pathTampon!=null){
+			ConfirmPhotoDialogFragment typedialog = new ConfirmPhotoDialogFragment();
+			typedialog.show(getFragmentManager(), "CharacteristicsDialogFragment");
+		}
+	}
+	
+	
 	public String getRealPathFromURI(Context context, Uri contentUri) {
 		  Cursor cursor = null;
 		  try { 
@@ -247,8 +261,6 @@ public class MainActivity extends Activity {
 		    if (cursor != null) {
 		      cursor.close();
 		    }
-		  }
 		}
-
-
+	}
 }

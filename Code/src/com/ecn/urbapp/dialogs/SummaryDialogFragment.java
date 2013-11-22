@@ -64,36 +64,6 @@ public class SummaryDialogFragment extends DialogFragment {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.information_about_frontage);
 
-		Map<String, HashMap<String, Float>> summary = CharacteristicsFragment
-				.getZones().getStatsForSelectedZones(getResources());
-		HashMap<String, Float> types = summary.get(getString(R.string.type));
-		HashMap<String, Float> materials = summary
-				.get(getString(R.string.materials));
-
-		String contenu = "<b><u>" + getString(R.string.type) + " :</b></u>";
-		if (types.keySet().size() == 1) {
-			contenu += " ";
-		} else {
-			contenu += "<br>";
-		}
-		for (String type : types.keySet()) {
-			contenu += type + " (" + (float) (Math.rint(types.get(type) *1e4) / 100) + " %)<br>";
-		}
-		contenu += "<b><u>" + getString(R.string.materials) + " :</b></u>";
-		if (materials.keySet().size() == 1) {
-			contenu += " ";
-		} else {
-			contenu += "<br>";
-		}
-		for (String material : materials.keySet()) {
-			contenu += material + " (" + (float) (Math.rint(materials.get(material) *1e4) / 100)
-					+ " %)<br>";
-		}
-
-		contenu = contenu + "<br><b><u>" + getString(R.string.color)
-				+ " :</b></u>";
-		builder.setMessage(Html.fromHtml(contenu));
-
 		// Add a rectangle of the color of the zone to the dialog
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View dialoglayout = inflater.inflate(R.layout.summary_dialog, null);
