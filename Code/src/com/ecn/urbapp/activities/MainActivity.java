@@ -88,6 +88,7 @@ public class MainActivity extends Activity {
 	//TODO add the set of this boolinto each function loading a photo
 	//TODO add the block function into the listener 
 	public static boolean isPhoto=false;
+	public static boolean start = true;
 	
 	private Vector<Fragment> fragments=null;
 	
@@ -210,7 +211,7 @@ public class MainActivity extends Activity {
             }
         }
             if (requestCode == 1) {
-                if (resultCode == RESULT_OK) {
+                if (pathImage != null) {
             	//TODO check that this is not a crash
                                 	FragmentManager fragmentManager = getFragmentManager();
                 	FragmentTransaction transaction = fragmentManager.beginTransaction();

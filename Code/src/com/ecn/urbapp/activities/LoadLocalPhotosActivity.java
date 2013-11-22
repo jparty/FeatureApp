@@ -107,7 +107,7 @@ public class LoadLocalPhotosActivity extends Activity{
         plan.setOnClickListener(displayedMap.toPlan);
         hybrid.setOnClickListener(displayedMap.toHybrid);
         
-       Photo = (ImageView) findViewById(R.id.loadLocalImage);
+       
         
         listePhotos = (ListView) findViewById(R.id.listViewPhotos);
         refreshListPhoto();
@@ -118,6 +118,8 @@ public class LoadLocalPhotosActivity extends Activity{
             @Override
             public void onInfoWindowClick(Marker marker) {
                Toast.makeText(MainActivity.baseContext, refreshedValues.get(photosMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
+
+               
                MainActivity.pathImage=Environment.getExternalStorageDirectory()+"/featureapp/"+refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_url();
                finish();
 
@@ -159,12 +161,7 @@ public class LoadLocalPhotosActivity extends Activity{
         ArrayAdapter<com.ecn.urbapp.db.Photo> adapterPhoto = new ArrayAdapter<com.ecn.urbapp.db.Photo>(this, android.R.layout.simple_expandable_list_item_1,refreshedValues);
         listePhotos.setAdapter(adapterPhoto);  
         
-        /**
-         * Load Pictures
-         */ 
-        ImageDownloader imageDownloader = new ImageDownloader();
-    	imageDownloader.download(URLs[(int) (Math.random()*3)], Photo, "img"+((int)(Math.random()*3+1))+".png");
-        
+       
         /**
          * Put markers on the map
          */
