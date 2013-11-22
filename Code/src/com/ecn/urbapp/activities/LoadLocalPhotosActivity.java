@@ -155,16 +155,13 @@ public class LoadLocalPhotosActivity extends Activity{
 
 		rowItems = new ArrayList<RowItem>();
 		for (Photo image:refreshedValues) {
-			RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(), image.getPhoto_author(), image.getPhoto_description());
+			RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(), image.getPhoto_url(), image.getPhoto_description());
 			rowItems.add(item);
 		}
 
 		CustomListViewAdapter adapter = new CustomListViewAdapter(this,
 				R.layout.layout_photolistview, rowItems);
 		listePhotos.setAdapter(adapter);
-
-		//ArrayAdapter<com.ecn.urbapp.db.Photo> adapterPhoto = new ArrayAdapter<com.ecn.urbapp.db.Photo>(this, android.R.layout.simple_expandable_list_item_1,refreshedValues);
-		//listePhotos.setAdapter(adapterPhoto);  
 
 		/**
 		 * Put markers on the map
@@ -195,7 +192,7 @@ public class LoadLocalPhotosActivity extends Activity{
 			String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
 			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
 			displayedMap = new GeoActivity(false, coordPhoto, map);
-			Toast.makeText(getApplicationContext(), coordPhoto.toString(), Toast.LENGTH_LONG).show();                  
+			Toast.makeText(getApplicationContext(), refreshedValues.get(position).getPhoto_url(), Toast.LENGTH_LONG).show();                  
 		}
 	};
 }
