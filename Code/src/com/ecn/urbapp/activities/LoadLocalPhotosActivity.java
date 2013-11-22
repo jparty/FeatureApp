@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -117,8 +118,8 @@ public class LoadLocalPhotosActivity extends Activity{
             @Override
             public void onInfoWindowClick(Marker marker) {
                Toast.makeText(MainActivity.baseContext, refreshedValues.get(photosMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
-   				Intent i = new Intent(getApplicationContext(), Test.class);
-   				startActivity(i);
+               MainActivity.pathImage=Environment.getExternalStorageDirectory()+"/featureapp/"+refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_url();
+               finish();
 
             }
         });
