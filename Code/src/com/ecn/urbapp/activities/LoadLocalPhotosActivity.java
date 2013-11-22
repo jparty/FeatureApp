@@ -1,15 +1,17 @@
 package com.ecn.urbapp.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -18,7 +20,9 @@ import android.widget.Toast;
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Photo;
+import com.ecn.urbapp.utils.CustomListViewAdapter;
 import com.ecn.urbapp.utils.ImageDownloader;
+import com.ecn.urbapp.utils.RowItem;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
@@ -68,7 +72,7 @@ public class LoadLocalPhotosActivity extends Activity{
      */
     private Button hybrid = null;
     
-    ImageView Photo;
+    private ArrayList<RowItem> rowItems;
     
     private String[] URLs={
 			"http://static.tumblr.com/604c1f8526cf8f5511c6d7a5e32f9abd/u00yntv/2wEmlbf4d/tumblr_static_baby_otter.jpg",
@@ -98,8 +102,6 @@ public class LoadLocalPhotosActivity extends Activity{
         satellite.setOnClickListener(displayedMap.toSatellite);
         plan.setOnClickListener(displayedMap.toPlan);
         hybrid.setOnClickListener(displayedMap.toHybrid);
-        
-        Photo = (ImageView) findViewById(R.id.loadLocalImage);
         
         listePhotos = (ListView) findViewById(R.id.listViewPhotos);
         refreshListPhoto();
@@ -143,15 +145,19 @@ public class LoadLocalPhotosActivity extends Activity{
     	
     	refreshedValues = recupPhoto();
     	
-        ArrayAdapter<com.ecn.urbapp.db.Photo> adapterPhoto = new ArrayAdapter<com.ecn.urbapp.db.Photo>(this, android.R.layout.simple_expandable_list_item_1,refreshedValues);
-        listePhotos.setAdapter(adapterPhoto);  
+    	rowItems = new ArrayList<RowItem>();
+        for (Photo image:refreshedValues) {
+            RowItem item = new RowItem(image.getPhoto_url(), image.getPhoto_author(), image.getPhoto_description());
+            rowItems.add(item);
+        }
+ 
+        CustomListViewAdapter adapter = new CustomListViewAdapter(this,
+                R.layout.layout_photolistview, rowItems);
+        listePhotos.setAdapter(adapter);
         
-        /**
-         * Load Pictures
-         */
-        ImageDownloader imageDownloader = new ImageDownloader();
-    	imageDownloader.download(URLs[(int) (Math.random()*3)], Photo, "img"+((int)(Math.random()*3+1))+".png");
-        
+        //ArrayAdapter<com.ecn.urbapp.db.Photo> adapterPhoto = new ArrayAdapter<com.ecn.urbapp.db.Photo>(this, android.R.layout.simple_expandable_list_item_1,refreshedValues);
+        //listePhotos.setAdapter(adapterPhoto);  
+           	
         /**
          * Put markers on the map
          */
