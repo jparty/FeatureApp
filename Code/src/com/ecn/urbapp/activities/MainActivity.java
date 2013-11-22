@@ -12,8 +12,11 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.ImageView;
@@ -199,24 +202,52 @@ public class MainActivity extends Activity {
             if (resultCode == RESULT_OK) {
             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
-            	transaction.replace(android.R.id.content, fragments.get(requestCode+1));
+            	transaction.replace(android.R.id.content, fragments.get(1));
                 transaction.addToBackStack(null);
                 transaction.commit();
-                getActionBar().setSelectedNavigationItem(requestCode+1);
+                getActionBar().setSelectedNavigationItem(1);
                 MainActivity.isPhoto=true;
             }
         }
             if (requestCode == 1) {
+                if (resultCode == RESULT_OK) {
             	//TODO check that this is not a crash
                                 	FragmentManager fragmentManager = getFragmentManager();
                 	FragmentTransaction transaction = fragmentManager.beginTransaction();
-                	transaction.replace(android.R.id.content, fragments.get(requestCode+1));
+                	transaction.replace(android.R.id.content, fragments.get(2));
                     transaction.addToBackStack(null);
                     transaction.commit();
-                    getActionBar().setSelectedNavigationItem(requestCode+1);
+                    getActionBar().setSelectedNavigationItem(2);
                     MainActivity.isPhoto=true;
-                
+                }
         }
+            if (requestCode == 2) {
+                if (resultCode == RESULT_OK) {
+                	MainActivity.pathImage = getRealPathFromURI(baseContext, data.getData());
+                	FragmentManager fragmentManager = getFragmentManager();
+                	FragmentTransaction transaction = fragmentManager.beginTransaction();
+                	transaction.replace(android.R.id.content, fragments.get(1));
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                    getActionBar().setSelectedNavigationItem(1);
+                    MainActivity.isPhoto=true;
+                }
+            }
     }
-	
+	public String getRealPathFromURI(Context context, Uri contentUri) {
+		  Cursor cursor = null;
+		  try { 
+		    String[] proj = { MediaStore.Images.Media.DATA };
+		    cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+		    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+		    cursor.moveToFirst();
+		    return cursor.getString(column_index);
+		  } finally {
+		    if (cursor != null) {
+		      cursor.close();
+		    }
+		  }
+		}
+
+
 }

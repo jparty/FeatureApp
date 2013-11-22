@@ -45,6 +45,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	 * creating the interface
 	 */
 	private Button takePhoto = null ;
+	private Button loadImage = null ;
 	private Button loadLocal = null ;
 	private Button test = null ;
 	private Button testPhoto = null ;
@@ -74,6 +75,8 @@ public class HomeFragment extends Fragment implements OnClickListener{
 
 		takePhoto=(Button)v.findViewById(R.id.home_takePicture);
 		takePhoto.setOnClickListener(take_picture);
+		loadImage=(Button)v.findViewById(R.id.home_loadPicture);
+		loadImage.setOnClickListener(loadPhoto);
 		
 		loadLocal=(Button)v.findViewById(R.id.home_loadLocalProject);
 		loadLocal.setOnClickListener(this);
@@ -161,6 +164,18 @@ public class HomeFragment extends Fragment implements OnClickListener{
 			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
 	    	getActivity().startActivityForResult(intent, 0);
+		}
+	};
+	// Create a click listener on the load_image button
+
+	OnClickListener loadPhoto = new View.OnClickListener(){
+		@Override
+		public void onClick(View v) {
+			// Creating an intent to get an image from the gallery
+			Intent i = new Intent(
+				Intent.ACTION_PICK,
+				android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+			getActivity().startActivityForResult(i, 2);
 		}
 	};
 	
