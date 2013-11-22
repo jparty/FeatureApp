@@ -8,10 +8,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract.CommonDataKinds.Photo;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.*;
@@ -25,6 +27,13 @@ public class TestPhoto extends ListActivity {
 
 	Button addPhoto = null;
 	Button deletePhoto = null;
+	Button createLink = null;
+	
+	/**
+	 * attributs EditText that countain the project id and the photo id that will appear in the Object Composed
+	 */
+	EditText projet_to_link_id = null;
+	EditText photo_to_link_id = null;
 	
 	
     @Override
@@ -40,10 +49,22 @@ public class TestPhoto extends ListActivity {
 
         addPhoto = (Button)findViewById(R.id.addPhoto);
         deletePhoto = (Button)findViewById(R.id.deletePhoto);
+        createLink = (Button)findViewById(R.id.test_photo_create_link);
         
-
+        projet_to_link_id = (EditText)findViewById(R.id.test_photo_project_idtolink);
+        photo_to_link_id = (EditText)findViewById(R.id.test_photo_photo_idtolink);
+        
+        /**
+         * define listeners
+         */
+        //OnClick listeners for Buttons
         addPhoto.setOnClickListener(clickListenerBoutonsAddPhoto);
         deletePhoto.setOnClickListener( clickListenerBoutonsDeletePhoto);
+        createLink.setOnClickListener(clickListenerCreateLink);
+
+
+        
+        
 
     }
     
@@ -129,8 +150,17 @@ public class TestPhoto extends ListActivity {
     		
     			adapter.notifyDataSetChanged();
     	};
-    };
+    };    
     
-    
+    private OnClickListener clickListenerCreateLink = new OnClickListener(){
+    	public void onClick(View view){
+    		ArrayAdapter<Composed> adapterPhoto = (ArrayAdapter<Composed>) getListAdapter();
+    		Composed link1 = null;
+    		link1 = datasource.createLink(Integer.parseInt(projet_to_link_id.getText().toString()), Integer.parseInt(photo_to_link_id.getText().toString()));
+			adapterPhoto.add(link1);
+			adapterPhoto.notifyDataSetChanged();
+			}	
+    	};
+      
     
 }

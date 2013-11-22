@@ -1,8 +1,41 @@
 package com.ecn.urbapp.fragments;
 
+import java.io.File;
+
 import android.app.Fragment;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.os.Bundle;
+import android.os.Environment;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
+import com.ecn.urbapp.dialogs.SummaryDialogFragment;
+import com.ecn.urbapp.utils.DrawImageView;
+import com.ecn.urbapp.zones.BitmapLoader;
+import com.ecn.urbapp.zones.DrawZoneView;
+import com.ecn.urbapp.zones.SetOfZone;
+import com.ecn.urbapp.zones.Zone;
+
+import java.io.File;
+
+import android.app.Fragment;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -17,10 +50,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
-import com.ecn.urbapp.dialogs.TypeDialogFragment;
 import com.ecn.urbapp.utils.DrawImageView;
+import com.ecn.urbapp.zones.BitmapLoader;
+import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.SetOfZone;
+import com.ecn.urbapp.zones.Zone;
 
 /**
  * @author	COHENDET Sébastien
@@ -35,7 +72,6 @@ import com.ecn.urbapp.zones.SetOfZone;
  * This is the fragment used to define the differents characteristics of the zone.
  * 			
  */
-
 public class CharacteristicsFragment extends Fragment {
 
 	/** List of all the zones */
@@ -85,7 +121,7 @@ public class CharacteristicsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_definition, null);
 
-		myImage = (ImageView) v.findViewById(R.id.image);
+		myImage = (ImageView) v.findViewById(R.id.definition_image);
 		select = (Button) v.findViewById(R.id.definition_button_select);
 		selectConfirm = (Button) v.findViewById(R.id.definition_button_select_confirm);
 		text = (TextView) v.findViewById(R.id.definition_textview_select);
@@ -97,27 +133,25 @@ public class CharacteristicsFragment extends Fragment {
 		// (or with an empty list if this creation does not correspond to a
 		// screen rotation)
 		zones = (SetOfZone) getActivity().getLastNonConfigurationInstance();
-		if (zones == null) {
+		if (MainActivity.zones==null) {
 			zones = new SetOfZone();
+		} else {
+			zones = new SetOfZone(MainActivity.zones);
+			for (Zone zone : zones.getZones()) {
+				zone.addPoint(zone.getPoints().get(0));
+			}
 		}
 
-		zones.addEmpty();
-		zones.addPoint(new Point(200, 200), 10);
-		zones.addPoint(new Point(400, 200), 10);
-		zones.addPoint(new Point(400, 400), 10);
-		zones.addPoint(new Point(200, 400), 10);
-		zones.addPoint(new Point(200, 200), 10);
-		zones.addEmpty();
-		zones.addPoint(new Point(600, 200), 10);
-		zones.addPoint(new Point(900, 200), 10);
-		zones.addPoint(new Point(900, 400), 10);
-		zones.addPoint(new Point(600, 400), 10);
-		zones.addPoint(new Point(600, 200), 10);
-
 		DrawImageView view = new DrawImageView(zones);
-		Drawable[] drawables = {view};
+	
+		Drawable[] drawables = {
+				new BitmapDrawable(
+					getResources(),
+					BitmapLoader.decodeSampledBitmapFromFile(
+							MainActivity.photo.getAbsolutePath(), 1000, 1000)), view
+		};
 		myImage.setImageDrawable(new LayerDrawable(drawables));
-
+		
 	    select.setOnClickListener(clickListenerSelect);
 	    selectConfirm.setOnClickListener(clickListenerSelectConfirm);
 	    define.setOnClickListener(clickListenerDefine);
@@ -178,8 +212,7 @@ public class CharacteristicsFragment extends Fragment {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			// If the user touch inside a zone, select the zone
-			zones.select(zones.isInsideZone(this
-					.convertTouchPoint(event.getX(), event.getY())));
+			zones.select(zones.isInsideZone(this.convertTouchPoint(event.getX(), event.getY())));
 
 			// Ask to draw again
 			myImage.invalidate();
@@ -199,7 +232,7 @@ public class CharacteristicsFragment extends Fragment {
 			// Get the image matrix (if needed)
 			if (this.matrix == null) {
 				this.matrix = new Matrix();
-				((ImageView) getView().findViewById(R.id.image)).getImageMatrix()
+				((ImageView) getView().findViewById(R.id.definition_image)).getImageMatrix()
 						.invert(this.matrix);
 			}
 
@@ -221,8 +254,8 @@ public class CharacteristicsFragment extends Fragment {
 		public void onClick(View v) {
 			if (!CharacteristicsFragment.getZones().getAllSelectedZones().isEmpty()) {
 				// Show the dialog to choose the characteristics
-				TypeDialogFragment typedialog = new TypeDialogFragment();
-				typedialog.show(getFragmentManager(), "TypeFragment");
+				CharacteristicsDialogFragment typedialog = new CharacteristicsDialogFragment();
+				typedialog.show(getFragmentManager(), "CharacteristicsDialogFragment");
 			}
 		}
 	};
@@ -257,4 +290,10 @@ public class CharacteristicsFragment extends Fragment {
 				summarydialog.show(getFragmentManager(), "TypeFragment");
 		}
 	};
+	
+	@Override
+	public void onStop(){
+		super.onStop();
+		MainActivity.zones=zones.getZones();
+	}
 }

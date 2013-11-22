@@ -111,8 +111,5 @@ public class SummaryDialogFragment extends DialogFragment {
 	 */
 	@Override
 	public void onCancel(DialogInterface dialog) {
-		// Unselect all the zones and draw the image again
-		CharacteristicsFragment.getZones().unselectAll();
-		CharacteristicsFragment.getMyImage().invalidate();
 	}
 }

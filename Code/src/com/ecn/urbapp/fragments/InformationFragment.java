@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.GeoActivity;
+import com.ecn.urbapp.activities.MainActivity;
 
 /**
  * @author	COHENDET Sébastien
@@ -43,14 +44,42 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		geo = (Button) v.findViewById(R.id.info_button_geo);
 	    geo.setOnClickListener(this);
 		
-	    Intent i = getActivity().getIntent();
+	    /*Intent i = getActivity().getIntent();
 	    EditText txt = (EditText) v.findViewById(R.id.info_edit_adress);
-	    txt.setText(i.getStringExtra("addr"));
+	    txt.setText(i.getStringExtra("addr"));*/
 		return v;
 	}
 		@Override
 		public void onClick(View v) {
 			Intent i = new Intent(this.getActivity(), GeoActivity.class);
 			startActivity(i);
+		}
+
+		@Override
+		public void onStop(){
+			super.onStop();
+		    EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
+		    MainActivity.author = txt.getText().toString();
+		    txt = (EditText) getView().findViewById(R.id.info_edit_deviceName);
+		    MainActivity.device = txt.getText().toString();
+		    txt = (EditText) getView().findViewById(R.id.info_edit_project);
+		    MainActivity.project = txt.getText().toString();
+		    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
+		    MainActivity.address = txt.getText().toString();
+		    
+		}
+
+		@Override
+		public void onStart(){
+			super.onStop();
+		    EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
+		    txt.setText(MainActivity.author);
+		    txt = (EditText) getView().findViewById(R.id.info_edit_deviceName);
+		    txt.setText(MainActivity.device);
+		    txt = (EditText) getView().findViewById(R.id.info_edit_project);
+		    txt.setText(MainActivity.project);
+		    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
+		    txt.setText(MainActivity.address);
+		    
 		}
 }

@@ -7,10 +7,10 @@
  
     <ImageView
 		android:id="@+id/photolistview_img"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_width="230dip"
+		android:layout_height="200dip"
 	   	android:layout_gravity="center_vertical"
-	   	android:padding="10px"
+	   	android:padding="5px"
 		/>
  
 	<LinearLayout
@@ -25,7 +25,7 @@
 	    <TextView android:id="@+id/photolistview_titre"
 	         android:layout_width="fill_parent"
 	         android:layout_height="fill_parent"
-	         android:textSize="16px"
+	         android:textSize="30dip"
 	         android:textStyle="bold"
 	         />
  
