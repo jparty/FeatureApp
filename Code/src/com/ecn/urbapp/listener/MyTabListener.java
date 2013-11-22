@@ -1,5 +1,7 @@
 package com.ecn.urbapp.listener;
 
+import com.ecn.urbapp.activities.MainActivity;
+
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Fragment;
@@ -42,8 +44,10 @@ public class MyTabListener implements TabListener{
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		if (MainActivity.pathImage != null || MainActivity.start ){
 		ft.replace(android.R.id.content, f);
-	}
+		}
+		}
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {

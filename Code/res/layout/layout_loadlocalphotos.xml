@@ -51,16 +51,7 @@
             android:id="@+id/listViewPhotos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
-         
-		 <ImageView
-		    android:id="@+id/loadLocalImage"
-		    android:layout_width="wrap_content"
-		    android:layout_height="400dp"
-		    android:layout_alignParentTop="true"
-		    android:contentDescription="@string/image_loadLocalProject"
-
-		    android:src="@drawable/image" /> 
+            android:layout_weight="1" /> 
         
         <fragment
          android:id="@+id/map"

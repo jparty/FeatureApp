@@ -100,7 +100,7 @@ public class LoadLocalProjectsActivity extends Activity {
                Toast.makeText(MainActivity.baseContext, refreshedValues.get(projectMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
    				Intent i = new Intent(getApplicationContext(), LoadLocalPhotosActivity.class);
    				i.putExtra("SELECTED_PROJECT_ID", refreshedValues.get(projectMarkers.get(marker.getId())).getProjectId());
-   				startActivityForResult(i, 0);
+   				startActivityForResult(i, 1);
    				
             }
         });
@@ -167,8 +167,8 @@ public class LoadLocalProjectsActivity extends Activity {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-        	if(resultCode==RESULT_OK){
+        if (requestCode == 1) {
+        	if(MainActivity.pathImage != null){
             //TODO vérifier que l'activité s'est bien terminée
             	finish();
         	}
