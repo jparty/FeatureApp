@@ -16,6 +16,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/definition_image"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/definition_void"/>
     
     <Button 
         android:id="@+id/definition_button_select"
@@ -43,4 +49,27 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:text="@string/definition_recap"/>
+
+    <TextView
+        android:id="@+id/definition_textview_select"
+        android:textSize="30sp"
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:visibility="gone"
+        android:text="@string/definition_select_text"/>
+
+    <Button
+        android:id="@+id/definition_button_select_confirm"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:text="@string/definition_select"/>
+    <Button
+        android:id="@+id/definition_void"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text=""/>
 </RelativeLayout>

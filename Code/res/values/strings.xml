@@ -25,13 +25,14 @@
     <string name="save">Sauvegarder</string>
 
     <string name="zone_create">Créer</string>
-    <string name="zone_suppress">Supprimer</string>
+    <string name="zone_delete">Supprimer</string>
     <string name="zone_edit">Editer</string>
     
     <string name="definition_select">Sélectionner</string>
     <string name="definition_define">Définir</string>
     <string name="definition_delete">Supprimer</string>
     <string name="definition_recap">Récapitulatif</string>
+    <string name="definition_select_text">Cliquer sur les zones à sélectionner.</string>
     
     <string name="info_text_author">Auteur :</string>
     <string name="info_text_deviceName">Nom de l\'appareil :</string>
@@ -47,5 +48,36 @@
     
     <string name="save_textStatus">None</string>
     <string name="save_buttonSync">Synchroniser</string>
+    <string name="back">Annuler dernière action</string>
+    <string name="cancel">Quitter</string>
+    <string name="help">Aide</string>
+    <string name="validate">Valider</string>
+    <string name="zone_edit_button_delete_point">Supprimer le point</string>
+    <string name="zone_edit_button_release_point">Lâcher le point</string>
     
+    <string name="type">Type</string>
+    <string name="materials">Matériaux</string>
+    <string name="color">Couleur</string>
+    <string name="not_defined">Pas défini</string>
+    <string name="definition_dialog_title">Choix des caractéristiques des zones sélectionnées</string>
+    <string name="definition_dialog_type">Type de la zone :</string>
+    <string name="definition_dialog_material">Matériau de la zone :</string>
+    <string name="definition_dialog_color">Couleur de la zone :</string>
+    <string name="ok">OK</string>
+    <string name="information_about_frontage">Informations sur cette zone</string>
+    <string name="satellite">satellite</string>
+    <string name="plan">plan</string>
+    
+    <string name="hybrid">hybride</string>
+	<string name="confirm">Confirmer</string>
+	<string name="confirm_photo">Valider le chargement</string>
+	<string name="progress_dialog_title_connecting">Début d\'envoi de l\'image</string>
+	<string name="upload_error_title">Erreur envoi</string>
+	<string name="upload_error_message">Problème de lors de l\envoi</string>
+	<string name="retry">Réessayer</string>
+	<string name="upload_success_title">Envoi réussi</string>
+	<string name="upload_success_message">Réussite de l\'envoi de l\'image</string>
+	<string name="success">Ok</string>
+	<string name="progress_dialog_title_uploading">progress_dialog_title_uploading</string>
+	
 </resources>
