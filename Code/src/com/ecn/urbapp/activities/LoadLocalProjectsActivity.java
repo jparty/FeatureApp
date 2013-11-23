@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -51,7 +50,7 @@ public class LoadLocalProjectsActivity extends Activity {
     /**
      * The instance of GeoActivity for map activity
      */
-    GeoActivity displayedMap;
+    private GeoActivity displayedMap;
     /**
      * The button for switching to satellite view
      */
@@ -110,7 +109,8 @@ public class LoadLocalProjectsActivity extends Activity {
         datasource.close();
     }
     
-    
+
+	//TODO add description for javadoc
     /**
      * loading the different projects of the local db
      * @return
@@ -136,7 +136,7 @@ public class LoadLocalProjectsActivity extends Activity {
         /**
          * Put markers on the map
          */
-        Integer i = new Integer(0);
+        Integer i = Integer.valueOf(0);
         for (Project enCours:refreshedValues){
         	String[] coord = enCours.getExt_GpsGeomCoord().split("//");
 			LatLng coordProjet = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
@@ -147,8 +147,8 @@ public class LoadLocalProjectsActivity extends Activity {
         	projectMarkers.put(marker.getId(), i);
         	i++;
         }
-        
    }
+    
     /**
      *  get the project selected in listview and show its position on the map 
      */
@@ -156,8 +156,7 @@ public class LoadLocalProjectsActivity extends Activity {
     public OnItemClickListener selectedProject = new OnItemClickListener()
     {
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View v, int position,
-				long id) {
+		public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
 			String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
 			LatLng coordProjet = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
 			displayedMap = new GeoActivity(false, coordProjet, map);
@@ -173,5 +172,5 @@ public class LoadLocalProjectsActivity extends Activity {
             	finish();
         	}
         }
-            }
+    }
 }

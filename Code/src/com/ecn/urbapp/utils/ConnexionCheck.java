@@ -1,34 +1,22 @@
 package com.ecn.urbapp.utils;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-
-import com.ecn.urbapp.activities.MainActivity;
-import com.ecn.urbapp.utils.ImageDownloader.BitmapDownloaderTask;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ImageView;
+
+import com.ecn.urbapp.activities.MainActivity;
 
 public class ConnexionCheck {
 
+	//TODO Adddescription for javadoc
 	private static String url=MainActivity.CONNECTIVITY_URL;
 
+	//TODO Adddescription for javadoc
 	public void Connectivity(){
 		ConnectivityManager con=(ConnectivityManager)MainActivity.baseContext.getSystemService(Activity.CONNECTIVITY_SERVICE);
 		boolean wifi=con.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnectedOrConnecting();
@@ -48,6 +36,7 @@ public class ConnexionCheck {
 
 	}
 }
+//TODO Adddescription for javadoc
 class ConnectivityRequestTask extends AsyncTask<String, Void, Boolean> {
 
 	private String url;
@@ -69,7 +58,6 @@ class ConnectivityRequestTask extends AsyncTask<String, Void, Boolean> {
 			urlConnection.setUseCaches(false);
 			urlConnection.getInputStream();
 			// We got a valid response, but not from the real google
-			Boolean dindon = urlConnection.getResponseCode() == 204;
 			return urlConnection.getResponseCode() == 204;
 		} catch (IOException e) {
 

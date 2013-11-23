@@ -50,6 +50,7 @@ public class BitmapLoader {
 		return inSampleSize;
 	}
 
+	//TODO Add description for javadoc
 	public static Bitmap decodeSampledBitmapFromFile(String file, int reqWidth,
 			int reqHeight) {
 
@@ -66,10 +67,12 @@ public class BitmapLoader {
 		options.inJustDecodeBounds = false;
 		return BitmapFactory.decodeFile(file, options);
 	}
-	
+
+	//TODO Add description for javadoc
 	public static int getWidth(){
 		return width;
 	}
+	//TODO Add description for javadoc
 	public static int getHeight(){
 		return height;
 	}

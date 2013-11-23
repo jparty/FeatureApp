@@ -34,12 +34,18 @@ import com.ecn.urbapp.utils.colorpicker.AmbilWarnaDialog.OnAmbilWarnaListener;
  */
 public class CharacteristicsDialogFragment extends DialogFragment {
 
+	//TODO Adddescription for javadoc
 	private Dialog box;
+	//TODO Adddescription for javadoc
 	private Spinner spinType;
+	//TODO Adddescription for javadoc
 	private Spinner spinMaterial;
+	//TODO Adddescription for javadoc
 	private TextView typeCustom;
+	//TODO Adddescription for javadoc
 	private TextView materialCustom;
-	View colorView;
+	//TODO Adddescription for javadoc
+	private View colorView;
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -135,7 +141,8 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		return box;
 
 	}
-	
+
+	//TODO Adddescription for javadoc
 	private OnItemSelectedListener itemSelectedListenerType = new OnItemSelectedListener() {
 
 		@Override
@@ -166,7 +173,8 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		public void onNothingSelected(AdapterView<?> arg0) {
 		}
 	};
-	
+
+	//TODO Adddescription for javadoc
 	private List<String> getMaterialList(boolean addMore, int... arrayIds) {
 		List<String> list = new ArrayList<String>();
 		for (int arrayId : arrayIds) {
@@ -186,7 +194,8 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		return list;
 		//return new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
 	}
-	
+
+	//TODO Adddescription for javadoc
 	private OnItemSelectedListener itemSelectedListenerMaterial = new OnItemSelectedListener() {
 
 		@Override
@@ -206,7 +215,8 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		public void onNothingSelected(AdapterView<?> parent) {
 		}
 	};
-	
+
+	//TODO Adddescription for javadoc
 	private OnClickListener validation = new OnClickListener() {
 		
 		@Override
@@ -234,7 +244,8 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			box.dismiss();
 		}
 	};
-	
+
+	//TODO Adddescription for javadoc
 	private List<String> fusionSortedList(List<String> list1, List<String> list2) {
 		List<String> result = new ArrayList<String>();
 		while (!list1.isEmpty()) {
@@ -255,7 +266,8 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		}
 		return result;
 	}
-	
+
+	//TODO Adddescription for javadoc
 	private OnClickListener chooseColor = new OnClickListener() {
 		
 		@Override

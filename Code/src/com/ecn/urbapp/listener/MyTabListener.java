@@ -30,9 +30,10 @@ public class MyTabListener implements TabListener{
 	/**
 	 * It's the fragment concerned by the listener
 	 */
-	Fragment f;
-	
-	Activity a;
+	private Fragment f;
+
+	//TODO Adddescription for javadoc
+	private Activity a;
 	
 	/**
 	 * Main constructor
@@ -43,11 +44,13 @@ public class MyTabListener implements TabListener{
 		this.a=a;
 	}
 
+	//TODO Adddescription for javadoc
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
 	}
 
+	//TODO Adddescription for javadoc
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 
@@ -77,6 +80,7 @@ public class MyTabListener implements TabListener{
 		}
 	}
 
+	//TODO Adddescription for javadoc
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub

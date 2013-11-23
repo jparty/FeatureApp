@@ -4,11 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import android.app.ListActivity;
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract.CommonDataKinds.Photo;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -16,7 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.ecn.urbapp.R;
-import com.ecn.urbapp.db.*;
+import com.ecn.urbapp.db.Composed;
+import com.ecn.urbapp.db.GpsGeom;
+import com.ecn.urbapp.db.LocalDataSource;
 
 public class TestPhoto extends ListActivity {
 

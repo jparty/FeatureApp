@@ -33,7 +33,8 @@ public class ImageDownloader {
 	private final File path=MainActivity.baseContext.getCacheDir();
 	/** Name of the file to be registered */
 	private String name;
-	
+
+	//TODO Adddescription for javadoc
 	/**
 	 * Method to launch the download of picture from an url
 	 * @param url
@@ -57,6 +58,7 @@ public class ImageDownloader {
             return path+"/"+name;
         }
 
+	//TODO Adddescription for javadoc
 	/**
 	 * Convert a bitmap image to a file (more convenient to manipule)
 	 * Maybe temporaly method !
@@ -95,7 +97,8 @@ public class ImageDownloader {
 		
 		return f;
 	}
-		
+
+	//TODO Adddescription for javadoc
 static Bitmap downloadBitmap(String url) {
     final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
     final HttpGet getRequest = new HttpGet(url);
@@ -135,8 +138,8 @@ static Bitmap downloadBitmap(String url) {
 }
     /* class BitmapDownloaderTask, see below */
 
+//TODO Adddescription for javadoc
 	class BitmapDownloaderTask extends AsyncTask<String, Void, Bitmap> {
-	    private String url;
 	    private final WeakReference<ImageView> imageViewReference;
 	
 	    public BitmapDownloaderTask(ImageView imageView) {

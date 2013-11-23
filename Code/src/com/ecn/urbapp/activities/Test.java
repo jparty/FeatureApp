@@ -4,17 +4,16 @@ import java.util.List;
 import java.util.Random;
 
 import android.app.ListActivity;
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract.CommonDataKinds.Photo;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import com.ecn.urbapp.R;
-import com.ecn.urbapp.db.*;
+import com.ecn.urbapp.db.GpsGeom;
+import com.ecn.urbapp.db.LocalDataSource;
+import com.ecn.urbapp.db.Project;
 
 public class Test extends ListActivity {
 
@@ -22,9 +21,9 @@ public class Test extends ListActivity {
 	private LocalDataSource datasource;
 	
 	//creating buttons for the TEST
-	Button addProject = null;
+	private Button addProject = null;
 
-	Button delete = null;
+	private Button delete = null;
 	
 	
     @Override
@@ -44,38 +43,30 @@ public class Test extends ListActivity {
         addProject.setOnClickListener(clickListenerBoutonsAddProject);
 
         delete.setOnClickListener( clickListenerBoutonsDelete);
-
     }
     
     protected void onClose() {      
         datasource.close();
     }
     
-    
+
     /**
      * loading the different projects of the local db
      * @return
      */
     public List<Project> recupProject() {
-         
          List<Project> values = this.datasource.getAllProjects();
-         
          return values;
-          
      }
     
     /**
      * creating a list of project and loads in the view
      */
-    public void refreshList(){      
-    	
+    public void refreshList(){
     	List<Project> values = recupProject();
-    	
         ArrayAdapter<Project> adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_expandable_list_item_1,values);
         setListAdapter(adapter);  
    }
-    
-    
     
    //TEST METHODS TO CREATE CONTENT THAT WILL BE DISPLAYED
     private OnClickListener clickListenerBoutonsAddProject = new OnClickListener(){
@@ -83,27 +74,25 @@ public class Test extends ListActivity {
     		ArrayAdapter<Project> adapter = (ArrayAdapter<Project>) getListAdapter();
     		
     		Project p1 = null;
-    			String[] Projects = new String[] {"Cool", "Very nice", "Hate it"};
-    			int nextInt = new Random().nextInt(3);
+			String[] Projects = new String[] {"Cool", "Very nice", "Hate it"};
+			int nextInt = new Random().nextInt(3);
     			
     		GpsGeom gps1=null;
-    			String[] coord = { new String("47.249069//-1.54820"),new String("50.249069//-8.54820"),new String("20.249069//41.54820")} ;
+			String[] coord = { new String("47.249069//-1.54820"),new String("50.249069//-8.54820"),new String("20.249069//41.54820")} ;
   
-    			//save the new Project to database
-    			p1 = datasource.createProject(Projects[nextInt]);
-    			//save the gpsgeom to database & project
-    				//TODO CREATE A TRANSACTION THE SQL
-    			
-    			gps1 = datasource.createGPSGeomToProject(coord[(int) (Math.random()*3)],p1.getProjectId());
-    			//updating p1 attributes
-    			p1.setGpsGeom_id(gps1.getGpsGeomsId());
-    			
-    			adapter.add(p1);
-    			adapter.notifyDataSetChanged();
+			//save the new Project to database
+			p1 = datasource.createProject(Projects[nextInt]);
+			//save the gpsgeom to database & project
+			//TODO CREATE A TRANSACTION THE SQL
+			
+			gps1 = datasource.createGPSGeomToProject(coord[(int) (Math.random()*3)],p1.getProjectId());
+			//updating p1 attributes
+			p1.setGpsGeom_id(gps1.getGpsGeomsId());
+			
+			adapter.add(p1);
+			adapter.notifyDataSetChanged();
     	};
     };
-    
-    
     
     private OnClickListener clickListenerBoutonsDelete = new OnClickListener(){
     	public void onClick(View view){
@@ -114,11 +103,7 @@ public class Test extends ListActivity {
 				datasource.deleteProject(Project);
 				adapter.remove(Project);
 			}
-    		
-    			adapter.notifyDataSetChanged();
+    		adapter.notifyDataSetChanged();
     	};
     };
-    
-    
-    
 }

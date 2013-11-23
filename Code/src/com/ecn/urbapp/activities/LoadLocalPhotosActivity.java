@@ -68,16 +68,12 @@ public class LoadLocalPhotosActivity extends Activity{
 	 */
 	private Button hybrid = null;
 
+	//TODO add description for javadoc
 	private ArrayList<RowItem> rowItems;
 
 
+	//TODO add description for javadoc
 	long project_id;
-
-	private String[] URLs={
-			"http://static.tumblr.com/604c1f8526cf8f5511c6d7a5e32f9abd/u00yntv/2wEmlbf4d/tumblr_static_baby_otter.jpg",
-			"http://axemdo.files.wordpress.com/2010/07/loutre1.jpg",                
-			"http://www.spaycificzoo.com/wp-content/uploads/2011/11/loutre_naine1-300x232.jpg"
-			};
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -129,6 +125,7 @@ public class LoadLocalPhotosActivity extends Activity{
 		datasource.close();
 	}
 
+	//TODO add description for javadoc
 	/**
 	 * loading the different projects of the local db
 	 * @return
@@ -147,8 +144,6 @@ public class LoadLocalPhotosActivity extends Activity{
 	/**
 	 * creating a list of project and loads in the view
 	 */
-
-
 	public void refreshListPhoto(){      
 
 		refreshedValues = recupPhoto();
@@ -169,7 +164,7 @@ public class LoadLocalPhotosActivity extends Activity{
 		/**
 		 * Put markers on the map
 		 */
-		Integer i = new Integer(0);
+		Integer i = Integer.valueOf(0);
 		for (Photo enCours:refreshedValues){
 			String[] coord = enCours.getExt_GpsGeomCoord().split("//");
 			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
@@ -185,7 +180,6 @@ public class LoadLocalPhotosActivity extends Activity{
 	/**
 	 *  get the project selected in listview and show its position on the map 
 	 */
-
 	public OnItemClickListener selectedPhoto = new OnItemClickListener()
 	{
 		@Override

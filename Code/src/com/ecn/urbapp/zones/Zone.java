@@ -2,14 +2,14 @@ package com.ecn.urbapp.zones;
 
 import java.util.Vector;
 
-import android.graphics.Point;
-import android.graphics.Point;
-import android.util.Log;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
-import com.ecn.urbapp.*;
+import android.util.Log;
 
+import com.ecn.urbapp.R;
+
+//TODO Check if it's possible to supress the commented code
 public class Zone {
 	/**
 	 * List of the points composing the polygon; the last point is listed twice
@@ -53,11 +53,13 @@ public class Zone {
 		this();
 		this.setZone(zone);
 	}
-	
+
+	//TODO Add description for javadoc
 	public Vector<Point> getPoints(){
 		return points;
 	}
-	
+
+	//TODO Add description for javadoc
 	 public Vector<Point> getMiddles(){
 		buildMiddles();
 		return middles;
