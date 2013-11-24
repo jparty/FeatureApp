@@ -13,6 +13,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -38,6 +43,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -91,7 +98,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	/**
 	 * number of markers to display (4 for a zone, 2 for a facade)
 	 */
-	private int nbPoints=4;
+	private int nbPoints=2;
 	
 	/**
 	 * Centrale Nantes GPS centered
@@ -130,6 +137,12 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	*/
 	public PolygonOptions rectOptions;
 	
+	public static final int[] markersColor = {
+			R.drawable.marker_red,
+			R.drawable.marker_yellow,
+			R.drawable.marker_green,
+			R.drawable.marker_purple,
+		};
 	
 	/**
 	* Define a DialogFragment that displays the error dialog
@@ -391,7 +404,6 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     	Intent i = new Intent(this, MainActivity.class);
     	try {
     		MainActivity.address = markers.get(markers.size()-1).getSnippet();
-    	//i.putExtra("addr", markers.get(markers.size()-1).getSnippet());
     	}
     	catch (ArrayIndexOutOfBoundsException e) {
     		Log.e(getLocalClassName(), "Pas de points !");
@@ -411,6 +423,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
              * We prevents to pu more than the max nb of markers
              */
             if(markers.size()<nbPoints) {
+
                 Marker marker = map.addMarker(new MarkerOptions()
 				     .position(point)
 				     .title("Adresse postale")
@@ -712,4 +725,37 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
              }
         }
     };
+
+    public Marker addMarkersColored(int number, String title, LatLng position){
+    	
+    	Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+    	Bitmap bmp = Bitmap.createBitmap(34, 41, conf);
+    	bmp.setDensity(Bitmap.DENSITY_NONE);
+    	Canvas canvas1 = new Canvas(bmp);
+
+    	// paint defines the text color,
+    	// stroke width, size
+    	Paint color = new Paint();
+    	
+    	String text = String.valueOf(number);
+    	int fontSize = 28-6*text.length();
+    	fontSize = (fontSize <0) ? 2 : fontSize;
+    	
+    	color.setTextSize(fontSize);
+    	color.setColor(Color.BLACK);
+
+    	//modify canvas
+    	canvas1.drawBitmap(BitmapFactory.decodeResource(MainActivity.baseContext.getResources(),markersColor[number%4]), 0,0, color);
+    	int posX = 14 -3*text.length();
+    	posX = (posX <0) ? 2 : posX;
+    	int posY = 29-3*text.length();
+    	posY = (posY <0) ? 2 : posY;
+    	canvas1.drawText(text, posX, posY, color);
+    	
+    	Marker marker = map.addMarker(new MarkerOptions()
+    	 .icon(BitmapDescriptorFactory.fromBitmap(bmp))
+         .position(position)
+         .title(title));
+    	return marker;
+    }
 }
