@@ -726,6 +726,13 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
         }
     };
 
+    /**
+     * Method to add a personalized marker, with a color chose automatically and a number in it.
+     * @param number to display in the marker 
+     * @param title the tittle text to display in marker
+     * @param position of the marker in the map
+     * @return the marker itself
+     */
     public Marker addMarkersColored(int number, String title, LatLng position){
     	
     	Bitmap.Config conf = Bitmap.Config.ARGB_8888;
@@ -756,6 +763,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     	 .icon(BitmapDescriptorFactory.fromBitmap(bmp))
          .position(position)
          .title(title));
+    	
     	return marker;
     }
 }
