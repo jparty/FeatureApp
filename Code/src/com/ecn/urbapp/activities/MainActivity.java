@@ -23,7 +23,6 @@ import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.LocalDataSource;
-import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.ConfirmPhotoDialogFragment;
 import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.fragments.HomeFragment;
@@ -69,29 +68,41 @@ public class MainActivity extends Activity {
 	 */
     public static Context baseContext;
 
+	//TODO add description for javadoc
 	private static Builder alertDialog;
-    
+
+	//TODO add description for javadoc
     public static final String CONNECTIVITY_URL="http://clients3.google.com/generate_204";
     
     /**
 	 * Attributs for the project information
 	 */
-
+	//TODO add description for javadoc
 	public static String author = "";
+	//TODO add description for javadoc
 	public static String device = "";
+	//TODO add description for javadoc
 	public static String project = "";
+	//TODO add description for javadoc
 	public static String address = "";
 
+	//TODO add description for javadoc
 	public static Vector<Zone> zones=null;
+	//TODO add description for javadoc
 	public static ImageView myImage=null;
-	
+
+	//TODO add description for javadoc
 	public static String pathImage=null;
+	//TODO add description for javadoc
 	public static String pathTampon=null;
+	//TODO add description for javadoc
 	public static File photo=null;
 	//TODO add the set of this bool into each function loading a photo
 	public static boolean isPhoto=false;
+	//TODO add description for javadoc
 	public static boolean start = true;
-	
+
+	//TODO add description for javadoc
 	private Vector<Fragment> fragments=null;
 	
 	@Override
@@ -213,53 +224,54 @@ public class MainActivity extends Activity {
                 MainActivity.isPhoto=true;
             }
         }
-            if (requestCode == 1) {
-                if (pathImage != null) {
-            	//TODO check that this is not a crash
-                	confirm();
-                                	FragmentManager fragmentManager = getFragmentManager();
-                	FragmentTransaction transaction = fragmentManager.beginTransaction();
-                	transaction.replace(android.R.id.content, fragments.get(2));
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                    getActionBar().setSelectedNavigationItem(2);
-                    MainActivity.isPhoto=true;
-                }
-        }
-            if (requestCode == 2) {
-                if (resultCode == RESULT_OK) {
-                	confirm();
-                	MainActivity.pathImage = getRealPathFromURI(baseContext, data.getData());
-                	FragmentManager fragmentManager = getFragmentManager();
-                	FragmentTransaction transaction = fragmentManager.beginTransaction();
-                	transaction.replace(android.R.id.content, fragments.get(1));
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                    getActionBar().setSelectedNavigationItem(1);
-                    MainActivity.isPhoto=true;
-                }
+        if (requestCode == 1) {
+            if (pathImage != null) {
+        	//TODO check that this is not a crash
+            	confirm();
+                            	FragmentManager fragmentManager = getFragmentManager();
+            	FragmentTransaction transaction = fragmentManager.beginTransaction();
+            	transaction.replace(android.R.id.content, fragments.get(2));
+                transaction.addToBackStack(null);
+                transaction.commit();
+                getActionBar().setSelectedNavigationItem(2);
+                MainActivity.isPhoto=true;
             }
+        }
+        if (requestCode == 2) {
+            if (resultCode == RESULT_OK) {
+            	confirm();
+            	MainActivity.pathImage = getRealPathFromURI(baseContext, data.getData());
+            	FragmentManager fragmentManager = getFragmentManager();
+            	FragmentTransaction transaction = fragmentManager.beginTransaction();
+            	transaction.replace(android.R.id.content, fragments.get(1));
+                transaction.addToBackStack(null);
+                transaction.commit();
+                getActionBar().setSelectedNavigationItem(1);
+                MainActivity.isPhoto=true;
+            }
+        }
     }
-	
+
+	//TODO add description for javadoc
 	public void confirm(){
 		if(MainActivity.pathTampon!=null){
 			ConfirmPhotoDialogFragment typedialog = new ConfirmPhotoDialogFragment();
 			typedialog.show(getFragmentManager(), "CharacteristicsDialogFragment");
 		}
 	}
-	
-	
+
+	//TODO add description for javadoc
 	public String getRealPathFromURI(Context context, Uri contentUri) {
-		  Cursor cursor = null;
-		  try { 
+		Cursor cursor = null;
+		try{ 
 		    String[] proj = { MediaStore.Images.Media.DATA };
 		    cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
 		    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 		    cursor.moveToFirst();
 		    return cursor.getString(column_index);
-		  } finally {
+		}finally{
 		    if (cursor != null) {
-		      cursor.close();
+		    	cursor.close();
 		    }
 		}
 	}

@@ -26,24 +26,26 @@ import android.widget.Toast;
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.MainActivity;
-import com.ecn.urbapp.db.Project;
 
 
 
 public class BackTaskImport extends AsyncTask<String, Integer, Integer>{
-	
+
+	//TODO Adddescription for javadoc
 	private static final String TAG_COMMENTS = "comments";
 	private static final String TAG_ID = "comments_id";
 	private static final String TAG_DESCRIPTION = "comments_description";
 	
 	private Activity mContext;
 	private ProgressBar mProgressBar;
-	
+
+	//TODO Adddescription for javadoc
 	public BackTaskImport(Activity context){
 		super();
 		this.mContext = context;
 	}
-	
+
+	//TODO Adddescription for javadoc
 	@Override
 	protected void onPreExecute(){
 		this.mProgressBar = (ProgressBar) mContext.findViewById(R.id.pBAsync);
@@ -51,7 +53,8 @@ public class BackTaskImport extends AsyncTask<String, Integer, Integer>{
 		super.onPreExecute();
 		Toast.makeText(mContext,  "D�but du traitement asynchrone", Toast.LENGTH_SHORT).show();
 	}
-		
+
+	//TODO Adddescription for javadoc
 	protected Integer doInBackground(String... params) { 
 		// Here we do useless work, you have to put here what you have to do
 		/*		for (int i = 0; i< 100; i++){
@@ -77,21 +80,20 @@ public class BackTaskImport extends AsyncTask<String, Integer, Integer>{
 			int progress = 100;
 			publishProgress(progress);
 			Log.w("Debug","parsing done");
-		} ;
-
-		
-				return null;
-				
+		};
+		return null;
     }
  
- 
+
+	//TODO Adddescription for javadoc
      //mise en place d'une progress bar : cf tuto : http://www.tutos-android.com/asynctask-android-traitement-asynchrone-background
     @Override
     protected void onProgressUpdate(Integer... values){
 		this.mProgressBar.setProgress(values[0]);
 		super.onProgressUpdate(values);
     }
-     
+
+	//TODO Adddescription for javadoc
     @Override
     protected void onPostExecute(Integer result) {
     	//this.mProgressBar.setVisibility(View.GONE);
@@ -99,47 +101,50 @@ public class BackTaskImport extends AsyncTask<String, Integer, Integer>{
         Toast.makeText(mContext, "Le traitement asynchrone est termin�", Toast.LENGTH_SHORT).show();
         super.onPostExecute(result);
     }
-    
+
+	//TODO Adddescription for javadoc
     //connexion vers l'exterieur
     public String readCommentFeed() {
-        StringBuilder builder = new StringBuilder();
-        HttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet("http://192.168.34.1/SQLite/");
-        try {
-          HttpResponse response = client.execute(httpGet);
-          StatusLine statusLine = response.getStatusLine();
-          int statusCode = statusLine.getStatusCode();
-          if (statusCode == 200) {
-            HttpEntity entity = response.getEntity();
-            InputStream content = entity.getContent();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-            String line;
-            while ((line = reader.readLine()) != null) {
-              builder.append(line + "\n");
-            }
-          } else {
-            Log.e(MainActivity.class.toString(), "Failed to download file");
-          }
-        } catch (ClientProtocolException e) {
-          e.printStackTrace();
-        } catch (IOException e) {
-          e.printStackTrace();
-        } 
-        return builder.toString();
-      }
+		StringBuilder builder = new StringBuilder();
+		HttpClient client = new DefaultHttpClient();
+		HttpGet httpGet = new HttpGet("http://192.168.34.1/SQLite/");
+		try {
+			HttpResponse response = client.execute(httpGet);
+			StatusLine statusLine = response.getStatusLine();
+			int statusCode = statusLine.getStatusCode();
+			if (statusCode == 200) {
+				HttpEntity entity = response.getEntity();
+				InputStream content = entity.getContent();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					builder.append(line + "\n");
+				}
+			} else {
+				Log.e(MainActivity.class.toString(), "Failed to download file");
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return builder.toString();
+    }
     
-    
+
+	//TODO Adddescription for javadoc
     public JSONObject parseComment(String commentToParse){
         try {
-        	JSONObject jObj = new JSONObject(commentToParse); 
-        	return jObj; //TO DO : is that OK ? or must we use an "if" condition at the end of the method ? 
-        	
-           } catch (JSONException e) {
-               Log.e("JSON Parser", "Error parsing data " + e.toString());
-               return (JSONObject) null;
-           }  
-   }
-    
+    	JSONObject jObj = new JSONObject(commentToParse); 
+    	return jObj; //TO DO : is that OK ? or must we use an "if" condition at the end of the method ? 
+    	
+        } catch (JSONException e) {
+           Log.e("JSON Parser", "Error parsing data " + e.toString());
+           return (JSONObject) null;
+        }  
+	}
+
+	//TODO Adddescription for javadoc
     public Boolean recComment(JSONObject jsonComment) {
         LocalDataSource datasource = new LocalDataSource(mContext);
         datasource.open();
@@ -148,13 +153,10 @@ public class BackTaskImport extends AsyncTask<String, Integer, Integer>{
             JSONArray projectsList = jsonComment.getJSONArray(TAG_COMMENTS);
               
             for(int i = 0; i < projectsList.length(); i++){
-                Project p1 = null;
                 JSONObject c = projectsList.getJSONObject(i);
- 
                 Long id = c.getLong(TAG_ID);
                 String descr = c.getString(TAG_DESCRIPTION);
- 
-                p1 = datasource.createProject(id, descr);
+                datasource.createProject(id, descr);
             }
             datasource.close();
             return true;
@@ -164,8 +166,7 @@ public class BackTaskImport extends AsyncTask<String, Integer, Integer>{
             datasource.close();
             return false;
         }
- 
-    }
+	}
 
 
 }

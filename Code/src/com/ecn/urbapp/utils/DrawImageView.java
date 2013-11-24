@@ -147,14 +147,17 @@ public class DrawImageView extends Drawable {
 		}
 	}
 
+	//TODO Adddescription for javadoc
 	@Override
 	public void setAlpha(int arg0) {
 	}
 
+	//TODO Adddescription for javadoc
 	@Override
 	public void setColorFilter(ColorFilter arg0) {
 	}
 
+	//TODO Adddescription for javadoc
 	@Override
 	public int getOpacity() {
 		return 0;

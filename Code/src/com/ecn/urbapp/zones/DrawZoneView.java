@@ -60,37 +60,44 @@ public class DrawZoneView extends Drawable {
 	public DrawZoneView() {
 		super();
 	}
-	
+
+	//TODO Add description for javadoc
 	public DrawZoneView(Vector<Zone> zones) {
 		super();
 		this.zones = zones; zone = new Zone();
 	}
-	
+
+	//TODO Add description for javadoc
 	public DrawZoneView(Vector<Zone> zones, Zone zone) {
 		super();
 		this.zone = zone; this.zones = zones; 
 	}
-	
+
+	//TODO Add description for javadoc
 	public DrawZoneView(Vector<Zone> zones, Zone zone, Point selected) {
 		super();
 		this.zone = zone; this.zones = zones; this.selected = selected; this.intersections = new Vector<Point>();
 		this.edit = false; this.create = false;
 	}
-	
+
+	//TODO Add description for javadoc
 	public void setIntersections(Vector<Point> intersections){
 		this.intersections = intersections;
 	}
-	
+
+	//TODO Add description for javadoc
 	public void onCreateMode(){
 		create = true;
 		edit = false;
 	}
-	
+
+	//TODO Add description for javadoc
 	public void onEditMode(){
 		create = false;
 		edit = true;
 	}
-	
+
+	//TODO Add description for javadoc
 	public void onZonePage(){
 		create = false;
 		edit = false;
@@ -186,15 +193,17 @@ public class DrawZoneView extends Drawable {
 			}
 	}
 
-
+	//TODO Add description for javadoc
 	@Override
 	public void setAlpha(int arg0) {
 	}
 
+	//TODO Add description for javadoc
 	@Override
 	public void setColorFilter(ColorFilter arg0) {
 	}
 
+	//TODO Add description for javadoc
 	@Override
 	public int getOpacity() {
 		return 0;

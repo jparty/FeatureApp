@@ -15,22 +15,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
  
 public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
- 
-    Context context;
- 
+
+	//TODO Adddescription for javadoc
+    private Context context;
+
+	//TODO Adddescription for javadoc
     public CustomListViewAdapter(Context context, int resourceId,
             List<RowItem> items) {
         super(context, resourceId, items);
         this.context = context;
     }
- 
+
+	//TODO Adddescription for javadoc
     /*private view holder class*/
     private class ViewHolder {
         ImageView imageView;
         TextView txtTitle;
         TextView txtDesc;
     }
- 
+
+	//TODO Adddescription for javadoc
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         RowItem rowItem = getItem(position);

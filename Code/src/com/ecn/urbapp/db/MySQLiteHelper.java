@@ -10,6 +10,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		/**
 		 * declaration of tables
 		 */
+	//TODO Adddescription for javadoc
 		public static final String TABLE_PROJECT = "Project";
 		public static final String TABLE_GPSGEOM = "GpsGeom";
 		public static final String TABLE_PIXELGEOM = "PixelGeom";
@@ -22,45 +23,54 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		
 		//creation of tables getters
 
+		//TODO Adddescription for javadoc
 		public static String getTableProject() {
 			return TABLE_PROJECT;
 		}
 
 
+		//TODO Adddescription for javadoc
 		public static String getTablePixelgeom() {
 			return TABLE_PIXELGEOM;
 		}
 
 
+		//TODO Adddescription for javadoc
 		public static String getTablePhoto() {
 			return TABLE_PHOTO;
 		}
 
 
+		//TODO Adddescription for javadoc
 		public static String getTableMaterial() {
 			return TABLE_MATERIAL;
 		}
 
 
+		//TODO Adddescription for javadoc
 		public static String getTableElementtype() {
 			return TABLE_ELEMENTTYPE;
 		}
 
 
+		//TODO Adddescription for javadoc
 		public static String getTableComposed() {
 			return TABLE_COMPOSED;
 		}
 
 
+		//TODO Adddescription for javadoc
 		public static String getTableElement() {
 			return TABLE_ELEMENT;
 		}
 
 
+		//TODO Adddescription for javadoc
 		public static String getTableGpsgeom() {
 			return TABLE_GPSGEOM;
 		}
 
+		//TODO Adddescription for javadoc
 		//creation of columns
 		
 		public static final String COLUMN_PROJECTID = "project_id";
@@ -90,7 +100,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		
 		public static final String DATABASE_NAME = "local3.db";
 		public static final int DATABASE_VERSION = 3;
-		
+
+		//TODO Adddescription for javadoc
 		// query to create the database
 		private static final String 
 					DATABASE_CREATE = 		
@@ -100,6 +111,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 						+ COLUMN_GPSGEOMCOORD + " text not null" 
 						+"); "
 		;
+		//TODO Adddescription for javadoc
 		private static final String 
 				DATABASE_CREATE2 = 	
 					"create table "
@@ -108,6 +120,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					+ COLUMN_PIXELGEOMCOORD + " text not null" 
 					+"); "
 		;
+		//TODO Adddescription for javadoc
 		private static final String 
 				DATABASE_CREATE3 = 	
 				    "create table "
@@ -118,6 +131,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					    + "FOREIGN KEY("+ COLUMN_GPSGEOMID +") REFERENCES "+TABLE_GPSGEOM+" ("+COLUMN_GPSGEOMID+")"
 					    +");"
 		;
+		//TODO Adddescription for javadoc
 		private static final String 
 				DATABASE_CREATE4 = 	
 				    "create table "
@@ -178,13 +192,15 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					    +");"
 		;
 			     
-		
+
+		//TODO Adddescription for javadoc
 		//constructor
 		public MySQLiteHelper(Context context){
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
 		
 
+		//TODO Adddescription for javadoc
 		@Override
 		public void onCreate(SQLiteDatabase database) {
 			database.execSQL(getDatabaseCreate());	
@@ -197,7 +213,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			database.execSQL(getDatabaseCreate8());
 		}
 
-		
+
+		//TODO Adddescription for javadoc
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.w(MySQLiteHelper.class.getName(), 
@@ -214,6 +231,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		}
 
 
+		//TODO Adddescription for javadoc
 		public static String getDatabaseCreate() {
 			return DATABASE_CREATE;
 		}

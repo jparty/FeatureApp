@@ -3,16 +3,13 @@
 // for this usefull tuto
 
 package com.ecn.urbapp.db;
-
+//TODO is this file important ? if yes move it to activities package, else remove it
 
 import java.util.List;
 import java.util.Random;
 
 import android.app.ListActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -118,7 +115,8 @@ public class MainActivity extends ListActivity {
     //redefine the Onclick actions thanks to an attribute 
     private OnClickListener clickListenerBoutonsAdd = new OnClickListener(){
     	public void onClick(View view){
-    		ArrayAdapter<Project> adapter = (ArrayAdapter<Project>) getListAdapter();
+    		@SuppressWarnings("unchecked")
+			ArrayAdapter<Project> adapter = (ArrayAdapter<Project>) getListAdapter();
     		Project Project = null;
     			String[] Projects = new String[] {"Cool", "Very nice", "Hate it"};
     			int nextInt = new Random().nextInt(3);
@@ -131,7 +129,8 @@ public class MainActivity extends ListActivity {
     
     private OnClickListener clickListenerBoutonsDelete = new OnClickListener(){
     	public void onClick(View view){
-    		ArrayAdapter<Project> adapter = (ArrayAdapter<Project>) getListAdapter();
+    		@SuppressWarnings("unchecked")
+			ArrayAdapter<Project> adapter = (ArrayAdapter<Project>) getListAdapter();
     		Project Project = null;
     		if (getListAdapter().getCount()>0){
 				Project = (Project) getListAdapter().getItem(0);

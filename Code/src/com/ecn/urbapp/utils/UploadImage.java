@@ -1,6 +1,5 @@
 package com.ecn.urbapp.utils;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +26,7 @@ public class UploadImage extends Activity {
 	/** The captured image file. Get it's path from the starting intent */
 	private File mImage;
 
+	//TODO Adddescription for javadoc
 	/** Progress dialog id */
 	private static final int UPLOAD_PROGRESS_DIALOG = 0;
 	private static final int UPLOAD_ERROR_DIALOG = 1;
@@ -58,10 +58,12 @@ public class UploadImage extends Activity {
 		new UploadImageTask().execute(mImage);
 	}
 
+	//TODO Add description for javadoc
 	public UploadImage() {
 		super();
 	}
 
+	//TODO Add description for javadoc
 	public void onStart()
 	{
 		super.onStart();
@@ -91,6 +93,7 @@ public class UploadImage extends Activity {
 
 	}
 
+	//TODO Adddescription for javadoc
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -193,6 +196,7 @@ public class UploadImage extends Activity {
 			setProgressBarIndeterminateVisibility(true);
 			mConfirm.setEnabled(false);
 			mCancel.setEnabled(false);
+			//TODO change showDialog by a dialog fragment like it's recommended in the documentation
 			showDialog(UPLOAD_PROGRESS_DIALOG);
 		}
 
@@ -206,6 +210,7 @@ public class UploadImage extends Activity {
 			mConfirm.setEnabled(true);
 			mDialog.dismiss();
 
+			//TODO change showDialog by a dialog fragment like it's recommended in the documentation
 			if (result) {
 				showDialog(UPLOAD_SUCCESS_DIALOG);
 				Log.w("DFHUPLOAD", "Bim, c'est bon ça");
@@ -235,7 +240,6 @@ public class UploadImage extends Activity {
 		private boolean doFileUpload(File file, String uploadUrl) {
 			HttpURLConnection connection = null;
 			DataOutputStream outputStream = null;
-			DataInputStream inputStream = null;
 
 			String pathToOurFile = file.getPath();
 			String urlServer = UPLOAD_URL;
@@ -307,9 +311,9 @@ public class UploadImage extends Activity {
 				outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
 				// Responses from the server (code and message)
-				int serverResponseCode = connection.getResponseCode();
+				connection.getResponseCode();
 
-				String serverResponseMessage = connection.getResponseMessage();
+				connection.getResponseMessage();
 
 
 				fileInputStream.close();
