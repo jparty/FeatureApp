@@ -64,7 +64,7 @@ public class ZoneFragment extends Fragment{
 	
 
 	private ImageView myImage; private Matrix matrix;
-	private Vector<Zone> zones; private Zone zoneCache ; 
+	private Zone zoneCache ; 
 	private Zone zone;
 	private Point selected;
 	private DrawZoneView drawzoneview;
@@ -128,16 +128,14 @@ public class ZoneFragment extends Fragment{
 		edit_releasePoint.setOnClickListener(editReleasePointListener);
 
 		if (MainActivity.zones==null) {
-			zones = new Vector<Zone>();
-		} else {
-			zones = MainActivity.zones;
+			MainActivity.zones = new Vector<Zone>();
 		}
 		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
 
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 		
 		MainActivity.sphoto=new File(MainActivity.pathImage);	
-		drawzoneview = new DrawZoneView(zones, zone, selected) ;
+		drawzoneview = new DrawZoneView(MainActivity.zones, zone, selected) ;
 		Drawable[] drawables = {
 			new BitmapDrawable(
 				getResources(),
@@ -196,8 +194,8 @@ public class ZoneFragment extends Fragment{
 				return false;
 			}
 		});
-		zone.setZone(new Zone());
-		zoneCache.setZone(new Zone());
+		zone= new Zone();
+		zoneCache = new Zone();
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
 		myImage.invalidate();
@@ -233,7 +231,7 @@ public class ZoneFragment extends Fragment{
     private OnClickListener createValidateListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			zones.add(new Zone(zone));
+			MainActivity.zones.add(new Zone(zone));
 			exitAction();
 		}
 	};
@@ -357,12 +355,11 @@ public class ZoneFragment extends Fragment{
 				
 				//If no zone has been selected yet, try to select one
 				if(zone.getPoints().isEmpty()){
-					for(Zone test : zones){
+					for(Zone test : MainActivity.zones){
 						if(test.containPoint(touch)){
 							zoneCache = test;
-							zone.setZone(test);
-							zones.remove(test);//zone.setZone(test);
-							
+							zone = test;
+							//zone.setZone(test);
 						}
 					}
 				}
@@ -413,7 +410,8 @@ public class ZoneFragment extends Fragment{
 		@Override
 		public void onClick(View v) {
 			//zones.remove(zoneCache);//delete original 
-			zones.add(new Zone(zone));//save edited
+			MainActivity.zones.remove(zoneCache);
+			MainActivity.zones.add(new Zone(zone));//save edited
 			exitAction();
 		}
 	};
@@ -421,7 +419,7 @@ public class ZoneFragment extends Fragment{
 		@Override
 		public void onClick(View v) {
 			if(zoneCache != null){//if user is coming from CreateZone there is no original to save
-				zones.add(new Zone(zoneCache));//save original
+				MainActivity.zones.add(new Zone(zoneCache));//save original
 			}
             exitAction();
 		}
@@ -466,13 +464,13 @@ public class ZoneFragment extends Fragment{
 				getMatrix();
 				Point touch = getTouchedPoint(event);
 				if(zone.getPoints().isEmpty()){
-					for(Zone test : zones){
+					for(Zone test : MainActivity.zones){
 						if(test.containPoint(touch)){
 							zoneCache = test;
 						}
 					}
 					if(zoneCache != null){
-						zones.remove(zoneCache);						
+						MainActivity.zones.remove(zoneCache);						
 			            exitAction();
 					}
 				}
@@ -490,6 +488,5 @@ public class ZoneFragment extends Fragment{
 	@Override
 	public void onStop(){
 		super.onStop();
-		MainActivity.zones=zones;
 	}
 }

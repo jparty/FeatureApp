@@ -35,6 +35,8 @@ knowledge of the CeCILL license and that you accept its terms.
 
 package com.ecn.urbapp.utils;
 
+import java.util.Vector;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -53,7 +55,7 @@ import com.ecn.urbapp.zones.*;
 public class DrawImageView extends Drawable {
 
 	/** Zones that need to be drawn */
-	public SetOfZone zones;
+	public Vector<Zone> zones;
 
 	/**
 	 * Constructor of this class
@@ -61,7 +63,7 @@ public class DrawImageView extends Drawable {
 	 * @param zones
 	 *            the set of zones the need to be drawn
 	 */
-	public DrawImageView(SetOfZone zones) {
+	public DrawImageView(Vector<Zone> zones) {
 		super();
 		this.zones = zones;
 	}
@@ -87,34 +89,34 @@ public class DrawImageView extends Drawable {
 		fillPaint.setAlpha(50);
 
 		// For all the zones
-		for (int i = 0; i < zones.getZones().size(); i++) {
+		for (int i = 0; i < zones.size(); i++) {
 			// If the zone is not selected, only draw the lines
-			if (!zones.getZones().get(i).isSelected()) {
+			if (!zones.get(i).isSelected()) {
 				// Paint in a different color depending on its state
-				if (zones.getZones().get(i).isFinished()) {
-					if (zones.getZones().get(i).getColor() != 0) {
-						finishedPaint.setColor(zones.getZones().get(i).getColor());
+				if (zones.get(i).isFinished()) {
+					if (zones.get(i).getColor() != 0) {
+						finishedPaint.setColor(zones.get(i).getColor());
 					}
 					// Add all the lines of the polygon
-					for (int j = 0; j < zones.getZones().get(i).points
+					for (int j = 0; j < zones.get(i).points
 							.size() - 1; j++) {
 						canvas.drawLine(
-								zones.getZones().get(i).points.get(j).x,
-								zones.getZones().get(i).points.get(j).y,
-								zones.getZones().get(i).points
-										.get(j + 1).x, zones.getZones()
+								zones.get(i).points.get(j).x,
+								zones.get(i).points.get(j).y,
+								zones.get(i).points
+										.get(j + 1).x, zones
 										.get(i).points.get(j + 1).y,
 								finishedPaint);
 					}
 					finishedPaint.setColor(Color.RED);
 				} else {
 					// Add all the lines of the polygon
-					for (int j = 0; j < zones.getZones().get(i).points.size() - 1; j++) {
+					for (int j = 0; j < zones.get(i).points.size() - 1; j++) {
 						canvas.drawLine(
-								zones.getZones().get(i).points.get(j).x,
-								zones.getZones().get(i).points.get(j).y,
-								zones.getZones().get(i).points
-										.get(j + 1).x, zones.getZones()
+								zones.get(i).points.get(j).x,
+								zones.get(i).points.get(j).y,
+								zones.get(i).points
+										.get(j + 1).x, zones
 										.get(i).points.get(j + 1).y,
 								unfinishedPaint);
 					}
@@ -126,17 +128,17 @@ public class DrawImageView extends Drawable {
 				// Create a closed path for the polygon
 				Path polyPath = new Path();
 				polyPath.moveTo(
-						zones.getZones().get(i).points.get(0).x,
-						zones.getZones().get(i).points.get(0).y);
-				for (int j = 0; j < zones.getZones().get(i).points
+						zones.get(i).points.get(0).x,
+						zones.get(i).points.get(0).y);
+				for (int j = 0; j < zones.get(i).points
 						.size(); j++) {
 					polyPath.lineTo(
-							zones.getZones().get(i).points.get(j).x,
-							zones.getZones().get(i).points.get(j).y);
+							zones.get(i).points.get(j).x,
+							zones.get(i).points.get(j).y);
 				}
 
-				if (zones.getZones().get(i).getColor() != 0) {
-					fillPaint.setColor(zones.getZones().get(i).getColor());
+				if (zones.get(i).getColor() != 0) {
+					fillPaint.setColor(zones.get(i).getColor());
 					fillPaint.setAlpha(50);
 				}
 				// Draw the polygon
