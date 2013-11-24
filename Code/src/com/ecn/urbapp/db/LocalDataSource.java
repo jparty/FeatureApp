@@ -14,6 +14,12 @@ public class LocalDataSource {
 	//Database fields
 	//TODO Adddescription for javadoc
 	private SQLiteDatabase database;
+	
+	public SQLiteDatabase getDatabase() {
+		return database;
+	}
+
+
 	//TODO Adddescription for javadoc
 	private MySQLiteHelper dbHelper;
 
@@ -318,7 +324,6 @@ public class LocalDataSource {
 		ContentValues args = new ContentValues();
 		args.put(MySQLiteHelper.COLUMN_GPSGEOMID, gps1.getGpsGeomsId());
 		int d = database.update(MySQLiteHelper.TABLE_PHOTO, args, MySQLiteHelper.COLUMN_PHOTOID +"=" + id, null);
-		 
 		return gps1;
 	}
 
