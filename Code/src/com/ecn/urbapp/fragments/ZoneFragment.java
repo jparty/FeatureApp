@@ -24,6 +24,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
+import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.ecn.urbapp.zones.Zone;
 
 /**
@@ -231,7 +232,7 @@ public class ZoneFragment extends Fragment{
     private OnClickListener createValidateListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			MainActivity.zones.add(new Zone(zone));
+			UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
 			exitAction();
 		}
 	};
@@ -409,9 +410,8 @@ public class ZoneFragment extends Fragment{
 	private OnClickListener editValidateListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			//zones.remove(zoneCache);//delete original 
-			MainActivity.zones.remove(zoneCache);
-			MainActivity.zones.add(new Zone(zone));//save edited
+			MainActivity.zones.remove(zoneCache); //delete original
+			UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
 			exitAction();
 		}
 	};

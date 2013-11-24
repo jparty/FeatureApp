@@ -7,6 +7,10 @@ import android.util.Log;
 import android.content.res.Resources;
 import android.graphics.Color;
 import com.ecn.urbapp.R;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 
 public class Zone {
 	/**
@@ -31,6 +35,12 @@ public class Zone {
 	
 	/** List of small points displayed between normal points in zone edition mode **/
 	protected Vector<Point> middles;//useful for updateMiddles only, otherwise it's built everytime its getter is used
+
+	/** JTS Polygon representation of the zone. */
+	private Polygon poly;
+
+	/** The geometry factory used to create geometries. */
+	GeometryFactory gf = new GeometryFactory();
 
 	/**
 	 * Constructor of a new points (unfinished by default)
@@ -57,22 +67,58 @@ public class Zone {
 
 	/**
 	 * Constructor of a zone by copying an other
+	 *
 	 * @param zone
 	 */
 	public Zone(Zone zone){
 		this();
+		Vector<Point> vectPoints = zone.getPoints();
+		int nbrPoints = vectPoints.size();
+		Coordinate[] coordinates;
+		if (vectPoints.get(0).equals(vectPoints.get(nbrPoints - 1))) {
+			coordinates = new Coordinate[nbrPoints];
+		} else {
+			coordinates = new Coordinate[nbrPoints + 1];
+		}
+		int i = 0;
 		for (Point p : zone.getPoints()) {
 			points.add(new Point(p));
+			coordinates[i] = new Coordinate(p.x, p.y);
+			i++;
 		}
+		if (!vectPoints.get(0).equals(vectPoints.get(nbrPoints - 1))) {
+			coordinates[nbrPoints] = coordinates[0];
+		}
+		LinearRing lr = gf.createLinearRing(coordinates);
+		poly = gf.createPolygon(lr, null);
 	}
-	
+
 	public Vector<Point> getPoints(){
 		return points;
 	}
-	
+
 	 public Vector<Point> getMiddles(){
 		buildMiddles();
 		return middles;
+	}
+
+	 /**
+	  * Return the jts-polygon representing the zone.
+	  */
+	 public Polygon getPolygon() {
+		 return poly;
+	 }
+
+	 public void createHole(Polygon polygon) {
+		LinearRing shell = gf.createLinearRing(poly.getExteriorRing()
+				.getCoordinates());
+		int nbrHoles = poly.getNumInteriorRing();
+		LinearRing[] holes = new LinearRing[nbrHoles + 1];
+		for (int i = 0; i < nbrHoles; i++) {
+			holes[i] = gf.createLinearRing(poly.getInteriorRingN(i).getCoordinates());
+		}
+		holes[nbrHoles] = gf.createLinearRing(polygon.getCoordinates());
+		poly = gf.createPolygon(shell, holes);
 	}
 	
 	/**
@@ -245,15 +291,7 @@ public class Zone {
 	 * @return the area
 	 */
 	public float area() {
-		float result = 0;
-		for (int i = 0; i < points.size() - 1; i++) {
-			result = result + points.get(i).x * points.get(i + 1).y
-					- points.get(i + 1).x * points.get(i).y;
-		}
-
-		result = (float) (0.5 * Math.abs(result));
-
-		return result;
+		return (float) poly.getArea();
 	}
 
 	/**
