@@ -18,9 +18,6 @@ public class Zone {
 	 */
 	public Vector<Point> points;
 
-	/** The state of the zone (finished or unfinished) */
-	protected boolean finished;
-
 	/** Material of this zone */
 	protected String material;
 
@@ -47,7 +44,6 @@ public class Zone {
 	 */
 	public Zone() {
 		points = new Vector<Point>();
-		finished = false;
 		selected = false;
 		middles = new Vector<Point>();
 		color = Color.RED;
@@ -207,14 +203,6 @@ public class Zone {
 	public boolean isSelected() {
 		return this.selected;
 	}
-	
-	/**
-	 * Getter of finished
-	 * @return true if the zone is finished
-	 */
-	public boolean isFinished(){
-		return this.finished;
-	}
 
 	/**
 	 * Return the type in text form (with written not defined if it is null)
@@ -254,9 +242,6 @@ public class Zone {
 	 */
 	public void addPoint(Point point) {
 		points.add(point);
-		if (point.x == points.get(0).x && point.y == points.get(0).y) {
-			this.finished = true;
-		}
 	}
 	
 	/**
