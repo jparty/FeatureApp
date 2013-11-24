@@ -178,9 +178,7 @@ public class LoadLocalPhotosActivity extends Activity{
 			
 			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
 					
-			Marker marker = map.addMarker(new MarkerOptions()
-			.position(GPSCentered)
-			.title("Cliquez ici pour valider cette photo"));
+			Marker marker = displayedMap.addMarkersColored(i, "Cliquez ici pour valider cette photo", GPSCentered);
 			
 			/**
 			 * Adding the line in the map
