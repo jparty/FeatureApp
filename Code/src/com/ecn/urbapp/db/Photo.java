@@ -7,6 +7,9 @@ public class Photo {
 	private long photo_id;
 	private String photo_description;
 	private String photo_author;
+	/**
+	 * attributes that declare the name of the picture for instance : img1.png
+	 */
 	private String photo_url;
 	private long gpsGeom_id;
 
