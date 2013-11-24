@@ -80,9 +80,6 @@ public class CharacteristicsFragment extends Fragment {
 	/** Image containing the photo and to drawing of the zones */
 	private static ImageView myImage = null;
 
-	/** Button to enable the selection of the zones */
-	private Button select = null;
-
 	/** Button to fill the characteristic the selected zones */
 	private Button define = null;
 
@@ -91,12 +88,6 @@ public class CharacteristicsFragment extends Fragment {
 
 	/** Button to show a summary of the characteristics of the selected zones */
 	private Button recap = null;
-
-	/** Button to confirm the selection of the zone */
-	private Button selectConfirm = null;
-
-	/** Text to explain how to select the zone */
-	private TextView text = null;
 
 	/**
 	 * Returns the SetOfZone defined on the photograph.
@@ -122,9 +113,6 @@ public class CharacteristicsFragment extends Fragment {
 		View v = inflater.inflate(R.layout.layout_definition, null);
 
 		myImage = (ImageView) v.findViewById(R.id.definition_image);
-		select = (Button) v.findViewById(R.id.definition_button_select);
-		selectConfirm = (Button) v.findViewById(R.id.definition_button_select_confirm);
-		text = (TextView) v.findViewById(R.id.definition_textview_select);
 		define = (Button) v.findViewById(R.id.definition_button_define);
 		delete = (Button) v.findViewById(R.id.definition_button_delete);
 		recap = (Button) v.findViewById(R.id.definition_button_recap);
@@ -152,51 +140,14 @@ public class CharacteristicsFragment extends Fragment {
 							MainActivity.photo.getAbsolutePath(), 1000, 1000)), view
 		};
 		myImage.setImageDrawable(new LayerDrawable(drawables));
+		myImage.setOnTouchListener(touchListenerSelectImage);
 		
-	    select.setOnClickListener(clickListenerSelect);
-	    selectConfirm.setOnClickListener(clickListenerSelectConfirm);
 	    define.setOnClickListener(clickListenerDefine);
 	    delete.setOnClickListener(clickListenerDelete);
 	    recap.setOnClickListener(clickListenerRecap);
 
 		return v;
 	}
-
-	/**
-	 * Listener that activates the Listener for myImage allowing the selection of the zones
-	 * and that change the visible button to prevent the user to do any other action during the selection.
-	 */
-	private OnClickListener clickListenerSelect = new View.OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			myImage.setOnTouchListener(touchListenerSelectImage);
-			select.setVisibility(View.GONE);
-			define.setVisibility(View.GONE);
-			delete.setVisibility(View.GONE);
-			recap.setVisibility(View.GONE);
-			selectConfirm.setVisibility(View.VISIBLE);
-			text.setVisibility(View.VISIBLE);
-		}
-	};
-
-	/**
-	 * Listener that deactivates the Listener for myImage allowing the selection of the zones
-	 * and that change the visible button to allow the modification of zones' characteristics.
-	 */
-	private OnClickListener clickListenerSelectConfirm = new View.OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			myImage.setOnTouchListener(null);
-			select.setVisibility(View.VISIBLE);
-			define.setVisibility(View.VISIBLE);
-			delete.setVisibility(View.VISIBLE);
-			recap.setVisibility(View.VISIBLE);
-			selectConfirm.setVisibility(View.GONE);
-			text.setVisibility(View.GONE);
-		}
-	};
 
 	/**
 	 * Listener that allows the selection of the zones by clicking on them.
