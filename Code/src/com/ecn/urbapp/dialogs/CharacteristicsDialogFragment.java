@@ -24,6 +24,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.utils.colorpicker.AmbilWarnaDialog;
 import com.ecn.urbapp.utils.colorpicker.AmbilWarnaDialog.OnAmbilWarnaListener;
+import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 
 /**
  * This class creates the dialog that ask the user to choose the characteristics of the
@@ -56,11 +57,10 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		spinMaterial.setOnItemSelectedListener(itemSelectedListenerMaterial);
 		validate.setOnClickListener(validation);
 		colorView = box.findViewById(R.id.color);
-		colorView.setBackgroundColor(CharacteristicsFragment.getZones()
+		colorView.setBackgroundColor(UtilCharacteristicsZone
 				.getColorForSelectedZones());
 		colorView.setOnClickListener(chooseColor);
-		Map<String, HashMap<String, Float>> summary = CharacteristicsFragment
-				.getZones().getStatsForSelectedZones(getResources());
+		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
 		HashMap<String, Float> types = summary.get(getString(R.string.type));
 		HashMap<String, Float> materials = summary.get(getString(R.string.materials));
 		List<String> list;
@@ -215,19 +215,19 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			if (spinType.getVisibility() == View.VISIBLE) {
 				selection = (String) spinType.getSelectedItem();
 				if (!selection.equals("")) {
-					CharacteristicsFragment.getZones().setTypeForSelectedZones(selection);
+					UtilCharacteristicsZone.setTypeForSelectedZones(selection);
 				}
 			} else {
-				CharacteristicsFragment.getZones().setTypeForSelectedZones(
+				UtilCharacteristicsZone.setTypeForSelectedZones(
 						((SpannableStringBuilder) typeCustom.getText()).toString());
 			}
 			if (spinMaterial.getVisibility() == View.VISIBLE) {
 				selection = (String) spinMaterial.getSelectedItem();
 				if (!selection.equals("")) {
-					CharacteristicsFragment.getZones().setMaterialForSelectedZones(selection);
+					UtilCharacteristicsZone.setMaterialForSelectedZones(selection);
 				}
 			} else {
-				CharacteristicsFragment.getZones().setMaterialForSelectedZones(
+				UtilCharacteristicsZone.setMaterialForSelectedZones(
 						((SpannableStringBuilder) materialCustom.getText()).toString());
 			}
 			CharacteristicsFragment.getMyImage().invalidate();
@@ -262,14 +262,14 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		public void onClick(View v) {
 			// Create the color picker dialog (with the actual color of the selected zone)
 			AmbilWarnaDialog dialog = new AmbilWarnaDialog(getActivity(),
-					CharacteristicsFragment.getZones().getColorForSelectedZones(),
+					UtilCharacteristicsZone.getColorForSelectedZones(),
 					new OnAmbilWarnaListener() {
 						@Override
 						public void onOk(AmbilWarnaDialog dialog, int color) {
 							// Modify the color of the zone
-							CharacteristicsFragment.getZones()
+							UtilCharacteristicsZone
 									.setColorForSelectedZones(color);
-							colorView.setBackgroundColor(CharacteristicsFragment.getZones()
+							colorView.setBackgroundColor(UtilCharacteristicsZone
 									.getColorForSelectedZones());
 						}
 

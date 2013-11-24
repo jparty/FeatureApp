@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
 
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -47,32 +48,10 @@ import android.graphics.Point;
 /**
  * This class regroup all the zones linked to a photo
  * 
- * @author patrick
+ * @author patrick, Jules Party
  * 
  */
-public class SetOfZone {
-
-	/** List of all the zones */
-	protected Vector<Zone> zones;
-
-	/**
-	 * Last type chosen by the user for a zone (used to remember the state of
-	 * the material choice dialog during a change of screen orientation)
-	 */
-	public int type;
-
-	/**
-	 * Constructor of a new empty SetOfpoints
-	 */
-	public SetOfZone() {
-		zones = new Vector<Zone>();
-	}
-	/**
-	 * Constructor of a copy SetOfpoints
-	 */
-	public SetOfZone(Vector<Zone> z) {
-		zones = z;
-	}
+public final class UtilCharacteristicsZone {
 
 	/**
 	 * Set the type of all the selected zones
@@ -82,7 +61,7 @@ public class SetOfZone {
 	 * @param type
 	 *            the type to set
 	 */
-	public void setTypeForSelectedZones(String type) {
+	public static void setTypeForSelectedZones(String type) {
 		for (Zone zone : getAllSelectedZones()) {
 			zone.setType(type);
 		}
@@ -96,7 +75,7 @@ public class SetOfZone {
 	 * @param material
 	 *            the material to set
 	 */
-	public void setMaterialForSelectedZones(String material) {
+	public static void setMaterialForSelectedZones(String material) {
 		for (Zone zone : getAllSelectedZones()) {
 			zone.setMaterial(material);
 		}
@@ -110,7 +89,7 @@ public class SetOfZone {
 	 * @param color
 	 *            the color to set
 	 */
-	public void setColorForSelectedZones(int color) {
+	public static void setColorForSelectedZones(int color) {
 		for (Zone zone : getAllSelectedZones()) {
 			zone.setColor(color);
 		}
@@ -122,7 +101,7 @@ public class SetOfZone {
 	 * 
 	 * @return the color as an int
 	 */
-	public Integer getColorForSelectedZones() {
+	public static Integer getColorForSelectedZones() {
 		Vector<Zone> zones = getAllSelectedZones();
 		if (zones != null && !zones.isEmpty()) {
 			int color = zones.get(0).getColor();
@@ -138,49 +117,6 @@ public class SetOfZone {
 	}
 
 	/**
-	 * This method add the point to the last unfinished zone
-	 * 
-	 * @param point
-	 *            the point to add
-	 * @param accuracy
-	 *            the maximum distance (in pixel) from the first point of the
-	 *            zone that the user need to touch to finish to zone
-	 */
-	public void addPoint(Point point, float accuracy) {
-		// Get the last zone (there is at least an empty one)
-		Zone lastpoints = zones.get(zones.size() - 1);
-		// Finish the zone if the touch point is near the first point of the
-		// zone (check if there is at least one point before)
-		if ((lastpoints.points.size() != 0)
-				&& ((Math.abs(lastpoints.points.get(0).x - point.x) < accuracy) && (Math
-						.abs(lastpoints.points.get(0).y - point.y) < accuracy))) {
-			// Add the first point to complete the polygon
-			lastpoints.addPoint(lastpoints.points.get(0));
-			lastpoints.finished = true;
-		} else {
-			// Add the point if the zone is not finished
-			lastpoints.addPoint(point);
-		}
-	}
-
-	/**
-	 * Getter for zones
-	 * 
-	 * @return zones
-	 */
-	public Vector<Zone> getZones() {
-		return this.zones;
-	}
-
-	/**
-	 * Add an empty zone to the list of zone (called when the user touch the add
-	 * zone button)
-	 */
-	public void addEmpty() {
-		this.zones.add(new Zone());
-	}
-
-	/**
 	 * This method return the position (in the list) of the first zone that
 	 * contains the point in parameter and -1 if no zone is appropriate
 	 * 
@@ -188,13 +124,13 @@ public class SetOfZone {
 	 * @return the number of the smallest zone that contains the point and -1
 	 *         otherwise
 	 */
-	public int isInsideZone(Point point) {
+	public static int isInsideZone(Point point) {
 		int result = -1;
-		for (int i = 0; i < zones.size(); i++) {
-			if (zones.get(i).containPoint(point)) {
+		for (int i = 0; i < MainActivity.zones.size(); i++) {
+			if (MainActivity.zones.get(i).containPoint(point)) {
 				if (result == -1) {
 					result = i;
-				} else if (zones.get(i).area() < zones.get(result)
+				} else if (MainActivity.zones.get(i).area() < MainActivity.zones.get(result)
 						.area()) {
 					result = i;
 				}
@@ -204,21 +140,11 @@ public class SetOfZone {
 	}
 
 	/**
-	 * Delete the zone in parameter from the SetOfZone
-	 * 
-	 * @param zone
-	 *            the zone to delete
-	 */
-	public void delete(Zone zone) {
-		zones.remove(zone);
-	}
-
-	/**
 	 * Unselect all the zones
 	 */
-	public void unselectAll() {
-		for (int i = 0; i < zones.size(); i++) {
-			zones.get(i).selected = false;
+	public static void unselectAll() {
+		for (int i = 0; i < MainActivity.zones.size(); i++) {
+			MainActivity.zones.get(i).selected = false;
 		}
 	}
 
@@ -229,9 +155,9 @@ public class SetOfZone {
 	 * @param zoneNumber
 	 *            the number of the zone to select
 	 */
-	public void select(int zoneNumber) {
+	public static void select(int zoneNumber) {
 		if (zoneNumber >= 0) {
-			zones.get(zoneNumber).selected = !zones.get(zoneNumber).selected;
+			MainActivity.zones.get(zoneNumber).selected = !MainActivity.zones.get(zoneNumber).selected;
 		} else {
 			unselectAll();
 		}
@@ -242,11 +168,11 @@ public class SetOfZone {
 	 * 
 	 * @return vector with all the selected zones
 	 */
-	public Vector<Zone> getAllSelectedZones() {
+	public static Vector<Zone> getAllSelectedZones() {
 		Vector<Zone> selectedZonesNumbers = new Vector<Zone>();
-		for (int i = 0; i < zones.size(); i++) {
-			if (zones.get(i).selected) {
-				selectedZonesNumbers.add(zones.get(i));
+		for (int i = 0; i < MainActivity.zones.size(); i++) {
+			if (MainActivity.zones.get(i).selected) {
+				selectedZonesNumbers.add(MainActivity.zones.get(i));
 			}
 		}
 		return selectedZonesNumbers;
@@ -259,11 +185,11 @@ public class SetOfZone {
 	 * 
 	 * @param res
 	 */
-	public Map<String, HashMap<String, Float>> getStatsForSelectedZones(
+	public static Map<String, HashMap<String, Float>> getStatsForSelectedZones(
 			Resources res) {
 		Vector<Zone> selectedZones = getAllSelectedZones();
 		if (selectedZones.isEmpty()) {
-			selectedZones = zones;
+			selectedZones = MainActivity.zones;
 		}
 		float totalArea = 0f;
 		HashMap<String, Float> types = new HashMap<String, Float>();

@@ -3,12 +3,10 @@ package com.ecn.urbapp.zones;
 import java.util.Vector;
 
 import android.graphics.Point;
-import android.graphics.Point;
 import android.util.Log;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Point;
-import com.ecn.urbapp.*;
+import com.ecn.urbapp.R;
 
 public class Zone {
 	/**
@@ -51,7 +49,9 @@ public class Zone {
 	 */
 	public Zone(Zone zone){
 		this();
-		this.setZone(zone);
+		for (Point p : zone.getPoints()) {
+			points.add(new Point(p));
+		}
 	}
 	
 	public Vector<Point> getPoints(){
@@ -199,13 +199,6 @@ public class Zone {
 		if (point.x == points.get(0).x && point.y == points.get(0).y) {
 			this.finished = true;
 		}
-	}
-	/**
-	 * Set a zone coordinates from an other ones
-	 * @param zone
-	 */
-	public void setZone(Zone zone){
-		this.points = (Vector<Point>) zone.points.clone();
 	}
 	
 	/**
