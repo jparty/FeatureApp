@@ -142,14 +142,14 @@ public class CharacteristicsFragment extends Fragment {
 			}
 		}
 
-		MainActivity.photo=new File(MainActivity.pathImage);
+		MainActivity.sphoto=new File(MainActivity.pathImage);
 		DrawImageView view = new DrawImageView(zones);
 	
 		Drawable[] drawables = {
 				new BitmapDrawable(
 					getResources(),
 					BitmapLoader.decodeSampledBitmapFromFile(
-							MainActivity.photo.getAbsolutePath(), 1000, 1000)), view
+							MainActivity.sphoto.getAbsolutePath(), 1000, 1000)), view
 		};
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		

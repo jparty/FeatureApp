@@ -136,13 +136,13 @@ public class ZoneFragment extends Fragment{
 
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 		
-		MainActivity.photo=new File(MainActivity.pathImage);	
+		MainActivity.sphoto=new File(MainActivity.pathImage);	
 		drawzoneview = new DrawZoneView(zones, zone, selected) ;
 		Drawable[] drawables = {
 			new BitmapDrawable(
 				getResources(),
 				BitmapLoader.decodeSampledBitmapFromFile(
-					MainActivity.photo.getAbsolutePath(), 1000, 1000)), drawzoneview
+					MainActivity.sphoto.getAbsolutePath(), 1000, 1000)), drawzoneview
 				};
 		imageWidth = BitmapLoader.getWidth();
 		imageHeight = BitmapLoader.getHeight();

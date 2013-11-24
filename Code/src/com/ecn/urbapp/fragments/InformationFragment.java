@@ -63,7 +63,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		    txt = (EditText) getView().findViewById(R.id.info_edit_deviceName);
 		    MainActivity.device = txt.getText().toString();
 		    txt = (EditText) getView().findViewById(R.id.info_edit_project);
-		    MainActivity.project = txt.getText().toString();
+		    MainActivity.sproject = txt.getText().toString();
 		    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
 		    MainActivity.address = txt.getText().toString();
 		    
@@ -77,7 +77,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		    txt = (EditText) getView().findViewById(R.id.info_edit_deviceName);
 		    txt.setText(MainActivity.device);
 		    txt = (EditText) getView().findViewById(R.id.info_edit_project);
-		    txt.setText(MainActivity.project);
+		    txt.setText(MainActivity.sproject);
 		    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
 		    txt.setText(MainActivity.address);
 		    

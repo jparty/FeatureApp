@@ -1,5 +1,6 @@
 package com.ecn.urbapp.activities;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import android.app.ActionBar;
@@ -22,7 +23,15 @@ import android.view.MenuInflater;
 import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.Composed;
+import com.ecn.urbapp.db.Element;
+import com.ecn.urbapp.db.ElementType;
+import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
+import com.ecn.urbapp.db.Material;
+import com.ecn.urbapp.db.Photo;
+import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.dialogs.ConfirmPhotoDialogFragment;
 import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.fragments.HomeFragment;
@@ -82,7 +91,7 @@ public class MainActivity extends Activity {
 	//TODO add description for javadoc
 	public static String device = "";
 	//TODO add description for javadoc
-	public static String project = "";
+	public static String sproject = "";
 	//TODO add description for javadoc
 	public static String address = "";
 
@@ -96,7 +105,7 @@ public class MainActivity extends Activity {
 	//TODO add description for javadoc
 	public static String pathTampon=null;
 	//TODO add description for javadoc
-	public static File photo=null;
+	public static File sphoto=null;
 	//TODO add the set of this bool into each function loading a photo
 	public static boolean isPhoto=false;
 	//TODO add description for javadoc
@@ -104,6 +113,19 @@ public class MainActivity extends Activity {
 
 	//TODO add description for javadoc
 	private Vector<Fragment> fragments=null;
+	
+	/**ArrayList for the elements of the database**/
+
+	private ArrayList<Composed> composed=null;
+	private ArrayList<Element> element=null;
+	private ArrayList<ElementType> ElementType=null;
+	private ArrayList<GpsGeom> gpsGeom=null;
+	private ArrayList<Material> material=null;
+	private ArrayList<PixelGeom> pixelGeom=null;
+	private ArrayList<Project> project=null;
+	private Photo photo=null;
+	
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
