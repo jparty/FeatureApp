@@ -18,6 +18,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 import com.ecn.urbapp.utils.ConnexionCheck;
+import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.zones.Zone;
 
 /**
@@ -204,6 +206,15 @@ public class MainActivity extends Activity {
 		
 		//create zones' list for new image
 		zones = new Vector<Zone>();
+		GpsGeom the_geom = new GpsGeom();
+		the_geom.setGpsGeomCoord("POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))");
+		Log.w("Debug", ConvertGeom.gpsGeomToLatLng(the_geom).toString());
+		Log.w("Debug", ConvertGeom.latLngToGpsGeom(ConvertGeom.gpsGeomToLatLng(the_geom)));
+
+		PixelGeom the_geom_ = new PixelGeom();
+		the_geom_.setPixelGeom_the_geom("POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))");
+		Log.w("Debug", ConvertGeom.pixelGeomToVector(the_geom_).toString());
+		Log.w("Debug", ConvertGeom.ZoneToPixelGeom(ConvertGeom.pixelGeomToVector(the_geom_)));
 	}
 
 	@Override
