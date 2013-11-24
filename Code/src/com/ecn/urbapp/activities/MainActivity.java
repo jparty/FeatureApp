@@ -123,6 +123,7 @@ public class MainActivity extends Activity {
 	public static ArrayList<Material> material=null;
 	public static ArrayList<PixelGeom> pixelGeom=null;
 	public static ArrayList<Project> project=null;
+	public static boolean projectSet = false;
 	public static Photo photo=null;
 	
 	
@@ -241,11 +242,12 @@ public class MainActivity extends Activity {
 		alertDialog.show();		
 	}
 
-	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
             	confirm();
+            	//Setting the photo path from the pathImage
+            	MainActivity.photo.setPhoto_url(pathImage);
             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
             	transaction.replace(android.R.id.content, fragments.get(1));
@@ -271,7 +273,8 @@ public class MainActivity extends Activity {
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
             	confirm();
-            	MainActivity.pathImage = getRealPathFromURI(baseContext, data.getData());
+            	//Setting the photo path
+            	MainActivity.photo.setPhoto_url(getRealPathFromURI(baseContext, data.getData()));
             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
             	transaction.replace(android.R.id.content, fragments.get(1));

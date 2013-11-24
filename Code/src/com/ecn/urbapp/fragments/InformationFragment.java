@@ -13,6 +13,7 @@ import android.widget.EditText;
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.GeoActivity;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Project;
 
 /**
  * @author	COHENDET Sébastien
@@ -55,9 +56,14 @@ public class InformationFragment extends Fragment implements OnClickListener{
 			startActivity(i);
 		}
 
+		/**
+		 * Function called when the fragment stop (i.e. when an other fragment is selected).
+		 */
 		@Override
 		public void onStop(){
 			super.onStop();
+			//TODO supress the following code
+			/*
 		    EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
 		    MainActivity.author = txt.getText().toString();
 		    txt = (EditText) getView().findViewById(R.id.info_edit_deviceName);
@@ -65,13 +71,41 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		    txt = (EditText) getView().findViewById(R.id.info_edit_project);
 		    MainActivity.sproject = txt.getText().toString();
 		    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
-		    MainActivity.address = txt.getText().toString();
+		    MainActivity.address = txt.getText().toString();*/
 		    
+		    //TODO verificate the case of multi project (cf maybe get the project selected in the list)
+		    //need to verificate if the project is already defined or not
+		    if(MainActivity.projectSet){
+		    	//Obtaining teh last define project
+		    	Project pro = MainActivity.project.get(MainActivity.project.size());
+		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
+			    pro.setProjectName(txt.getText().toString());
+			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
+			    MainActivity.photo.setPhoto_description(txt.getText().toString());
+		    }
+		    else{
+			    Project pro = new Project();
+			    EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
+			    pro.setProjectName(txt.getText().toString());
+			    pro.setProjectId(MainActivity.project.size());
+			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
+			    MainActivity.photo.setPhoto_description(txt.getText().toString());
+			    MainActivity.project.add(pro);
+			    MainActivity.projectSet=true;
+			    
+			    txt = (EditText) getView().findViewById(R.id.info_edit_author);
+			    MainActivity.photo.setPhoto_author(txt.getText().toString());
+		    }
 		}
 
+		/**
+		 * Function called when the fragment start.
+		 */
 		@Override
 		public void onStart(){
-			super.onStop();
+			super.onStart();
+			//TODO supress the following code
+			/*
 		    EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
 		    txt.setText(MainActivity.author);
 		    txt = (EditText) getView().findViewById(R.id.info_edit_deviceName);
@@ -79,7 +113,11 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		    txt = (EditText) getView().findViewById(R.id.info_edit_project);
 		    txt.setText(MainActivity.sproject);
 		    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
-		    txt.setText(MainActivity.address);
+		    txt.setText(MainActivity.address);*/
 		    
+		    //if the project is already set
+		    if(MainActivity.projectSet){
+		    	
+		    }
 		}
 }
