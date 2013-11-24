@@ -186,7 +186,7 @@ public class LoadLocalPhotosActivity extends Activity{
 			 * Adding the line in the map
 			 */
 			
-			displayedMap.drawPolygon(photoGPS);
+			displayedMap.drawPolygon(photoGPS, false);
 
 			photosMarkers.put(marker.getId(), i);
 			i++;

@@ -755,11 +755,12 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     /**
      * Draw polygon on the map
      * @param points
+     * @param refresh for the refresh content or not (yes in that activity)
      */
-    public void drawPolygon(ArrayList<LatLng> points){
+    public void drawPolygon(ArrayList<LatLng> points, Boolean refresh){
     	if (points.size()>=2) {
     		
-    		if (polygon!=null)
+    		if (polygon!=null && refresh)
     			polygon.remove();
     		 
             //Instantiates a new Polygon object and adds points to define a rectangle
@@ -769,7 +770,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
                     rectOptions = rectOptions.add(pt);
             }
             // Remove the Polygon if exists
-           if(polygon != null) {
+           if(polygon != null && refresh) {
                    polygon.remove();
            }
             // Get back the mutable Polygon
@@ -789,7 +790,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
         	}
         }
         
-        drawPolygon(points);
+        drawPolygon(points, true);
     	
     }
 }
