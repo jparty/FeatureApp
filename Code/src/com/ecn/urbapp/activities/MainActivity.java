@@ -116,20 +116,30 @@ public class MainActivity extends Activity {
 	
 	/**ArrayList for the elements of the database**/
 
-	private ArrayList<Composed> composed=null;
-	private ArrayList<Element> element=null;
-	private ArrayList<ElementType> ElementType=null;
-	private ArrayList<GpsGeom> gpsGeom=null;
-	private ArrayList<Material> material=null;
-	private ArrayList<PixelGeom> pixelGeom=null;
-	private ArrayList<Project> project=null;
-	private Photo photo=null;
+	private static ArrayList<Composed> composed=null;
+	private static ArrayList<Element> element=null;
+	private static ArrayList<ElementType> elementType=null;
+	private static ArrayList<GpsGeom> gpsGeom=null;
+	private static ArrayList<Material> material=null;
+	private static ArrayList<PixelGeom> pixelGeom=null;
+	private static ArrayList<Project> project=null;
+	private static Photo photo=null;
 	
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		//Instanciation of the elements  for the database
+		composed = new ArrayList<Composed>();
+		element = new ArrayList<Element>();
+		elementType = new ArrayList<ElementType>();
+		gpsGeom = new ArrayList<GpsGeom>();
+		material = new ArrayList<Material>();
+		pixelGeom = new ArrayList<PixelGeom>();
+		project = new ArrayList<Project>();
+		photo = new Photo();
 		
 		fragments=new Vector<Fragment>();
 		
