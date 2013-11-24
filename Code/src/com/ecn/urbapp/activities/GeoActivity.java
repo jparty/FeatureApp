@@ -43,7 +43,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -137,6 +136,9 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	*/
 	public PolygonOptions rectOptions;
 	
+	/**
+	 * Defines all the colors for markers
+	 */
 	public static final int[] markersColor = {
 			R.drawable.marker_red,
 			R.drawable.marker_yellow,
@@ -152,12 +154,20 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	public static class ErrorDialogFragment extends DialogFragment {
 	    // Global field to contain the error dialog
 	    private Dialog mDialog;
-	    // Default constructor. Sets the dialog field to null
+	    
+	    // 
+	    /**
+	     * Default constructor. Sets the dialog field to null. For displaying all the issue with Google Play Service
+	     */
 	    public ErrorDialogFragment() {
 	        super();
 	        mDialog = null;
 	    }
-	    // Set the dialog to display
+	    
+	    /**
+	     * Set the dialog to display
+	     * @param dialog
+	     */
 	    public void setDialog(Dialog dialog) {
 	        mDialog = dialog;
 	    }
@@ -303,6 +313,9 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     	}
     }
     
+    /**
+     * Default constructor
+     */
     public GeoActivity(){
     	
     }
@@ -324,7 +337,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 
     		// Connect the client.
     		//TODO check the threat order
-
+    		//CONNECTION TODO
 
     	}
 
@@ -417,7 +430,8 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	*/
     private OnMapClickListener ajoutPoints = new OnMapClickListener(){
             
-        @Override
+        @SuppressWarnings("null")
+		@Override
         public void onMapClick(LatLng point) {
             /**
              * We prevents to pu more than the max nb of markers
@@ -434,21 +448,11 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
                 MarkerPos markerpos = new MarkerPos(marker, point);
                 getAddress(markerpos);
                 
-                if (markers.size()>=2) {
-                                    
-                     // Instantiates a new Polygon object and adds points to define a rectangle
-                     rectOptions = new PolygonOptions();
-                    
-                     for (Marker mark : markers) {
-                             rectOptions = rectOptions.add(mark.getPosition());
-                     }
-                     // Remove the Polygon if exists
-                    if(polygon != null) {
-                            polygon.remove();
-                    }
-                     // Get back the mutable Polygon
-                     polygon = map.addPolygon(rectOptions);
-                }
+                /**
+                 * Drawing on map purpose
+                 */
+                                
+                markerToArray(markers);
             }
             else {
                 Toast.makeText(getApplicationContext(), "Nombre de points maximum atteint", Toast.LENGTH_SHORT).show();
@@ -646,7 +650,8 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
          * the text of the UI element that shows the address. If the
          * lookup failed, display the error message.
          */
-         @Override
+         @SuppressWarnings("null")
+		@Override
          protected void onPostExecute(MarkerPos markpos) {
 	         // Set activity indicator visibility to "gone"
 	         mActivityIndicator.setVisibility(View.GONE);
@@ -654,22 +659,11 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	         markpos.getMarker().setSnippet(markpos.getAdresse());
 	         markpos.getMarker().showInfoWindow();
         
-	         if(markers.size()>=2){
-	                 
-                  // Instantiates a new Polygon object and adds points to define a rectangle
-	        	 rectOptions = new PolygonOptions();
-	        
-		         for (Marker mark : markers) {
-		                 rectOptions = rectOptions.add(mark.getPosition());
-		         }
-		         polygon.remove();
-                 // Get back the mutable Polygon
-                 polygon = map.addPolygon(rectOptions);
-	         }
+	         markerToArray(markers);
          }        
      }
      
-     /**
+    /**
 	*
 	* @param v The view object associated with this method,
 	* in this case a Button.
@@ -710,19 +704,10 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
             getAddress(markpos);                        
         }
         
-        @Override
+        @SuppressWarnings("null")
+		@Override
         public void onMarkerDrag(Marker marker) {
-             if(markers.size()>=2){
-                 polygon.remove();
-                  // Instantiates a new Polygon object and adds points to define a rectangle
-                 rectOptions = new PolygonOptions();
-	             for (Marker mark : markers) {
-                     rectOptions = rectOptions.add(mark.getPosition());
-	             }
-	             polygon.remove();
-	             // Get back the mutable Polygon
-	             polygon = map.addPolygon(rectOptions);
-             }
+        	markerToArray(markers);
         }
     };
 
@@ -752,7 +737,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     	color.setColor(Color.BLACK);
 
     	//modify canvas
-    	canvas1.drawBitmap(BitmapFactory.decodeResource(MainActivity.baseContext.getResources(),markersColor[number%4]), 0,0, color);
+    	canvas1.drawBitmap(BitmapFactory.decodeResource(MainActivity.baseContext.getResources(),markersColor[number%markersColor.length]), 0,0, color);
     	int posX = 14 -3*text.length();
     	posX = (posX <0) ? 2 : posX;
     	int posY = 29-3*text.length();
@@ -765,5 +750,46 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
          .title(title));
     	
     	return marker;
+    }
+    
+    /**
+     * Draw polygon on the map
+     * @param points
+     */
+    public void drawPolygon(ArrayList<LatLng> points){
+    	if (points.size()>=2) {
+    		
+    		if (polygon!=null)
+    			polygon.remove();
+    		 
+            //Instantiates a new Polygon object and adds points to define a rectangle
+            rectOptions = new PolygonOptions();
+           
+            for (LatLng pt : points) {
+                    rectOptions = rectOptions.add(pt);
+            }
+            // Remove the Polygon if exists
+           if(polygon != null) {
+                   polygon.remove();
+           }
+            // Get back the mutable Polygon
+            polygon = map.addPolygon(rectOptions);
+       }
+    }
+    
+    /**
+     * 
+     * @param markers
+     */
+    public void markerToArray(ArrayList<Marker> markers){
+    	ArrayList<LatLng> points = new ArrayList<LatLng>();
+        for (Marker mark:markers){
+        	if(mark!=null){
+        		points.add(mark.getPosition());
+        	}
+        }
+        
+        drawPolygon(points);
+    	
     }
 }
