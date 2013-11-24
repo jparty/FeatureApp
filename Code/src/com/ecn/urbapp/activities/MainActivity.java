@@ -116,14 +116,14 @@ public class MainActivity extends Activity {
 	
 	/**ArrayList for the elements of the database**/
 
-	private static ArrayList<Composed> composed=null;
-	private static ArrayList<Element> element=null;
-	private static ArrayList<ElementType> elementType=null;
-	private static ArrayList<GpsGeom> gpsGeom=null;
-	private static ArrayList<Material> material=null;
-	private static ArrayList<PixelGeom> pixelGeom=null;
-	private static ArrayList<Project> project=null;
-	private static Photo photo=null;
+	public static ArrayList<Composed> composed=null;
+	public static ArrayList<Element> element=null;
+	public static ArrayList<ElementType> elementType=null;
+	public static ArrayList<GpsGeom> gpsGeom=null;
+	public static ArrayList<Material> material=null;
+	public static ArrayList<PixelGeom> pixelGeom=null;
+	public static ArrayList<Project> project=null;
+	public static Photo photo=null;
 	
 	
 	
