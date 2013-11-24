@@ -25,6 +25,9 @@ public class Test extends ListActivity {
 
 	private Button delete = null;
 	
+	private Button generateTypes = null;
+	private Button instanciateTypes = null;
+	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +42,15 @@ public class Test extends ListActivity {
         addProject = (Button)findViewById(R.id.addProject);
 
         delete = (Button)findViewById(R.id.delete);
+        generateTypes = (Button)findViewById(R.id.createElementType);
+        instanciateTypes = (Button)findViewById(R.id.instanciateElementType);
         
         addProject.setOnClickListener(clickListenerBoutonsAddProject);
 
         delete.setOnClickListener( clickListenerBoutonsDelete);
+        
+        generateTypes.setOnClickListener( clickListenerBoutonsGenerateTypes);
+        instanciateTypes.setOnClickListener( clickListenerBoutonsInstanciateTypes);
     }
     
     protected void onClose() {      
@@ -104,6 +112,20 @@ public class Test extends ListActivity {
 				adapter.remove(Project);
 			}
     		adapter.notifyDataSetChanged();
+    	};
+    };
+    
+    private OnClickListener clickListenerBoutonsGenerateTypes = new OnClickListener(){
+    	public void onClick(View view){
+    		datasource.createElementTypeInDB("toit");
+    		datasource.createElementTypeInDB("façade");
+    		datasource.createElementTypeInDB("sol");
+    	};
+    };
+    
+    private OnClickListener clickListenerBoutonsInstanciateTypes = new OnClickListener(){
+    	public void onClick(View view){
+    		datasource.getAllElementType();
     	};
     };
 }

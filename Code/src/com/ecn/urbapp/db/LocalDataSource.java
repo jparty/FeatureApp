@@ -3,11 +3,14 @@ package com.ecn.urbapp.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ecn.urbapp.activities.MainActivity;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class LocalDataSource {
 	
@@ -370,7 +373,7 @@ public class LocalDataSource {
 	/**
 	 * convert the cursor to the object gpsGeom
 	 * @param cursor
-	 * @return
+	 * @return GpsGeom
 	 */
 	private GpsGeom cursorToGpsGeom(Cursor cursor) {
 	    GpsGeom p1 = new GpsGeom();
@@ -405,4 +408,67 @@ public class LocalDataSource {
 	    link1.setPhoto_id(cursor.getLong(1));
 	    return link1;
 	}
+	
+	
+	
+	//METHODS FOR ELMENTS TYPE
+	
+	//Create ellementType in the database
+	//TODO sync with the external database
+	/**
+	 * method that register a new type in the DB
+	 */
+	public void createElementTypeInDB(String str){
+		ContentValues values = new ContentValues(); 
+		values.put(MySQLiteHelper.COLUMN_ELEMENTTYPENAME, str);
+		long insertId = database.insert(MySQLiteHelper.TABLE_ELEMENTTYPE, null, values);
+	}
+	
+	
+	
+	
+	/**
+	 * sql query that counts the number of element type
+	 */
+	private static final String
+	GETALLELEMENTTYPEID = 
+		"SELECT * FROM "
+		+ MySQLiteHelper.TABLE_ELEMENTTYPE 
+		+";"
+	;
+	
+	
+	public void getAllElementType(){
+		List<ElementType> elementTypeList = new ArrayList<ElementType>();
+		
+		Cursor cursor = database.rawQuery(GETALLELEMENTTYPEID,null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			ElementType p1 = cursorToElementType(cursor);
+			elementTypeList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		MainActivity.elementType=(ArrayList<ElementType>) elementTypeList;
+		Log.w("neuneu","neuneu");
+		
+	}
+	
+	//TODO method that create the 3 elements in the db
+	
+	
+	/**
+	 * method that is used to create instance
+	 * @param cursor
+	 * @return
+	 */
+	private ElementType cursorToElementType(Cursor cursor) {
+	    ElementType type = new ElementType();
+	    type.setElementType_id(cursor.getLong(0));
+	    type.setElementType_name(cursor.getString(1));
+	    return type;
+	}
+	
+	
 }
