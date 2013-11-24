@@ -194,8 +194,8 @@ public class ZoneFragment extends Fragment{
 				return false;
 			}
 		});
-		zone= new Zone();
-		zoneCache = new Zone();
+		zone.setZone(new Zone());
+		zoneCache.setZone(new Zone());
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
 		myImage.invalidate();
@@ -358,7 +358,7 @@ public class ZoneFragment extends Fragment{
 					for(Zone test : MainActivity.zones){
 						if(test.containPoint(touch)){
 							zoneCache = test;
-							zone = test;
+							zone.setZone(test);
 							//zone.setZone(test);
 						}
 					}

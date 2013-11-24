@@ -42,7 +42,19 @@ public class Zone {
 		middles = new Vector<Point>();
 		color = Color.RED;
 	}
-	
+
+	/**
+	 * Set a zone coordinates from an other ones
+	 * 
+	 * @param zone
+	 */
+	public void setZone(Zone zone) {
+		this.points = new Vector<Point>();
+		for (Point p : zone.getPoints()) {
+			points.add(new Point(p));
+		}
+	}
+
 	/**
 	 * Constructor of a zone by copying an other
 	 * @param zone
@@ -289,38 +301,6 @@ public class Zone {
 		return result;//possibly null
 	}
 	
-	 //méthode de Jules
-	 /* public boolean intersect(Point p11, Point p12, Point p21, Point p22){
-		double denominateur = (p22.x - p21.x) * (p12.y - p11.y) - (p12.x - p11.x) * (p22.y - p21.y);
-		Log.d("Intersect","den:"+denominateur);
-		if (denominateur != 0.0) {
-			Log.d("Intersect","droites non //");
-			double x;
-			double y;
-			if (p22.x != p21.x) {
-				// Cas où les droites sont sécantes (pas forcément les segments !
-				x = (-(p12.x - p11.x) * (p22.x - p21.x) * (p21.y - p11.y)
-					+ p11.x * (p22.x - p21.x) * (p12.y - p11.y)
-					- p21.x * (p12.x - p11.x) * (p22.y - p21.y))
-					/ denominateur;
-				y = p21.y - (p22.y - p21.y) * (x - p21.x)
-					/ (p22.x - p21.x);
-			} else {
-				x = p21.x;
-				y = p11.y - (p12.y - p11.y) * (x - p11.x) / (p12.x - p11.x);
-			}
-			return isInSegment(x, y, p11, p12)
-			&& isInSegment(x, y, p21, p22);
-		} else {
-			Log.d("intersectest","droites oui //");
-			//TODO Cas où les droites sont parallèles
-			return isInSegment(p11.x, p11.y, p21, p22)
-			|| isInSegment(p12.x, p12.y, p21, p22)
-			|| isInSegment(p21.x, p21.y, p11, p12)
-			|| isInSegment(p22.x, p22.y, p11, p12);
-		}
-	}*/
-	
 	/**
 	 * Check if two segments, from 4 points, are intersecting.
 	 * @param start1
@@ -403,12 +383,4 @@ public class Zone {
 				return false;
 			}
 		}
-
-
-	/*
-	public static boolean isInSegment(double x, double y, Point p1, Point p2) {
-		return ((p2.x - p1.x) * (y - p1.y) + (p2.y - p1.y) * (x - p1.x) == 0
-		&& (Math.min(p1.x, p2.x) <= x) && (Math.max(p1.x, p2.x) >= x)
-		&& (Math.min(p1.y, p2.y) <= y) && (Math.max(p1.y, p2.y) >= y));
-}*/
 }
