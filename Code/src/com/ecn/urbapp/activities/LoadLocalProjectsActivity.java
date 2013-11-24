@@ -140,9 +140,8 @@ public class LoadLocalProjectsActivity extends Activity {
         for (Project enCours:refreshedValues){
         	String[] coord = enCours.getExt_GpsGeomCoord().split("//");
 			LatLng coordProjet = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
-        	Marker marker = map.addMarker(new MarkerOptions()
-            .position(coordProjet)
-            .title("Cliquez ici pour charger le projet"));
+        	
+        	Marker marker = displayedMap.addMarkersColored(i, "Cliquez ici pour charger le projet", coordProjet);
             
         	projectMarkers.put(marker.getId(), i);
         	i++;
