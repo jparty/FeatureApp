@@ -51,7 +51,9 @@ public class Zone {
 	 */
 	public Zone(Zone zone){
 		this();
-		this.setZone(zone);
+		for (Point p : zone.getPoints()) {
+			points.add(new Point(p));
+		}
 	}
 
 	//TODO Add description for javadoc
@@ -201,13 +203,6 @@ public class Zone {
 		if (point.x == points.get(0).x && point.y == points.get(0).y) {
 			this.finished = true;
 		}
-	}
-	/**
-	 * Set a zone coordinates from an other ones
-	 * @param zone
-	 */
-	public void setZone(Zone zone){
-		this.points = (Vector<Point>) zone.points.clone();
 	}
 	
 	/**
