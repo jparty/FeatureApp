@@ -28,6 +28,9 @@ public class Test extends ListActivity {
 	private Button generateTypes = null;
 	private Button instanciateTypes = null;
 	
+	private Button generateMaterial = null;
+	private Button instanciateMaterial = null;
+	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +45,12 @@ public class Test extends ListActivity {
         addProject = (Button)findViewById(R.id.addProject);
 
         delete = (Button)findViewById(R.id.delete);
+        
         generateTypes = (Button)findViewById(R.id.createElementType);
         instanciateTypes = (Button)findViewById(R.id.instanciateElementType);
+        
+        generateMaterial = (Button)findViewById(R.id.createMaterial);
+        instanciateMaterial = (Button)findViewById(R.id.instanciateMaterial);
         
         addProject.setOnClickListener(clickListenerBoutonsAddProject);
 
@@ -51,6 +58,9 @@ public class Test extends ListActivity {
         
         generateTypes.setOnClickListener( clickListenerBoutonsGenerateTypes);
         instanciateTypes.setOnClickListener( clickListenerBoutonsInstanciateTypes);
+        
+        generateMaterial.setOnClickListener( clickListenerBoutonsGenerateMaterial);
+        instanciateMaterial.setOnClickListener( clickListenerBoutonsInstanciateMaterial);
     }
     
     protected void onClose() {      
@@ -126,6 +136,20 @@ public class Test extends ListActivity {
     private OnClickListener clickListenerBoutonsInstanciateTypes = new OnClickListener(){
     	public void onClick(View view){
     		datasource.getAllElementType();
+    	};
+    };
+    
+    private OnClickListener clickListenerBoutonsGenerateMaterial = new OnClickListener(){
+    	public void onClick(View view){
+    		datasource.createMaterialInDB("béton");
+    		datasource.createMaterialInDB("herbe");
+    		datasource.createMaterialInDB("verre");
+    	};
+    };
+    
+    private OnClickListener clickListenerBoutonsInstanciateMaterial = new OnClickListener(){
+    	public void onClick(View view){
+    		datasource.getAllMaterial();
     	};
     };
 }
