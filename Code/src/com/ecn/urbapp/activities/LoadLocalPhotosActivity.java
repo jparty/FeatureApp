@@ -18,6 +18,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.utils.CustomListViewAdapter;
+import com.ecn.urbapp.utils.MathOperation;
 import com.ecn.urbapp.utils.RowItem;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
@@ -163,11 +164,27 @@ public class LoadLocalPhotosActivity extends Activity{
 		 */
 		Integer i = Integer.valueOf(0);
 		for (Photo enCours:refreshedValues){
+			
+			//TODO Get the real GPSGeom from Photo table in local Database !!!
+			//Fake one ! for testing purpose
 			String[] coord = enCours.getExt_GpsGeomCoord().split("//");
 			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
-			Marker marker = map.addMarker(new MarkerOptions()
-			.position(coordPhoto)
-			.title("Cliquez ici pour valider cette photo"));
+			LatLng coordPhoto1 = new LatLng(Double.parseDouble(coord[0])+0.2, Double.parseDouble(coord[1])+0.2);
+
+			ArrayList<LatLng> photoGPS = new ArrayList<LatLng>();
+			photoGPS.add(coordPhoto);
+			photoGPS.add(coordPhoto1);
+			//end of fake photoGPS values
+			
+			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
+					
+			Marker marker = displayedMap.addMarkersColored(i, "Cliquez ici pour valider cette photo", GPSCentered);
+			
+			/**
+			 * Adding the line in the map
+			 */
+			
+			displayedMap.drawPolygon(photoGPS, false);
 
 			photosMarkers.put(marker.getId(), i);
 			i++;
@@ -183,9 +200,19 @@ public class LoadLocalPhotosActivity extends Activity{
 		public void onItemClick(AdapterView<?> arg0, View v, int position,
 				long id) {
 
+			//TODO Get the real GPSGeom from Photo table in local Database !!!
+			//Fake one ! for testing purpose
 			String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
 			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
-			displayedMap = new GeoActivity(false, coordPhoto, map);
+			LatLng coordPhoto1 = new LatLng(Double.parseDouble(coord[0])+0.2, Double.parseDouble(coord[1])+0.2);
+
+			ArrayList<LatLng> photoGPS = new ArrayList<LatLng>();
+			photoGPS.add(coordPhoto);
+			photoGPS.add(coordPhoto1);
+			//end of fake photoGPS values
+			
+			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
+			displayedMap = new GeoActivity(false, GPSCentered, map);
 			Toast.makeText(getApplicationContext(), refreshedValues.get(position).getPhoto_url(), Toast.LENGTH_LONG).show();                  
 		}
 	};
