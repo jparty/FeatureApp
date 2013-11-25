@@ -108,6 +108,8 @@ public class MainActivity extends Activity {
 	public static String pathTampon=null;
 	//TODO add description for javadoc
 	public static File sphoto=null;
+	//TODO add description for javadoc
+	public static long maxPhotoIdLocal; 
 	//TODO add the set of this bool into each function loading a photo
 	public static boolean isPhoto=false;
 	//TODO add description for javadoc

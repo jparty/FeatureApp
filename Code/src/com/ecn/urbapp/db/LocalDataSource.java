@@ -178,6 +178,18 @@ public class LocalDataSource {
 			+";"
 		;
 
+	/**
+	 * query to get the biggest photo_id from local db
+	 * 
+	 */
+	private static final String
+		GETMAXPHOTOID = 
+			"SELECT "+MySQLiteHelper.TABLE_PHOTO+"."+MySQLiteHelper.COLUMN_PHOTOID+" FROM "
+			+ MySQLiteHelper.TABLE_PHOTO 
+			+" ORDER BY DESC LIMIT 1 ;"
+		;
+	
+	
 	//TODO Adddescription for javadoc
 	private static final String
 	GETPHOTOLINK = 
@@ -250,6 +262,20 @@ public class LocalDataSource {
 		return photosList;
 	}
 
+	
+	//TODO Adddescription for javadoc
+	public void getmaxPhotoId(){
+		long maxPhotoId = 0;
+		
+		Cursor cursor = database.rawQuery(GETMAXPHOTOID,null);
+		
+		cursor.moveToFirst();
+		maxPhotoId=cursor.getLong(0);
+		cursor.close();
+		MainActivity.maxPhotoIdLocal=maxPhotoId;
+	}
+	
+	
 	//TODO Adddescription for javadoc
 	public List<Photo> getAllPhotolinkedtoProject(long project_id){
 		List<Photo> photosList = new ArrayList<Photo>();
@@ -467,6 +493,66 @@ public class LocalDataSource {
 	    ElementType type = new ElementType();
 	    type.setElementType_id(cursor.getLong(0));
 	    type.setElementType_name(cursor.getString(1));
+	    return type;
+	}
+	
+	
+	//METHODS FOR MATERIALS
+	
+	//Create ellementType in the database
+	//TODO sync with the external database
+	/**
+	 * method that register a new type in the DB
+	 */
+	public void createMaterialInDB(String str){
+		ContentValues values = new ContentValues(); 
+		values.put(MySQLiteHelper.COLUMN_MATERIALNAME, str);
+		long insertId = database.insert(MySQLiteHelper.TABLE_MATERIAL, null, values);
+	}
+	
+	
+	
+	
+	/**
+	 * sql query that counts the number of element type
+	 */
+	private static final String
+	GETALLMATERIALID = 
+		"SELECT * FROM "
+		+ MySQLiteHelper.TABLE_MATERIAL 
+		+";"
+	;
+	
+	
+	public void getAllMaterial(){
+		List<Material> materialList = new ArrayList<Material>();
+		
+		Cursor cursor = database.rawQuery(GETALLMATERIALID,null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			Material p1 = cursorToMaterial(cursor);
+			materialList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		MainActivity.material=(ArrayList<Material>) materialList;
+		Log.w("neuneu","neuneu");
+		
+	}
+	
+	//TODO method that create the 3 elements in the db
+	
+	
+	/**
+	 * method that is used to create instance
+	 * @param cursor
+	 * @return
+	 */
+	private Material cursorToMaterial(Cursor cursor) {
+	    Material type = new Material();
+	    type.setMaterial_id(cursor.getLong(0));
+	    type.setMaterial_name(cursor.getString(1));
 	    return type;
 	}
 	
