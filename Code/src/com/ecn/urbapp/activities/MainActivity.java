@@ -206,15 +206,6 @@ public class MainActivity extends Activity {
 		
 		//create zones' list for new image
 		zones = new Vector<Zone>();
-		GpsGeom the_geom = new GpsGeom();
-		the_geom.setGpsGeomCoord("POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))");
-		Log.w("Debug", ConvertGeom.gpsGeomToLatLng(the_geom).toString());
-		Log.w("Debug", ConvertGeom.latLngToGpsGeom(ConvertGeom.gpsGeomToLatLng(the_geom)));
-
-		PixelGeom the_geom_ = new PixelGeom();
-		the_geom_.setPixelGeom_the_geom("POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))");
-		Log.w("Debug", ConvertGeom.pixelGeomToVector(the_geom_).toString());
-		Log.w("Debug", ConvertGeom.ZoneToPixelGeom(ConvertGeom.pixelGeomToVector(the_geom_)));
 	}
 
 	@Override
