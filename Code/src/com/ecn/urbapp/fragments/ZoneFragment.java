@@ -135,7 +135,7 @@ public class ZoneFragment extends Fragment{
 
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 		
-		MainActivity.sphoto=new File(MainActivity.photo.getPhoto_url());	
+		MainActivity.sphoto=new File("/mnt/sdcard/Download/"+MainActivity.photo.getPhoto_url());	
 
 		drawImage();	
 		
@@ -156,7 +156,7 @@ public class ZoneFragment extends Fragment{
 					new BitmapDrawable(
 						getResources(),
 						BitmapLoader.decodeSampledBitmapFromFile(
-								MainActivity.photo.getPhoto_url(), 1000, 1000)), drawzoneview
+								"/mnt/sdcard/Download/"+MainActivity.photo.getPhoto_url(), 1000, 1000)), drawzoneview
 						};
 				imageWidth = BitmapLoader.getWidth();
 				imageHeight = BitmapLoader.getHeight();

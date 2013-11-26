@@ -114,6 +114,8 @@ public class MainActivity extends Activity {
 	public static boolean isPhoto=false;
 	//TODO add description for javadoc
 	public static boolean start = true;
+	//TODO add description for javadoc
+	public static boolean local = false;
 
 	//TODO add description for javadoc
 	private Vector<Fragment> fragments=null;
@@ -263,7 +265,7 @@ public class MainActivity extends Activity {
             if (resultCode == RESULT_OK) {
             	confirm();
             	//Setting the photo path from the pathImage
-            	MainActivity.photo.setPhoto_url(pathImage);
+            	MainActivity.photo.setPhoto_url(pathImage.split("/")[pathImage.split("/").length]);
             	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
             	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
             	FragmentManager fragmentManager = getFragmentManager();
@@ -278,6 +280,7 @@ public class MainActivity extends Activity {
         if (requestCode == 1) {
             if (pathImage != null) {
         	//TODO check that this is not a crash
+            	MainActivity.local=true;
             	confirm();
                             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -292,7 +295,8 @@ public class MainActivity extends Activity {
             if (resultCode == RESULT_OK) {
             	confirm();
             	//Setting the photo path
-            	MainActivity.photo.setPhoto_url(getRealPathFromURI(baseContext, data.getData()));
+            	String url = getRealPathFromURI(baseContext, data.getData());
+            	MainActivity.photo.setPhoto_url(url.split("/")[url.split("/").length-1]);
             	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
             	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
             	FragmentManager fragmentManager = getFragmentManager();

@@ -104,14 +104,14 @@ public class CharacteristicsFragment extends Fragment {
 			}
 		}
 
-		MainActivity.sphoto=new File(MainActivity.photo.getPhoto_url());
+		MainActivity.sphoto=new File("/mnt/sdcard/Download/"+MainActivity.photo.getPhoto_url());
 		DrawImageView view = new DrawImageView(zones);
 	
 		Drawable[] drawables = {
 				new BitmapDrawable(
 					getResources(),
 					BitmapLoader.decodeSampledBitmapFromFile(
-							MainActivity.photo.getPhoto_url(), 1000, 1000)), view
+							"/mnt/sdcard/Download/"+MainActivity.photo.getPhoto_url(), 1000, 1000)), view
 		};
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 	}

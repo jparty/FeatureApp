@@ -13,6 +13,7 @@ import android.widget.EditText;
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.GeoActivity;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Composed;
 import com.ecn.urbapp.db.Project;
 
 /**
@@ -87,6 +88,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		    }
 		    else{
 			    Project pro = new Project();
+			    Composed comp= new Composed();
 			    EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
 			    pro.setProjectName(txt.getText().toString());
 			    pro.setProjectId(MainActivity.project.size()+1);
@@ -95,6 +97,9 @@ public class InformationFragment extends Fragment implements OnClickListener{
 			    MainActivity.photo.setPhoto_description(txt.getText().toString());
 			    MainActivity.project.add(pro);
 			    MainActivity.projectSet=true;
+			    comp.setPhoto_id(MainActivity.photo.getPhoto_id());
+			    comp.setProject_id(pro.getProjectId());
+			    MainActivity.composed.add(comp);
 			    
 			    txt = (EditText) getView().findViewById(R.id.info_edit_author);
 			    MainActivity.photo.setPhoto_author(txt.getText().toString());
@@ -120,7 +125,24 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		    
 		    //if the project is already set
 		    if(MainActivity.projectSet){
-		    	
+		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
+			    txt.setText(MainActivity.photo.getPhoto_author());
+			    txt = (EditText) getView().findViewById(R.id.info_edit_project);
+			    txt.setText(MainActivity.project.get(MainActivity.project.size()-1).getProjectName());
+			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
+			    txt.setText(MainActivity.photo.getPhoto_description());
+			    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
+			    txt.setText("");
+		    }
+		    else{
+		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
+			    txt.setText("");
+			    txt = (EditText) getView().findViewById(R.id.info_edit_project);
+			    txt.setText("");
+			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
+			    txt.setText("");
+			    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
+			    txt.setText("");
 		    }
 		}
 }
