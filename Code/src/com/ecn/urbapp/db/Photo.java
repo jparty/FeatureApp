@@ -46,10 +46,6 @@ public class Photo {
 	}
 
 	//TODO Adddescription for javadoc
-	private long gps_Geom_id;
-	
-
-	//TODO Adddescription for javadoc
 	public void setPhoto_id(long photo_id) {
 		this.photo_id = photo_id;
 	}
@@ -64,10 +60,6 @@ public class Photo {
 		this.photo_author = photo_author;
 	}
 
-	//TODO Adddescription for javadoc
-	public void setGps_Geom_id(long gps_Geom_id) {
-		this.gps_Geom_id = gps_Geom_id;
-	}
 
 	//TODO Adddescription for javadoc
 	public long getPhoto_id() {
@@ -84,17 +76,13 @@ public class Photo {
 		return photo_author;
 	}
 
-	//TODO Adddescription for javadoc
-	public long getGps_Geom_id() {
-		return gps_Geom_id;
-	}
 
 	//TODO Adddescription for javadoc
 	@Override
 	public String toString() {
 		return "Photo [photo_id=" + photo_id + ", photo_description="
 				+ photo_description + ", photo_author=" + photo_author
-				+ ", photo_url=" + photo_url + ", gps_Geom_id=" + gps_Geom_id +"&" + "  position =" + this.Ext_GpsGeomCoord
+				+ ", photo_url=" + photo_url + ", gps_Geom_id=" + gpsGeom_id +"&" + "  position =" + this.Ext_GpsGeomCoord
 				+ "]";
 	}
 

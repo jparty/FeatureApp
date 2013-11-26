@@ -90,6 +90,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 			    EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
 			    pro.setProjectName(txt.getText().toString());
 			    pro.setProjectId(MainActivity.project.size()+1);
+			    pro.setGpsGeom_id(1);//TODO DELETE
 			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
 			    MainActivity.photo.setPhoto_description(txt.getText().toString());
 			    MainActivity.project.add(pro);
