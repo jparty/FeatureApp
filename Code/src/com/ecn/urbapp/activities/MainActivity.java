@@ -289,6 +289,8 @@ public class MainActivity extends Activity {
                 transaction.commit();
                 getActionBar().setSelectedNavigationItem(2);
                 MainActivity.isPhoto=true;
+                datasource.instanciateAllpixelGeom(); //load pixelGeom linked to the photo in the relative public static arrayList
+                Log.w("papa","p");
             }
         }
         if (requestCode == 2) {

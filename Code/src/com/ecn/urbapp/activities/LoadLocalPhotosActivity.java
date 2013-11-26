@@ -112,9 +112,13 @@ public class LoadLocalPhotosActivity extends Activity{
 			@Override
 			public void onInfoWindowClick(Marker marker) {
 				Toast.makeText(MainActivity.baseContext, refreshedValues.get(photosMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
-
+				
+				//TODO Sebastien has to make it more readable
+				MainActivity.datasource.instanciatePhoto(refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_id());
+				
 				//TODO do a better way to have the path !
 				MainActivity.pathImage=Environment.getExternalStorageDirectory()+"/featureapp/"+refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_url();
+				
 				finish();
 
 			}

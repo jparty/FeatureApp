@@ -557,4 +557,86 @@ public class LocalDataSource {
 	}
 	
 	
+	
+	
+	/**
+	 * get information from datasource.database to public static fields from main activity once a local project is loaded
+	 */
+	
+	/**
+	 * SQL query that select every pixelgeom link to the registred photo
+	 */
+	private static final String
+	GETALLPIXELGEOMFROMAPHOTO = 
+		"SELECT "
+		+ MySQLiteHelper.TABLE_PIXELGEOM+"."+MySQLiteHelper.COLUMN_PIXELGEOMID+", "
+		+ MySQLiteHelper.TABLE_PIXELGEOM+"."+MySQLiteHelper.COLUMN_PIXELGEOMCOORD
+		+" FROM "
+		+ MySQLiteHelper.TABLE_PIXELGEOM
+		+" INNER JOIN " + MySQLiteHelper.TABLE_ELEMENT 
+		+" ON " + MySQLiteHelper.TABLE_ELEMENT + "." + MySQLiteHelper.COLUMN_PIXELGEOMID +" = " + MySQLiteHelper.TABLE_PIXELGEOM + "." + MySQLiteHelper.COLUMN_PIXELGEOMID
+		+" WHERE " + MySQLiteHelper.TABLE_ELEMENT + "." + MySQLiteHelper.COLUMN_PHOTOID+" = " 
+		//need to complete with PHOTO_ID and ";"
+	;
+
+	/**
+	 * register values from the above query in the static public field pixelGeom (instance of arrayList) from MainActivity
+	 */
+	public void instanciateAllpixelGeom(){
+		ArrayList<PixelGeom> pixelGeomList = new ArrayList<PixelGeom>();
+		
+		Cursor cursor = database.rawQuery(GETALLPIXELGEOMFROMAPHOTO + MainActivity.photo.getPhoto_id() +" ;",null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			PixelGeom p1 = cursorToPixelGeom(cursor);
+			pixelGeomList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		MainActivity.pixelGeom= pixelGeomList;		
+		
+	}
+	
+	/**
+	 * convert the result from a query (cursor) to an object (PixelGeom)
+	 * @param cursor
+	 * @return
+	 */
+	private PixelGeom cursorToPixelGeom(Cursor cursor) {
+	    PixelGeom type = new PixelGeom();
+	    type.setPixelGeomId(cursor.getLong(0));
+	    type.setPixelGeom_the_geom(cursor.getString(1));
+	    return type;
+	}
+	
+	
+	/**
+	 * get information from datasource.database to public static fields photo in main activity once a local project is loaded
+	 */
+	
+	/**
+	 * SQL query that select every pixelgeom link to the registred photo
+	 */
+	private static final String
+	GETPHOTO = 
+		"SELECT * FROM "
+		+ MySQLiteHelper.TABLE_PHOTO
+		+" WHERE " + MySQLiteHelper.TABLE_PHOTO + "." + MySQLiteHelper.COLUMN_PHOTOID+" = " 
+		//need to complete with PHOTO_ID and ";"
+	;
+
+	/**
+	 * register values from the above query in the static public field pixelGeom (instance of arrayList) from MainActivity
+	 */
+	public void instanciatePhoto(long id ){
+		Cursor cursor = database.rawQuery(GETPHOTO + id +" ;",null);
+		cursor.moveToFirst();
+		Photo photoLoaded = cursorToPhoto(cursor);
+		cursor.close();
+		MainActivity.photo= photoLoaded;		
+		
+	}
+	
+
 }
