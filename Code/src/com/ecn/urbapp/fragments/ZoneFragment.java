@@ -256,6 +256,7 @@ public class ZoneFragment extends Fragment{
 			element.setPhoto_id(MainActivity.photo.getPhoto_id());
 			element.setPixelGeom_id(pg.getPixelGeomId());
 			element.setElement_color(""+Color.RED);
+			element.setGpsGeom_id(1);//TODO DELETE
 			
 
 			MainActivity.element.add(element);

@@ -131,11 +131,16 @@ public class MainActivity extends Activity {
 	public static Photo photo=null;
 	
 	
+	//TODO delete this field
+	public static GpsGeom gpsGeomFixe = new GpsGeom();
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+
+		
 		composed = new ArrayList<Composed>();
 		element = new ArrayList<Element>();
 		elementType = new ArrayList<ElementType>();
@@ -144,6 +149,13 @@ public class MainActivity extends Activity {
 		pixelGeom = new ArrayList<PixelGeom>();
 		project = new ArrayList<Project>();
 		photo = new Photo();
+		
+		
+		//TODO delete this field
+		gpsGeomFixe.setGpsGeomId(1);
+		gpsGeomFixe.setGpsGeomCoord("48.853//2.35");//"POLYGON((48.853 2.35))"
+		gpsGeom.add(gpsGeomFixe);
+		
 		
 		fragments=new Vector<Fragment>();
 		
@@ -253,6 +265,7 @@ public class MainActivity extends Activity {
             	//Setting the photo path from the pathImage
             	MainActivity.photo.setPhoto_url(pathImage);
             	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
+            	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
             	transaction.replace(android.R.id.content, fragments.get(1));
@@ -281,6 +294,7 @@ public class MainActivity extends Activity {
             	//Setting the photo path
             	MainActivity.photo.setPhoto_url(getRealPathFromURI(baseContext, data.getData()));
             	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
+            	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
             	transaction.replace(android.R.id.content, fragments.get(1));

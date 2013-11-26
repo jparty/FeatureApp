@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 
 
@@ -33,18 +35,43 @@ import android.view.ViewGroup;
 
 public class SaveFragment extends Fragment{
 	
+
+	private Button saveToLocal = null;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		
+
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_save, null);
+		
+		saveToLocal=(Button)v.findViewById(R.id.save_button_ync);
+		saveToLocal.setOnClickListener(OnClickSaveToLocal);
+		
 		return v;
 	}
+	
+	
+    private OnClickListener OnClickSaveToLocal = new OnClickListener(){
+    	public void onClick(View view){
+    		
+    		MainActivity.datasource.open();
+    		saveGpsGeomListToLocal(MainActivity.gpsGeom);
+    		savePixelGeomListToLocal(MainActivity.pixelGeom);
+    		saveToLocal(MainActivity.photo);
+    		saveProjectListToLocal(MainActivity.project);
+    		saveComposedListToLocal(MainActivity.composed);
+    		//saveElementListToLocal(MainActivity.element); 		 		
+    		//saveMaterialListToLocal(MainActivity.material);
+    		MainActivity.datasource.close();
+    		
+    		
+    	};
+    };
 	
 	//TODO pour la photo il faut appeler direct la liste car on n'a pas de list de photo vu qu'ion bosse avecu ne seule.
 	
@@ -114,6 +141,7 @@ public class SaveFragment extends Fragment{
 		values.put(MySQLiteHelper.COLUMN_PHOTOID, p1.getPhoto_id());
 		values.put(MySQLiteHelper.COLUMN_PHOTOURL, p1.getPhoto_url());
 		values.put(MySQLiteHelper.COLUMN_PHOTODESCRIPTION, p1.getPhoto_description());
+		values.put(MySQLiteHelper.COLUMN_PHOTOAUTHOR, p1.getPhoto_author());
 		values.put(MySQLiteHelper.COLUMN_GPSGEOMID, p1.getGpsGeom_id());
 		MainActivity.datasource.getDatabase().insert(MySQLiteHelper.TABLE_PHOTO, null, values);			
 	}
