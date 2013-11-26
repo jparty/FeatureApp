@@ -127,9 +127,9 @@ public class Test extends ListActivity {
     
     private OnClickListener clickListenerBoutonsGenerateTypes = new OnClickListener(){
     	public void onClick(View view){
-    		datasource.createElementTypeInDB("toit");
-    		datasource.createElementTypeInDB("façade");
-    		datasource.createElementTypeInDB("sol");
+    		datasource.createElementTypeInDB("Toit");
+    		datasource.createElementTypeInDB("Façade");
+    		datasource.createElementTypeInDB("Sol");
     	};
     };
     
@@ -141,9 +141,17 @@ public class Test extends ListActivity {
     
     private OnClickListener clickListenerBoutonsGenerateMaterial = new OnClickListener(){
     	public void onClick(View view){
-    		datasource.createMaterialInDB("béton");
-    		datasource.createMaterialInDB("herbe");
-    		datasource.createMaterialInDB("verre");
+    		datasource.createMaterialInDB("Acier");
+    		datasource.createMaterialInDB("Ardoises");
+    		datasource.createMaterialInDB("Bois");
+    		datasource.createMaterialInDB("Béton");
+    		datasource.createMaterialInDB("Cuivre");
+    		datasource.createMaterialInDB("Enrobé");
+    		datasource.createMaterialInDB("Goudron");
+    		datasource.createMaterialInDB("Herbe");
+    		datasource.createMaterialInDB("Terre");
+    		datasource.createMaterialInDB("Tuiles");
+    		datasource.createMaterialInDB("Verre");
     	};
     };
     

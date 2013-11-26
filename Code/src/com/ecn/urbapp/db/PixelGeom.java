@@ -5,7 +5,10 @@ public class PixelGeom {
 	//TODO Adddescription for javadoc
 	private long pixelGeom_id;
 	private String pixelGeom_the_geom;
+
 	
+	//TODO rendre private et mettre accesseur
+	public boolean selected;
 
 	//TODO Adddescription for javadoc
 	public long getPixelGeomId(){

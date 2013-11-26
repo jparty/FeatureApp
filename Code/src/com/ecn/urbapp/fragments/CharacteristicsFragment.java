@@ -1,6 +1,7 @@
 package com.ecn.urbapp.fragments;
 
 import java.io.File;
+import java.util.Vector;
 
 import android.app.Fragment;
 import android.graphics.Matrix;
@@ -12,16 +13,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
+import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.DrawImageView;
 import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
@@ -53,6 +56,8 @@ public class CharacteristicsFragment extends Fragment {
 
 	/** Button to show a summary of the characteristics of the selected zones */
 	private Button recap = null;
+	
+	private Vector<Zone> zones = null;
 
 	/**
 	 * Returns the Image used in this project.
@@ -74,23 +79,9 @@ public class CharacteristicsFragment extends Fragment {
 		define = (Button) v.findViewById(R.id.definition_button_define);
 		delete = (Button) v.findViewById(R.id.definition_button_delete);
 		recap = (Button) v.findViewById(R.id.definition_button_recap);
-
-		for (Zone zone : MainActivity.zones) {
-			if (!zone.getPoints().get(0).equals(zone.getPoints().get(zone.getPoints().size() - 1))) {
-				zone.addPoint(zone.getPoints().get(0));
-			}
-		}
-
-		MainActivity.sphoto=new File(MainActivity.pathImage);
-		DrawImageView view = new DrawImageView(MainActivity.zones);
-	
-		Drawable[] drawables = {
-				new BitmapDrawable(
-					getResources(),
-					BitmapLoader.decodeSampledBitmapFromFile(
-							MainActivity.sphoto.getAbsolutePath(), 1000, 1000)), view
-		};
-		myImage.setImageDrawable(new LayerDrawable(drawables));
+		
+		draw();
+		
 		myImage.setOnTouchListener(touchListenerSelectImage);
 		
 	    define.setOnClickListener(clickListenerDefine);
@@ -98,6 +89,31 @@ public class CharacteristicsFragment extends Fragment {
 	    recap.setOnClickListener(clickListenerRecap);
 
 		return v;
+	}
+	
+	private void draw(){
+		zones = new Vector<Zone>();
+		
+		for(PixelGeom pg : MainActivity.pixelGeom){
+			zones.add(ConvertGeom.pixelGeomToZone(pg));
+		}
+
+		for (Zone zone : zones) {
+			if (!zone.getPoints().get(0).equals(zone.getPoints().get(zone.getPoints().size() - 1))) {
+				zone.addPoint(zone.getPoints().get(0));
+			}
+		}
+
+		MainActivity.sphoto=new File(MainActivity.photo.getPhoto_url());
+		DrawImageView view = new DrawImageView(zones);
+	
+		Drawable[] drawables = {
+				new BitmapDrawable(
+					getResources(),
+					BitmapLoader.decodeSampledBitmapFromFile(
+							MainActivity.photo.getPhoto_url(), 1000, 1000)), view
+		};
+		myImage.setImageDrawable(new LayerDrawable(drawables));
 	}
 
 	/**
@@ -118,7 +134,8 @@ public class CharacteristicsFragment extends Fragment {
 			UtilCharacteristicsZone.select(UtilCharacteristicsZone.isInsideZone(this.convertTouchPoint(event.getX(), event.getY())));
 
 			// Ask to draw again
-			myImage.invalidate();
+			//myImage.invalidate();
+			draw();
 			return false;
 		}
 
@@ -135,8 +152,7 @@ public class CharacteristicsFragment extends Fragment {
 			// Get the image matrix (if needed)
 			if (this.matrix == null) {
 				this.matrix = new Matrix();
-				((ImageView) getView().findViewById(R.id.definition_image)).getImageMatrix()
-						.invert(this.matrix);
+				((ImageView) getView().findViewById(R.id.definition_image)).getImageMatrix().invert(this.matrix);
 			}
 
 			// Get the touch point coordinates

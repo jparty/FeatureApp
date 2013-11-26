@@ -55,17 +55,17 @@ public class MyTabListener implements TabListener{
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 
         
-        if(f.getClass()==HomeFragment.class && MainActivity.pathImage!=null){
-        	MainActivity.pathTampon=MainActivity.pathImage;
-        	MainActivity.pathImage=null;
+        if(f.getClass()==HomeFragment.class && MainActivity.photo.getPhoto_url()!=null){
+        	MainActivity.pathTampon=MainActivity.photo.getPhoto_url();
+        	MainActivity.photo.setPhoto_url(null);
         	MainActivity.start=true;
         }
-        else if(MainActivity.pathImage==null){
-        	MainActivity.pathImage=MainActivity.pathTampon;
+        else if(MainActivity.photo.getPhoto_url()==null){
+        	MainActivity.photo.setPhoto_url(MainActivity.pathTampon);
         }
         
         
-		if (MainActivity.pathImage != null || MainActivity.start /*|| f.getClass()==HomeFragment.class*/){
+		if (MainActivity.photo.getPhoto_url() != null || MainActivity.start /*|| f.getClass()==HomeFragment.class*/){
 			ft.replace(android.R.id.content, f);
 			MainActivity.start=false;
 		}

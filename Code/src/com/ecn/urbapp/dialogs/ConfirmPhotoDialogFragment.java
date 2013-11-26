@@ -1,5 +1,7 @@
 package com.ecn.urbapp.dialogs;
 
+import java.util.ArrayList;
+
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -10,6 +12,14 @@ import android.widget.Button;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Composed;
+import com.ecn.urbapp.db.Element;
+import com.ecn.urbapp.db.ElementType;
+import com.ecn.urbapp.db.GpsGeom;
+import com.ecn.urbapp.db.Material;
+import com.ecn.urbapp.db.Photo;
+import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.db.Project;
 
 /**
  * This class creates the dialog that ask the user to choose the characteristics of the
@@ -46,6 +56,18 @@ public class ConfirmPhotoDialogFragment extends DialogFragment {
 		@Override
 		public void onClick(View v) {
 			MainActivity.zones=null;
+			
+			MainActivity.composed= new ArrayList<Composed>();
+			MainActivity.element= new ArrayList<Element>();
+			MainActivity.elementType= new ArrayList<ElementType>();
+			MainActivity.gpsGeom= new ArrayList<GpsGeom>();
+			MainActivity.material= new ArrayList<Material>();
+			MainActivity.pixelGeom= new ArrayList<PixelGeom>();
+			MainActivity.project= new ArrayList<Project>();
+			MainActivity.photo= new Photo();
+			MainActivity.project = new ArrayList<Project>();
+			
+		
 			box.dismiss();
 		}
 	};

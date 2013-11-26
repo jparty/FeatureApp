@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Vector;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -129,36 +130,37 @@ public class ZoneFragment extends Fragment{
 		edit_validate.setOnClickListener(editValidateListener);
 		edit_deletePoint.setOnClickListener(editDeletePointListener);
 		edit_releasePoint.setOnClickListener(editReleasePointListener);
-
-		if (MainActivity.zones==null) {
-			MainActivity.zones = new Vector<Zone>();
-		}
+		
 		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
 
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 		
 		MainActivity.sphoto=new File(MainActivity.photo.getPhoto_url());	
 
-		//Creation of thelist ofthe zone setted
-		Vector<Zone> zones = new Vector<Zone>();
-		for(PixelGeom pg: MainActivity.pixelGeom){
-			zones.add(ConvertGeom.pixelGeomToZone(pg));
-		}
+		drawImage();	
 		
-		drawzoneview = new DrawZoneView(zones, zone, selected) ;
-		Drawable[] drawables = {
-			new BitmapDrawable(
-				getResources(),
-				BitmapLoader.decodeSampledBitmapFromFile(
-						MainActivity.photo.getPhoto_url(), 1000, 1000)), drawzoneview
-				};
-		imageWidth = BitmapLoader.getWidth();
-		imageHeight = BitmapLoader.getHeight();
-		myImage.setImageDrawable(new LayerDrawable(drawables));
-		MainActivity.myImage = myImage;
 		myImage.setOnTouchListener(deleteImageTouchListener);
 		
 		return v;
+	}
+	
+	private void drawImage(){
+		//Creation of thelist ofthe zone setted
+				Vector<Zone> zones = new Vector<Zone>();
+				for(PixelGeom pg: MainActivity.pixelGeom){
+					zones.add(ConvertGeom.pixelGeomToZone(pg));
+				}
+				
+				drawzoneview = new DrawZoneView(zones, zone, selected) ;
+				Drawable[] drawables = {
+					new BitmapDrawable(
+						getResources(),
+						BitmapLoader.decodeSampledBitmapFromFile(
+								MainActivity.photo.getPhoto_url(), 1000, 1000)), drawzoneview
+						};
+				imageWidth = BitmapLoader.getWidth();
+				imageHeight = BitmapLoader.getHeight();
+				myImage.setImageDrawable(new LayerDrawable(drawables));
 	}
 	
 	private void enterAction(){
@@ -208,7 +210,8 @@ public class ZoneFragment extends Fragment{
 		zoneCache = new Zone();
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
-		myImage.invalidate();
+		drawImage();
+		//myImage.invalidate();
 	}
 	
 	/** Declarations for create zone **/
@@ -246,12 +249,13 @@ public class ZoneFragment extends Fragment{
             /** set of the database object **/
 			PixelGeom pg = new PixelGeom();
 			pg.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zone));
-			pg.setPixelGeomId(MainActivity.pixelGeom.size());
+			pg.setPixelGeomId(MainActivity.pixelGeom.size()+1);
 			
 			Element element = new Element();
-			element.setElement_id(MainActivity.element.size());
+			element.setElement_id(MainActivity.element.size()+1);
 			element.setPhoto_id(MainActivity.photo.getPhoto_id());
 			element.setPixelGeom_id(pg.getPixelGeomId());
+			element.setElement_color(""+Color.RED);
 			
 
 			MainActivity.element.add(element);
@@ -328,7 +332,9 @@ public class ZoneFragment extends Fragment{
 				}
 			}
 		}
-		myImage.invalidate();
+		//TODO
+		drawImage();
+		//myImage.invalidate();
 	}
     public void refreshEdit(){
 		Vector<Point> points = zone.getPoints();
@@ -347,7 +353,9 @@ public class ZoneFragment extends Fragment{
 				}
 			}
 		}
-		myImage.invalidate();
+		//TODO
+		drawImage();
+		//myImage.invalidate();
 	}
     
     /***** zone edition main *****/
@@ -387,8 +395,8 @@ public class ZoneFragment extends Fragment{
 				if(zone.getPoints().isEmpty()){
 					for(Zone test : zones){
 						if(test.containPoint(touch)){
-							zoneCache = test;
-							zone = test;
+							zoneCache = new Zone(test);
+							zone = new Zone(test);;
 							//zone.setZone(test);
 						}
 					}
@@ -441,6 +449,7 @@ public class ZoneFragment extends Fragment{
 		public void onClick(View v) {
 			//zones.remove(zoneCache);//delete original 
 			long id=0;
+			int row=-1;
 			PixelGeom pgeom = new PixelGeom();
 			for(PixelGeom pg : MainActivity.pixelGeom){
 				if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
@@ -460,13 +469,9 @@ public class ZoneFragment extends Fragment{
 		}
 	};
 	private OnClickListener editCancelListener = new View.OnClickListener() {		
-		//TODO voir avec gabriel pour si tampon
 		@Override
 		public void onClick(View v) {
 			if(zoneCache != null){//if user is coming from CreateZone there is no original to save
-				PixelGeom pg = new PixelGeom();
-				pg.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zoneCache));
-				MainActivity.pixelGeom.add(pg);
 				MainActivity.zones.add(new Zone(zoneCache));//save original
 			}
             exitAction();

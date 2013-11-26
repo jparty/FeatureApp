@@ -77,17 +77,19 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		    //need to verificate if the project is already defined or not
 		    if(MainActivity.projectSet){
 		    	//Obtaining teh last define project
-		    	Project pro = MainActivity.project.get(MainActivity.project.size());
-		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
-			    pro.setProjectName(txt.getText().toString());
-			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
-			    MainActivity.photo.setPhoto_description(txt.getText().toString());
+		    	if(MainActivity.project.size()>0){
+			    	Project pro = MainActivity.project.get(MainActivity.project.size()-1);
+			    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
+				    pro.setProjectName(txt.getText().toString());
+				    txt = (EditText) getView().findViewById(R.id.info_edit_description);
+				    MainActivity.photo.setPhoto_description(txt.getText().toString());
+		    	}
 		    }
 		    else{
 			    Project pro = new Project();
 			    EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
 			    pro.setProjectName(txt.getText().toString());
-			    pro.setProjectId(MainActivity.project.size());
+			    pro.setProjectId(MainActivity.project.size()+1);
 			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
 			    MainActivity.photo.setPhoto_description(txt.getText().toString());
 			    MainActivity.project.add(pro);

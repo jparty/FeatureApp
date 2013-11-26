@@ -252,6 +252,7 @@ public class MainActivity extends Activity {
             	confirm();
             	//Setting the photo path from the pathImage
             	MainActivity.photo.setPhoto_url(pathImage);
+            	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
             	transaction.replace(android.R.id.content, fragments.get(1));
@@ -279,6 +280,7 @@ public class MainActivity extends Activity {
             	confirm();
             	//Setting the photo path
             	MainActivity.photo.setPhoto_url(getRealPathFromURI(baseContext, data.getData()));
+            	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
             	transaction.replace(android.R.id.content, fragments.get(1));
