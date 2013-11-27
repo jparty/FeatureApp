@@ -35,12 +35,21 @@ knowledge of the CeCILL license and that you accept its terms.
 
 package com.ecn.urbapp.zones;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.vividsolutions.jts.JTSVersion;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.TopologyException;
 
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -52,6 +61,8 @@ import android.graphics.Point;
  * 
  */
 public final class UtilCharacteristicsZone {
+
+	private static GeometryFactory gf = new GeometryFactory();
 
 	/**
 	 * Set the type of all the selected zones
@@ -127,7 +138,7 @@ public final class UtilCharacteristicsZone {
 	public static int isInsideZone(Point point) {
 		int result = -1;
 		for (int i = 0; i < MainActivity.zones.size(); i++) {
-			if (MainActivity.zones.get(i).containPoint(point)) {
+			if (MainActivity.zones.get(i).getPolygon().contains(gf.createPoint(new Coordinate(point.x, point.y)))) {
 				if (result == -1) {
 					result = i;
 				} else if (MainActivity.zones.get(i).area() < MainActivity.zones.get(result)
@@ -224,4 +235,83 @@ public final class UtilCharacteristicsZone {
 		return summary;
 	}
 
+	public static void addInMainActivityZones(Zone zone) throws TopologyException {
+		List<Zone> zonesToRemove =  new ArrayList<Zone>();
+		List<Zone> zonesToAdd =  new ArrayList<Zone>();
+		Geometry geom = null;
+		if (zone.getPolygon() == null) {
+			zone = new Zone(zone);
+		}
+		for (Zone oldZone : MainActivity.zones) {
+			if (zone.getPolygon().contains(oldZone.getPolygon())) {
+				if (geom == null) { 
+					geom = gf.createGeometry(oldZone.getPolygon());
+				} else {
+					geom = geom.union(oldZone.getPolygon());
+				}
+			}
+		}
+		if (geom instanceof GeometryCollection) {
+			GeometryCollection geomColl = (GeometryCollection) geom;
+			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
+				if (geomColl.getGeometryN(i) instanceof Polygon) {
+					zone.createHole((Polygon) geomColl.getGeometryN(i));
+				}
+			}
+		} else if (geom instanceof Polygon) {
+			zone.createHole((Polygon) geom);
+		}
+		for (Zone oldZone : MainActivity.zones) {
+			if (zone.getPolygon().within(oldZone.getPolygon())) {
+				oldZone.createHole(zone.getPolygon());
+				zonesToAdd.add(zone);
+				break;
+			} else if (zone.getPolygon().intersects(oldZone.getPolygon())
+					&& !zone.getPolygon().touches(oldZone.getPolygon())) {
+				zonesToRemove.add(oldZone);
+				geom = zone.getPolygon().intersection(oldZone.getPolygon());
+				zonesToAdd.addAll(getZonesFromGeom(geom));
+				geom = zone.getPolygon().difference(oldZone.getPolygon());
+				zonesToAdd.addAll(getZonesFromGeom(geom));
+				geom = oldZone.getPolygon().difference(zone.getPolygon());
+				zonesToAdd.addAll(getZonesFromGeom(geom));
+				break;
+			}
+		}
+		if (zonesToAdd.isEmpty()) {
+			MainActivity.zones.add(zone);
+		} else {
+			for (Zone z : zonesToRemove) {
+				MainActivity.zones.remove(z);
+			}
+			try {
+				for (Zone z : zonesToAdd) {
+					addInMainActivityZones(z);
+				}
+			} catch (TopologyException e) {
+				for (Zone z : zonesToRemove) {
+					MainActivity.zones.add(z);
+				}
+				throw e;
+			}
+		}
+	}
+
+	private static List<Zone> getZonesFromGeom(Geometry geom) {
+		List<Zone> result = new ArrayList<Zone>();
+		if (geom instanceof GeometryCollection) {
+			GeometryCollection geomColl = (GeometryCollection) geom;
+			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
+				result.addAll(getZonesFromGeom(geomColl.getGeometryN(i)));
+			}
+		} else if (geom instanceof Polygon) {
+			Coordinate[] coords = geom.getCoordinates();
+			Zone zone = new Zone();
+			for (int i = 0; i < coords.length; i++) {
+				zone.addPoint(new Point((int) coords[i].x, (int) coords[i].y));
+			}
+			result.add(zone);
+		}
+		return result;
+	}
 }
