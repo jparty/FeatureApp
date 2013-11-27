@@ -73,12 +73,7 @@ public class DrawImageView extends Drawable {
 	 */
 	@Override
 	public void draw(Canvas canvas) {
-		// Paint for unfinished points
-		Paint unfinishedPaint = new Paint();
-		unfinishedPaint.setColor(Color.BLACK);
-		unfinishedPaint.setStyle(Paint.Style.STROKE);
 
-		// Paint for finished points
 		Paint finishedPaint = new Paint();
 		finishedPaint.setColor(Color.RED);
 		finishedPaint.setStyle(Paint.Style.STROKE);
@@ -92,8 +87,6 @@ public class DrawImageView extends Drawable {
 		for (int i = 0; i < zones.size(); i++) {
 			// If the zone is not selected, only draw the lines
 			if (!zones.get(i).isSelected()) {
-				// Paint in a different color depending on its state
-				if (zones.get(i).isFinished()) {
 					if (zones.get(i).getColor() != 0) {
 						finishedPaint.setColor(zones.get(i).getColor());
 					}
@@ -109,19 +102,6 @@ public class DrawImageView extends Drawable {
 								finishedPaint);
 					}
 					finishedPaint.setColor(Color.RED);
-				} else {
-					// Add all the lines of the polygon
-					for (int j = 0; j < zones.get(i).points.size() - 1; j++) {
-						canvas.drawLine(
-								zones.get(i).points.get(j).x,
-								zones.get(i).points.get(j).y,
-								zones.get(i).points
-										.get(j + 1).x, zones
-										.get(i).points.get(j + 1).y,
-								unfinishedPaint);
-					}
-
-				}
 
 				// If the zone is selected, draw a filled polygon
 			} else {
@@ -135,6 +115,14 @@ public class DrawImageView extends Drawable {
 					polyPath.lineTo(
 							zones.get(i).points.get(j).x,
 							zones.get(i).points.get(j).y);
+				}
+				for (int k = 0; k < zones.get(i).getPolygon().getNumInteriorRing(); k++) {
+					polyPath.close();
+					for (int j = 0; j < zones.get(i).getPolygon().getInteriorRingN(k).getNumPoints(); j++) {
+						polyPath.lineTo(
+								(int) zones.get(i).getPolygon().getInteriorRingN(k).reverse().getCoordinateN(j).x,
+								(int) zones.get(i).getPolygon().getInteriorRingN(k).reverse().getCoordinateN(j).y);
+					}
 				}
 
 				if (zones.get(i).getColor() != 0) {
