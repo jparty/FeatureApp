@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -104,14 +105,14 @@ public class CharacteristicsFragment extends Fragment {
 			}
 		}
 
-		MainActivity.sphoto=new File("/mnt/sdcard/Download/"+MainActivity.photo.getPhoto_url());
+		MainActivity.sphoto=new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());
 		DrawImageView view = new DrawImageView(zones);
 	
 		Drawable[] drawables = {
 				new BitmapDrawable(
 					getResources(),
 					BitmapLoader.decodeSampledBitmapFromFile(
-							"/mnt/sdcard/Download/"+MainActivity.photo.getPhoto_url(), 1000, 1000)), view
+							Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(), 1000, 1000)), view
 		};
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 	}

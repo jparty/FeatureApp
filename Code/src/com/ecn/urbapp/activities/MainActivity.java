@@ -265,7 +265,7 @@ public class MainActivity extends Activity {
             if (resultCode == RESULT_OK) {
             	confirm();
             	//Setting the photo path from the pathImage
-            	MainActivity.photo.setPhoto_url(pathImage.split("/")[pathImage.split("/").length]);
+            	MainActivity.photo.setPhoto_url(pathImage.split("/")[pathImage.split("/").length-1]);
             	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
             	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
             	FragmentManager fragmentManager = getFragmentManager();
@@ -334,5 +334,24 @@ public class MainActivity extends Activity {
 		    	cursor.close();
 		    }
 		}
+	}
+	
+	@Override
+	public void onBackPressed(){
+		//TODO add back fragment
+		int i=0;
+		for(Fragment f : fragments){
+			if(f.isVisible()){
+				break;
+			}
+			i++;
+		}
+		if(i>0){
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			ft.replace(android.R.id.content, fragments.get(i-1));
+			ft.commit();
+			getActionBar().selectTab(getActionBar().getTabAt(i-1));
+		}
+		
 	}
 }

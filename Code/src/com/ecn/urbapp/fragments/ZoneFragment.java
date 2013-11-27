@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -135,32 +136,27 @@ public class ZoneFragment extends Fragment{
 
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 		
-		MainActivity.sphoto=new File("/mnt/sdcard/Download/"+MainActivity.photo.getPhoto_url());	
+		MainActivity.sphoto=new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());	
 
-		drawImage();	
+		Vector<Zone> zones = new Vector<Zone>();
+		for(PixelGeom pg: MainActivity.pixelGeom){
+			zones.add(ConvertGeom.pixelGeomToZone(pg));
+		}
+		
+		drawzoneview = new DrawZoneView(zone, selected) ;
+		Drawable[] drawables = {
+			new BitmapDrawable(
+				getResources(),
+				BitmapLoader.decodeSampledBitmapFromFile(
+						Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(), 1000, 1000)), drawzoneview
+				};
+		imageWidth = BitmapLoader.getWidth();
+		imageHeight = BitmapLoader.getHeight();
+		myImage.setImageDrawable(new LayerDrawable(drawables));	
 		
 		myImage.setOnTouchListener(deleteImageTouchListener);
 		
 		return v;
-	}
-	
-	private void drawImage(){
-		//Creation of thelist ofthe zone setted
-				Vector<Zone> zones = new Vector<Zone>();
-				for(PixelGeom pg: MainActivity.pixelGeom){
-					zones.add(ConvertGeom.pixelGeomToZone(pg));
-				}
-				
-				drawzoneview = new DrawZoneView(zones, zone, selected) ;
-				Drawable[] drawables = {
-					new BitmapDrawable(
-						getResources(),
-						BitmapLoader.decodeSampledBitmapFromFile(
-								"/mnt/sdcard/Download/"+MainActivity.photo.getPhoto_url(), 1000, 1000)), drawzoneview
-						};
-				imageWidth = BitmapLoader.getWidth();
-				imageHeight = BitmapLoader.getHeight();
-				myImage.setImageDrawable(new LayerDrawable(drawables));
 	}
 	
 	private void enterAction(){
@@ -210,8 +206,7 @@ public class ZoneFragment extends Fragment{
 		zoneCache = new Zone();
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
-		drawImage();
-		//myImage.invalidate();
+		myImage.invalidate();
 	}
 	
 	/** Declarations for create zone **/
@@ -244,7 +239,6 @@ public class ZoneFragment extends Fragment{
     private OnClickListener createValidateListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			MainActivity.zones.add(new Zone(zone));
 
             /** set of the database object **/
 			PixelGeom pg = new PixelGeom();
@@ -333,9 +327,7 @@ public class ZoneFragment extends Fragment{
 				}
 			}
 		}
-		//TODO
-		drawImage();
-		//myImage.invalidate();
+		myImage.invalidate();
 	}
     public void refreshEdit(){
 		Vector<Point> points = zone.getPoints();
@@ -354,9 +346,7 @@ public class ZoneFragment extends Fragment{
 				}
 			}
 		}
-		//TODO
-		drawImage();
-		//myImage.invalidate();
+		myImage.invalidate();
 	}
     
     /***** zone edition main *****/
