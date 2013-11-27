@@ -3,6 +3,7 @@ package com.ecn.urbapp.fragments;
 import java.io.File;
 import java.util.Vector;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -22,10 +23,12 @@ import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
 import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.ecn.urbapp.zones.Zone;
+import com.vividsolutions.jts.geom.TopologyException;
 
 /**
  * @author	COHENDET Sébastien
@@ -232,8 +235,13 @@ public class ZoneFragment extends Fragment{
     private OnClickListener createValidateListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
-			exitAction();
+			try {
+				UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
+				exitAction();
+			} catch(TopologyException e) {
+				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
+				diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
+			}
 		}
 	};
 	private OnClickListener createCancelListener = new View.OnClickListener() {			
@@ -410,9 +418,14 @@ public class ZoneFragment extends Fragment{
 	private OnClickListener editValidateListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			MainActivity.zones.remove(zoneCache); //delete original
-			UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
-			exitAction();
+			try {
+				MainActivity.zones.remove(zoneCache); //delete original
+				UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
+				exitAction();
+			} catch(TopologyException e) {
+				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
+				diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
+			}
 		}
 	};
 	private OnClickListener editCancelListener = new View.OnClickListener() {			

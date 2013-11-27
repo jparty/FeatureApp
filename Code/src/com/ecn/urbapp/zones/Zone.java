@@ -77,15 +77,20 @@ public class Zone {
 			coordinates = new Coordinate[nbrPoints + 1];
 		}
 		int i = 0;
-		for (Point p : zone.getPoints()) {
+		for (Point p : vectPoints) {
 			points.add(new Point(p));
 			coordinates[i] = new Coordinate(p.x, p.y);
 			i++;
 		}
 		if (!vectPoints.get(0).equals(vectPoints.get(nbrPoints - 1))) {
 			coordinates[nbrPoints] = coordinates[0];
+			points.add(vectPoints.get(0));
 		}
 		LinearRing lr = gf.createLinearRing(coordinates);
+		if ((coordinates[0].x - coordinates[1].x) * (coordinates[2].y - coordinates[0].y)
+				-  (coordinates[0].y - coordinates[1].y) * (coordinates[2].x - coordinates[0].x) > 0) {
+			lr = gf.createLinearRing(lr.reverse().getCoordinates());
+		}
 		poly = gf.createPolygon(lr, null);
 	}
 
@@ -113,7 +118,14 @@ public class Zone {
 		for (int i = 0; i < nbrHoles; i++) {
 			holes[i] = gf.createLinearRing(poly.getInteriorRingN(i).getCoordinates());
 		}
-		holes[nbrHoles] = gf.createLinearRing(polygon.getCoordinates());
+		Coordinate[] coordinates = polygon.getExteriorRing().getCoordinates();
+		LinearRing lr = gf.createLinearRing(coordinates);
+		if ((coordinates[0].x - coordinates[1].x) * (coordinates[2].y - coordinates[0].y)
+				-  (coordinates[0].y - coordinates[1].y) * (coordinates[2].x - coordinates[0].x) > 0) {
+			lr = gf.createLinearRing(lr.reverse().getCoordinates());
+		}
+		holes[nbrHoles] = lr;
+		
 		poly = gf.createPolygon(shell, holes);
 	}
 	

@@ -75,12 +75,6 @@ public class CharacteristicsFragment extends Fragment {
 		delete = (Button) v.findViewById(R.id.definition_button_delete);
 		recap = (Button) v.findViewById(R.id.definition_button_recap);
 
-		for (Zone zone : MainActivity.zones) {
-			if (!zone.getPoints().get(0).equals(zone.getPoints().get(zone.getPoints().size() - 1))) {
-				zone.addPoint(zone.getPoints().get(0));
-			}
-		}
-
 		MainActivity.photo=new File(MainActivity.pathImage);
 		DrawImageView view = new DrawImageView(MainActivity.zones);
 	

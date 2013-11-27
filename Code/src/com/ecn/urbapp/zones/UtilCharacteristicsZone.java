@@ -43,10 +43,13 @@ import java.util.Vector;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.vividsolutions.jts.JTSVersion;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.TopologyException;
 
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -232,25 +235,41 @@ public final class UtilCharacteristicsZone {
 		return summary;
 	}
 
-	public static void addInMainActivityZones(Zone zone) {
+	public static void addInMainActivityZones(Zone zone) throws TopologyException {
 		List<Zone> zonesToRemove =  new ArrayList<Zone>();
 		List<Zone> zonesToAdd =  new ArrayList<Zone>();
+		Geometry geom = null;
 		if (zone.getPolygon() == null) {
 			zone = new Zone(zone);
 		}
 		for (Zone oldZone : MainActivity.zones) {
-			if (zone.getPolygon().covers(oldZone.getPolygon())) {
-				zone.createHole(oldZone.getPolygon());
-				zonesToAdd.add(zone);
-				break;
-			} else if (zone.getPolygon().coveredBy(oldZone.getPolygon())) {
+			if (zone.getPolygon().contains(oldZone.getPolygon())) {
+				if (geom == null) { 
+					geom = gf.createGeometry(oldZone.getPolygon());
+				} else {
+					geom = geom.union(oldZone.getPolygon());
+				}
+			}
+		}
+		if (geom instanceof GeometryCollection) {
+			GeometryCollection geomColl = (GeometryCollection) geom;
+			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
+				if (geomColl.getGeometryN(i) instanceof Polygon) {
+					zone.createHole((Polygon) geomColl.getGeometryN(i));
+				}
+			}
+		} else if (geom instanceof Polygon) {
+			zone.createHole((Polygon) geom);
+		}
+		for (Zone oldZone : MainActivity.zones) {
+			if (zone.getPolygon().within(oldZone.getPolygon())) {
 				oldZone.createHole(zone.getPolygon());
 				zonesToAdd.add(zone);
 				break;
 			} else if (zone.getPolygon().intersects(oldZone.getPolygon())
 					&& !zone.getPolygon().touches(oldZone.getPolygon())) {
 				zonesToRemove.add(oldZone);
-				Geometry geom = zone.getPolygon().intersection(oldZone.getPolygon());
+				geom = zone.getPolygon().intersection(oldZone.getPolygon());
 				zonesToAdd.addAll(getZonesFromGeom(geom));
 				geom = zone.getPolygon().difference(oldZone.getPolygon());
 				zonesToAdd.addAll(getZonesFromGeom(geom));
@@ -265,8 +284,15 @@ public final class UtilCharacteristicsZone {
 			for (Zone z : zonesToRemove) {
 				MainActivity.zones.remove(z);
 			}
-			for (Zone z : zonesToAdd) {
-				addInMainActivityZones(z);
+			try {
+				for (Zone z : zonesToAdd) {
+					addInMainActivityZones(z);
+				}
+			} catch (TopologyException e) {
+				for (Zone z : zonesToRemove) {
+					MainActivity.zones.add(z);
+				}
+				throw e;
 			}
 		}
 	}
@@ -278,7 +304,7 @@ public final class UtilCharacteristicsZone {
 			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
 				result.addAll(getZonesFromGeom(geomColl.getGeometryN(i)));
 			}
-		} else {
+		} else if (geom instanceof Polygon) {
 			Coordinate[] coords = geom.getCoordinates();
 			Zone zone = new Zone();
 			for (int i = 0; i < coords.length; i++) {
