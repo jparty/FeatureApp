@@ -49,6 +49,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.ElementType;
+import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.utils.ConvertGeom;
@@ -336,7 +337,7 @@ public final class UtilCharacteristicsZone {
 			element.setPhoto_id(MainActivity.photo.getPhoto_id());
 			element.setPixelGeom_id(pgeom.getPixelGeomId());
 			element.setElement_color(""+Color.RED);
-			element.setGpsGeom_id(1);//TODO DELETE
+			element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
 			MainActivity.element.add(element);
 			MainActivity.pixelGeom.add(pgeom);
 			MainActivity.zones.add(zone);
@@ -360,7 +361,7 @@ public final class UtilCharacteristicsZone {
 				for (Zone z : zonesToRemove) {
 
 					PixelGeom pgeom = new PixelGeom();
-					pgeom.setPixelGeomId(MainActivity.pixelGeom.size());
+					pgeom.setPixelGeomId(MainActivity.pixelGeom.size()+1);
 					pgeom.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(z));
 					MainActivity.pixelGeom.add(pgeom);
 					Element element = new Element();
@@ -368,7 +369,7 @@ public final class UtilCharacteristicsZone {
 					element.setPhoto_id(MainActivity.photo.getPhoto_id());
 					element.setPixelGeom_id(pgeom.getPixelGeomId());
 					element.setElement_color(""+Color.RED);
-					element.setGpsGeom_id(1);//TODO DELETE
+					element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
 					MainActivity.element.add(element);
 					MainActivity.zones.add(z);
 				}

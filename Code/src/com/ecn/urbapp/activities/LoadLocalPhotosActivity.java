@@ -15,8 +15,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Photo;
+import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.CustomListViewAdapter;
 import com.ecn.urbapp.utils.MathOperation;
 import com.ecn.urbapp.utils.RowItem;
@@ -25,7 +27,6 @@ import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class LoadLocalPhotosActivity extends Activity{
 
@@ -145,6 +146,21 @@ public class LoadLocalPhotosActivity extends Activity{
 		return values;
 
 	}
+	
+	/**
+	 * loading the different projects of the local db
+	 * @return
+	 */
+	public List<com.ecn.urbapp.db.GpsGeom> recupGpsGeom() {
+
+		//List<com.ecn.urbapp.db.Photo> values = this.datasource.getAllPhotos();
+
+		//TODO CATCH EXCEPTION
+
+		List<com.ecn.urbapp.db.GpsGeom> values = this.datasource.getAllGpsGeom();
+		return values;
+
+	}
 
 	/**
 	 * creating a list of project and loads in the view
@@ -152,6 +168,7 @@ public class LoadLocalPhotosActivity extends Activity{
 	public void refreshListPhoto(){      
 
 		refreshedValues = recupPhoto();
+		List<com.ecn.urbapp.db.GpsGeom> allGpsGeom = recupGpsGeom();
 
 		rowItems = new ArrayList<RowItem>();
 		for (Photo image:refreshedValues) {
@@ -171,13 +188,20 @@ public class LoadLocalPhotosActivity extends Activity{
 			
 			//TODO Get the real GPSGeom from Photo table in local Database !!!
 			//Fake one ! for testing purpose
-			String[] coord = enCours.getExt_GpsGeomCoord().split("//");
+			/*String[] coord = enCours.getExt_GpsGeomCoord().split("//");
 			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
 			LatLng coordPhoto1 = new LatLng(Double.parseDouble(coord[0])+0.2, Double.parseDouble(coord[1])+0.2);
 
 			ArrayList<LatLng> photoGPS = new ArrayList<LatLng>();
 			photoGPS.add(coordPhoto);
-			photoGPS.add(coordPhoto1);
+			photoGPS.add(coordPhoto1);*/
+			//TODO request for GPSGeom
+			ArrayList<LatLng> photoGPS = null;
+			for(GpsGeom gg : allGpsGeom){
+				if(gg.getGpsGeomsId()==enCours.getGpsGeom_id()){
+					photoGPS = ConvertGeom.gpsGeomToLatLng(gg);
+				}
+			}
 			//end of fake photoGPS values
 			
 			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
@@ -206,13 +230,21 @@ public class LoadLocalPhotosActivity extends Activity{
 
 			//TODO Get the real GPSGeom from Photo table in local Database !!!
 			//Fake one ! for testing purpose
-			String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
+			/*String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
 			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
 			LatLng coordPhoto1 = new LatLng(Double.parseDouble(coord[0])+0.2, Double.parseDouble(coord[1])+0.2);
 
 			ArrayList<LatLng> photoGPS = new ArrayList<LatLng>();
 			photoGPS.add(coordPhoto);
-			photoGPS.add(coordPhoto1);
+			photoGPS.add(coordPhoto1);*/
+
+			List<com.ecn.urbapp.db.GpsGeom> allGpsGeom = recupGpsGeom();
+			ArrayList<LatLng> photoGPS = null;
+			for(GpsGeom gg : allGpsGeom){
+				if(gg.getGpsGeomsId()==refreshedValues.get(position).getGpsGeom_id()){
+					photoGPS = ConvertGeom.gpsGeomToLatLng(gg);
+				}
+			}
 			//end of fake photoGPS values
 			
 			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
