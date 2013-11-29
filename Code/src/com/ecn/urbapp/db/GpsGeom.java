@@ -1,6 +1,7 @@
 package com.ecn.urbapp.db;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import com.ecn.urbapp.activities.MainActivity;
 
@@ -70,9 +71,27 @@ public class GpsGeom extends DataObject{
 
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
+		if(!this.getRegistredInLocal()){
+			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXGPSGEOMID, null);
+			cursor.moveToFirst();
+			if(!cursor.isAfterLast()){
+				this.setGpsGeomId(this.getGpsGeomsId()+cursor.getLong(0));
+			}
+		}
 		ContentValues values = new ContentValues(); 
 		values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
 		values.put(MySQLiteHelper.COLUMN_GPSGEOMCOORD, this.gpsGeom_the_geom);
 		datasource.getDatabase().insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);	
 	}		
+	/**
+	 * query to get the biggest GpsGeom_id from local db
+	 * 
+	 */
+	private static final String
+		GETMAXGPSGEOMID = 
+			"SELECT "+MySQLiteHelper.TABLE_GPSGEOM+"."+MySQLiteHelper.COLUMN_GPSGEOMID+" FROM "
+			+ MySQLiteHelper.TABLE_GPSGEOM 
+			+" ORDER BY "+ MySQLiteHelper.TABLE_GPSGEOM+"."+MySQLiteHelper.COLUMN_GPSGEOMID
+			+" DESC LIMIT 1 ;"
+		;
 }

@@ -1,6 +1,7 @@
 package com.ecn.urbapp.db;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import com.ecn.urbapp.activities.MainActivity;
 
@@ -127,6 +128,13 @@ public class Element extends DataObject {
 
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
+		if(!this.getRegistredInLocal()){
+			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXELEMENTID, null);
+			cursor.moveToFirst();
+			if(!cursor.isAfterLast()){
+				this.setElement_id(this.getElement_id()+cursor.getLong(0));
+			}
+		}
 		ContentValues values = new ContentValues(); 
 		values.put(MySQLiteHelper.COLUMN_ELEMENTID, this.element_id);
 		values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
@@ -137,4 +145,15 @@ public class Element extends DataObject {
 		values.put(MySQLiteHelper.COLUMN_ELEMENTCOLOR, this.element_color);
 		datasource.getDatabase().insert(MySQLiteHelper.TABLE_ELEMENT, null, values);	
 	}
+	/**
+	 * query to get the biggest Element_id from local db
+	 * 
+	 */
+	private static final String
+		GETMAXELEMENTID = 
+			"SELECT "+MySQLiteHelper.TABLE_ELEMENT+"."+MySQLiteHelper.COLUMN_ELEMENTID+" FROM "
+			+ MySQLiteHelper.TABLE_ELEMENT 
+			+" ORDER BY "+MySQLiteHelper.TABLE_ELEMENT+"."+MySQLiteHelper.COLUMN_ELEMENTID
+			+" DESC LIMIT 1 ;"
+		;
 }

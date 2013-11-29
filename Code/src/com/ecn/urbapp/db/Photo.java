@@ -1,6 +1,7 @@
 package com.ecn.urbapp.db;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import com.ecn.urbapp.activities.MainActivity;
 
@@ -122,6 +123,13 @@ public class Photo extends DataObject  {
 
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
+		if(!this.getRegistredInLocal()){
+			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXPHOTOID, null);
+			cursor.moveToFirst();
+			if(!cursor.isAfterLast()){
+				this.setPhoto_id(this.getPhoto_id()+cursor.getLong(0));
+			}
+		}
 		ContentValues values = new ContentValues(); 
 		values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
 		values.put(MySQLiteHelper.COLUMN_PHOTOURL, this.photo_url);
@@ -131,6 +139,18 @@ public class Photo extends DataObject  {
 		MainActivity.datasource.getDatabase().insert(MySQLiteHelper.TABLE_PHOTO, null, values);		
 		
 	}
+
+	/**
+	 * query to get the biggest photo_id from local db
+	 * 
+	 */
+	private static final String
+		GETMAXPHOTOID = 
+			"SELECT "+MySQLiteHelper.TABLE_PHOTO+"."+MySQLiteHelper.COLUMN_PHOTOID+" FROM "
+			+ MySQLiteHelper.TABLE_PHOTO 
+			+" ORDER BY "+MySQLiteHelper.TABLE_PHOTO+"."+MySQLiteHelper.COLUMN_PHOTOID
+			+" DESC LIMIT 1 ;"
+		;
 
 
 }

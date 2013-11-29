@@ -1,8 +1,5 @@
 package com.ecn.urbapp.db;
 
-import android.content.ContentValues;
-
-import com.ecn.urbapp.activities.MainActivity;
 
 public abstract class DataObject {
 	
@@ -10,7 +7,7 @@ public abstract class DataObject {
 	/**
 	 * Boolean attribute to know if the object is already created in the local database or not
 	 */
-	protected Boolean registredInLocal ;
+	protected Boolean registredInLocal = false;;
 	
 	
 	
