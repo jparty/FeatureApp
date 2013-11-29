@@ -83,12 +83,19 @@ public class PixelGeom extends DataObject  {
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
 		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_PIXELGEOMID, this.pixelGeom_id);
-		values.put(MySQLiteHelper.COLUMN_PIXELGEOMCOORD, this.pixelGeom_the_geom);
-		datasource.getDatabase().insert(MySQLiteHelper.TABLE_PIXELGEOM, null, values);		
 		
+		values.put(MySQLiteHelper.COLUMN_PIXELGEOMCOORD, this.pixelGeom_the_geom);
+		
+		if(this.registredInLocal){
+			String[] s=new String[1];
+			s[0]= ""+this.pixelGeom_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_PIXELGEOM, values, MySQLiteHelper.COLUMN_PIXELGEOMID,s );
+		}
+		else{
+			values.put(MySQLiteHelper.COLUMN_PIXELGEOMID, this.pixelGeom_id);
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_PIXELGEOM, null, values);
+		}
 	}
-
 
 	
 }

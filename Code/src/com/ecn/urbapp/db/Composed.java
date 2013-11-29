@@ -78,6 +78,18 @@ public class Composed extends DataObject{
 		ContentValues values = new ContentValues(); 
 		values.put(MySQLiteHelper.COLUMN_PROJECTID, this.project_id);
 		values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
-		datasource.getDatabase().insert(MySQLiteHelper.TABLE_COMPOSED, null, values);		
+		
+		if(this.registredInLocal){
+			//TODO delete, no need to change it hen it's registred
+			/*
+			String[] s=new String[1];
+			s[0]= ""+this.project_id;
+			s[1]= ""+this.photo_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_ELEMENT, values, MySQLiteHelper.COLUMN_ELEMENTID,s );
+			*/
+		}
+		else{
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_COMPOSED, null, values);
+		}
 	}
 }

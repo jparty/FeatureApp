@@ -70,9 +70,18 @@ public class Material extends DataObject  {
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
 		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_MATERIALID, this.material_id);
+		
 		values.put(MySQLiteHelper.COLUMN_MATERIALNAME, this.material_name);
-		datasource.getDatabase().insert(MySQLiteHelper.TABLE_MATERIAL, null, values);	
+		
+		if(this.registredInLocal){
+			String[] s=new String[1];
+			s[0]= ""+this.material_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_MATERIAL, values, MySQLiteHelper.COLUMN_MATERIALID,s );
+		}
+		else{
+			values.put(MySQLiteHelper.COLUMN_MATERIALID, this.material_id);
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_MATERIAL, null, values);
+		}
 		
 	}
 

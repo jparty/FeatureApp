@@ -71,8 +71,17 @@ public class GpsGeom extends DataObject{
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
 		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
+		
 		values.put(MySQLiteHelper.COLUMN_GPSGEOMCOORD, this.gpsGeom_the_geom);
-		datasource.getDatabase().insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);	
+		
+		if(this.registredInLocal){
+			String[] s=new String[1];
+			s[0]= ""+this.gpsGeom_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_GPSGEOM, values, MySQLiteHelper.COLUMN_GPSGEOMID,s );
+		}
+		else{
+			values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);	
+		}
 	}		
 }
