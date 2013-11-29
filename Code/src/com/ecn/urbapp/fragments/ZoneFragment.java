@@ -3,7 +3,6 @@ package com.ecn.urbapp.fragments;
 import java.io.File;
 import java.util.Vector;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -11,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,7 +23,9 @@ import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
+import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
@@ -130,26 +132,24 @@ public class ZoneFragment extends Fragment{
 		edit_validate.setOnClickListener(editValidateListener);
 		edit_deletePoint.setOnClickListener(editDeletePointListener);
 		edit_releasePoint.setOnClickListener(editReleasePointListener);
-
-		if (MainActivity.zones==null) {
-			MainActivity.zones = new Vector<Zone>();
-		}
+		
 		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
 
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 		
-		MainActivity.sphoto=new File(MainActivity.pathImage);	
-		drawzoneview = new DrawZoneView(MainActivity.zones, zone, selected) ;
+		MainActivity.sphoto=new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());	
+		
+		drawzoneview = new DrawZoneView(zone, selected) ;
 		Drawable[] drawables = {
 			new BitmapDrawable(
 				getResources(),
 				BitmapLoader.decodeSampledBitmapFromFile(
-					MainActivity.sphoto.getAbsolutePath(), 1000, 1000)), drawzoneview
+						Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(), 1000, 1000)), drawzoneview
 				};
 		imageWidth = BitmapLoader.getWidth();
 		imageHeight = BitmapLoader.getHeight();
-		myImage.setImageDrawable(new LayerDrawable(drawables));
-		MainActivity.myImage = myImage;
+		myImage.setImageDrawable(new LayerDrawable(drawables));	
+		
 		myImage.setOnTouchListener(deleteImageTouchListener);
 		
 		return v;
@@ -242,6 +242,23 @@ public class ZoneFragment extends Fragment{
 				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
 				diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
 			}
+/*
+            /** set of the database object **//*
+			PixelGeom pg = new PixelGeom();
+			pg.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zone));
+			pg.setPixelGeomId(MainActivity.pixelGeom.size()+1);
+			
+			Element element = new Element();
+			element.setElement_id(MainActivity.element.size()+1);
+			element.setPhoto_id(MainActivity.photo.getPhoto_id());
+			element.setPixelGeom_id(pg.getPixelGeomId());
+			element.setElement_color(""+Color.RED);
+			element.setGpsGeom_id(1);//TODO DELETE
+			
+
+			MainActivity.element.add(element);
+			MainActivity.pixelGeom.add(pg);
+			exitAction();*/
 		}
 	};
 	private OnClickListener createCancelListener = new View.OnClickListener() {			
@@ -362,12 +379,24 @@ public class ZoneFragment extends Fragment{
 	    		getMatrix();
 				Point touch = getTouchedPoint(event);
 				
+				//Creation of thelist ofthe zone setted
+				Vector<Zone> zones = new Vector<Zone>();
+				for(PixelGeom pg: MainActivity.pixelGeom){
+					zones.add(ConvertGeom.pixelGeomToZone(pg));
+				}
+				
 				//If no zone has been selected yet, try to select one
 				if(zone.getPoints().isEmpty()){
-					for(Zone test : MainActivity.zones){
+					for(Zone test : zones){
 						if(test.containPoint(touch)){
+//<<<<<<< HEAD
 							zoneCache = test;
 							zone.setZone(test);
+							//TODO
+/*=======
+							zoneCache = new Zone(test);
+							zone = new Zone(test);;
+>>>>>>> dev_database*/
 							//zone.setZone(test);
 						}
 					}
@@ -417,18 +446,40 @@ public class ZoneFragment extends Fragment{
 	};
 	private OnClickListener editValidateListener = new View.OnClickListener() {			
 		@Override
+
 		public void onClick(View v) {
+			//zones.remove(zoneCache);//delete original 
+	
 			try {
-				MainActivity.zones.remove(zoneCache); //delete original
+				//MainActivity.zones.remove(zoneCache); //delete original
 				UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
 				exitAction();
 			} catch(TopologyException e) {
 				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
 				diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
 			}
+	/*
+			long id=0;
+			int row=-1;
+			PixelGeom pgeom = new PixelGeom();
+			for(PixelGeom pg : MainActivity.pixelGeom){
+				if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
+					id=pg.getPixelGeomId();
+					pgeom=pg;
+					break;
+				}
+			}
+			MainActivity.pixelGeom.remove(pgeom);
+			MainActivity.zones.remove(zoneCache);
+			pgeom = new PixelGeom();
+			pgeom.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zone));
+			pgeom.setPixelGeomId(id);
+			MainActivity.pixelGeom.add(pgeom);
+			MainActivity.zones.add(new Zone(zone));//save edited
+			exitAction();*/
 		}
 	};
-	private OnClickListener editCancelListener = new View.OnClickListener() {			
+	private OnClickListener editCancelListener = new View.OnClickListener() {		
 		@Override
 		public void onClick(View v) {
 			if(zoneCache != null){//if user is coming from CreateZone there is no original to save
@@ -476,13 +527,30 @@ public class ZoneFragment extends Fragment{
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				getMatrix();
 				Point touch = getTouchedPoint(event);
+
+				//Creation of thelist ofthe zone setted
+				Vector<Zone> zones = new Vector<Zone>();
+				for(PixelGeom pg: MainActivity.pixelGeom){
+					zones.add(ConvertGeom.pixelGeomToZone(pg));
+				}
+				
 				if(zone.getPoints().isEmpty()){
-					for(Zone test : MainActivity.zones){
+					for(Zone test : zones){
 						if(test.containPoint(touch)){
 							zoneCache = test;
 						}
 					}
 					if(zoneCache != null){
+						//zones.remove(zoneCache);//delete original 
+						PixelGeom pgeom = new PixelGeom();
+						for(PixelGeom pg : MainActivity.pixelGeom){
+							if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
+								pgeom=pg;
+								break;
+							}
+						}
+						MainActivity.pixelGeom.remove(pgeom);
+						
 						MainActivity.zones.remove(zoneCache);						
 			            exitAction();
 					}

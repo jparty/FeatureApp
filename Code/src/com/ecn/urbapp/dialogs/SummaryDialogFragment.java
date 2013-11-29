@@ -63,12 +63,11 @@ public class SummaryDialogFragment extends DialogFragment {
 		// Create a dialog and set the title
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.information_about_frontage);
-
 		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
 		HashMap<String, Float> types = summary.get(getString(R.string.type));
 		HashMap<String, Float> materials = summary
 				.get(getString(R.string.materials));
-		
+
 		String contenu = "<b><u>" + getString(R.string.type) + " :</b></u>";
 		if (types.keySet().size() == 1) {
 			contenu += " ";

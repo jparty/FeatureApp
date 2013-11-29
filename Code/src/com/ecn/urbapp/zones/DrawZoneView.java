@@ -46,6 +46,10 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.utils.ConvertGeom;
+
 /**
  * This class is used to draw the zones on the image
  * 
@@ -54,29 +58,25 @@ import android.util.Log;
  */
 //la méthode draw dessine en fonction des informations dont elle dispose, qui sont apportées via les différents constructeur
 public class DrawZoneView extends Drawable {
-	private Zone zone; private Vector<Zone> zones; private Point selected; private Vector<Point> intersections;
+	private Zone zone; private Point selected; private Vector<Point> intersections;
 	private boolean edit; private boolean create; Paint paintLastPoint; Paint paintFirstPoint;
 
+	//TODO Add description for javadoc
 	public DrawZoneView() {
 		super();
+		zone = new Zone();
 	}
 
 	//TODO Add description for javadoc
-	public DrawZoneView(Vector<Zone> zones) {
+	public DrawZoneView(Zone zone) {
 		super();
-		this.zones = zones; zone = new Zone();
+		this.zone = zone;
 	}
 
 	//TODO Add description for javadoc
-	public DrawZoneView(Vector<Zone> zones, Zone zone) {
+	public DrawZoneView(Zone zone, Point selected) {
 		super();
-		this.zone = zone; this.zones = zones; 
-	}
-
-	//TODO Add description for javadoc
-	public DrawZoneView(Vector<Zone> zones, Zone zone, Point selected) {
-		super();
-		this.zone = zone; this.zones = zones; this.selected = selected; this.intersections = new Vector<Point>();
+		this.zone = zone; this.selected = selected; this.intersections = new Vector<Point>();
 		this.edit = false; this.create = false;
 	}
 
@@ -177,6 +177,10 @@ public class DrawZoneView extends Drawable {
 		}
 		
 		// Create a closed path for the polygon
+			Vector<Zone> zones = new Vector<Zone>();
+			for(PixelGeom pg : MainActivity.pixelGeom){
+				zones.add(ConvertGeom.pixelGeomToZone(pg));
+			}
 			if(!zones.isEmpty()){
 				for(Zone polygon : zones){
 					Path polyPath = new Path();

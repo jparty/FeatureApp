@@ -63,8 +63,7 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		spinMaterial.setOnItemSelectedListener(itemSelectedListenerMaterial);
 		validate.setOnClickListener(validation);
 		colorView = box.findViewById(R.id.color);
-		colorView.setBackgroundColor(UtilCharacteristicsZone
-				.getColorForSelectedZones());
+		colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());
 		colorView.setOnClickListener(chooseColor);
 		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
 		HashMap<String, Float> types = summary.get(getString(R.string.type));

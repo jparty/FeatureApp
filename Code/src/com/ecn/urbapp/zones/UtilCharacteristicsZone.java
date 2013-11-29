@@ -41,9 +41,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Point;
+
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
-import com.vividsolutions.jts.JTSVersion;
+import com.ecn.urbapp.db.Element;
+import com.ecn.urbapp.db.ElementType;
+import com.ecn.urbapp.db.Material;
+import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.utils.ConvertGeom;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -51,8 +59,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 
-import android.content.res.Resources;
-import android.graphics.Point;
+//TODO only dsplay databased material and not those put into ressources
 
 /**
  * This class regroup all the zones linked to a photo
@@ -73,8 +80,12 @@ public final class UtilCharacteristicsZone {
 	 *            the type to set
 	 */
 	public static void setTypeForSelectedZones(String type) {
-		for (Zone zone : getAllSelectedZones()) {
-			zone.setType(type);
+		for (Element e : getAllSelectedZones()) {
+			for(ElementType et : MainActivity.elementType){
+				if(et.getElementType_name().equals(type)){
+					e.setElementType_id(et.getElementType_id());
+				}
+			}
 		}
 	}
 
@@ -87,8 +98,13 @@ public final class UtilCharacteristicsZone {
 	 *            the material to set
 	 */
 	public static void setMaterialForSelectedZones(String material) {
-		for (Zone zone : getAllSelectedZones()) {
-			zone.setMaterial(material);
+
+		for (Element e : getAllSelectedZones()) {
+			for(Material m : MainActivity.material){
+				if(m.getMaterial_name().equals(material)){
+					e.setMaterial_id(m.getMaterial_id());
+				}
+			}
 		}
 	}
 
@@ -101,8 +117,8 @@ public final class UtilCharacteristicsZone {
 	 *            the color to set
 	 */
 	public static void setColorForSelectedZones(int color) {
-		for (Zone zone : getAllSelectedZones()) {
-			zone.setColor(color);
+		for (Element e : getAllSelectedZones()) {
+			e.setElement_color(""+color);
 		}
 	}
 
@@ -113,12 +129,17 @@ public final class UtilCharacteristicsZone {
 	 * @return the color as an int
 	 */
 	public static Integer getColorForSelectedZones() {
-		Vector<Zone> zones = getAllSelectedZones();
-		if (zones != null && !zones.isEmpty()) {
-			int color = zones.get(0).getColor();
-			for (Zone zone : zones) {
-				if (zone.getColor() != color) {
-					color = 0;
+		Vector<Element> element = getAllSelectedZones();
+		if (element != null && !element.isEmpty()) {
+			int color=0;
+			if(element.get(0).getElement_color()!=null){
+				color = Integer.parseInt(element.get(0).getElement_color());
+			}
+			for (Element e : element) {
+				if(element.get(0).getElement_color()!=null){
+					if (Integer.parseInt(e.getElement_color()) != color) {
+						color = 0;
+					}
 				}
 			}
 			return color;
@@ -137,12 +158,12 @@ public final class UtilCharacteristicsZone {
 	 */
 	public static int isInsideZone(Point point) {
 		int result = -1;
-		for (int i = 0; i < MainActivity.zones.size(); i++) {
-			if (MainActivity.zones.get(i).getPolygon().contains(gf.createPoint(new Coordinate(point.x, point.y)))) {
+		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
+			if (ConvertGeom.pixelGeomToZone(MainActivity.pixelGeom.get(i)).containPoint(point)) {
 				if (result == -1) {
 					result = i;
-				} else if (MainActivity.zones.get(i).area() < MainActivity.zones.get(result)
-						.area()) {
+				} else if (ConvertGeom.pixelGeomToZone(MainActivity.pixelGeom.get(i)).area()
+						< ConvertGeom.pixelGeomToZone(MainActivity.pixelGeom.get(result)).area()) {
 					result = i;
 				}
 			}
@@ -154,8 +175,8 @@ public final class UtilCharacteristicsZone {
 	 * Unselect all the zones
 	 */
 	public static void unselectAll() {
-		for (int i = 0; i < MainActivity.zones.size(); i++) {
-			MainActivity.zones.get(i).selected = false;
+		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
+			MainActivity.pixelGeom.get(i).selected = false;
 		}
 	}
 
@@ -168,7 +189,7 @@ public final class UtilCharacteristicsZone {
 	 */
 	public static void select(int zoneNumber) {
 		if (zoneNumber >= 0) {
-			MainActivity.zones.get(zoneNumber).selected = !MainActivity.zones.get(zoneNumber).selected;
+			MainActivity.pixelGeom.get(zoneNumber).selected = !MainActivity.pixelGeom.get(zoneNumber).selected;
 		} else {
 			unselectAll();
 		}
@@ -179,14 +200,24 @@ public final class UtilCharacteristicsZone {
 	 * 
 	 * @return vector with all the selected zones
 	 */
-	public static Vector<Zone> getAllSelectedZones() {
-		Vector<Zone> selectedZonesNumbers = new Vector<Zone>();
+	public static Vector<Element> getAllSelectedZones() {
+		Vector<Element> selectedElements = new Vector<Element>();
+		for(PixelGeom pg: MainActivity.pixelGeom){
+			if(pg.selected){
+				for(Element e : MainActivity.element){
+					if(e.getPixelGeom_id()==pg.getPixelGeomId()){
+						selectedElements.add(e);
+					}
+				}
+			}
+		}
+		/*
 		for (int i = 0; i < MainActivity.zones.size(); i++) {
 			if (MainActivity.zones.get(i).selected) {
 				selectedZonesNumbers.add(MainActivity.zones.get(i));
 			}
-		}
-		return selectedZonesNumbers;
+		}*/
+		return selectedElements;
 	}
 
 	/**
@@ -196,31 +227,49 @@ public final class UtilCharacteristicsZone {
 	 * 
 	 * @param res
 	 */
-	public static Map<String, HashMap<String, Float>> getStatsForSelectedZones(
-			Resources res) {
-		Vector<Zone> selectedZones = getAllSelectedZones();
+	public static Map<String, HashMap<String, Float>> getStatsForSelectedZones(Resources res) {
+		Vector<Element> selectedZones = getAllSelectedZones();
 		if (selectedZones.isEmpty()) {
-			selectedZones = MainActivity.zones;
+			selectedZones = new Vector<Element>(MainActivity.element);
 		}
 		float totalArea = 0f;
 		HashMap<String, Float> types = new HashMap<String, Float>();
 		HashMap<String, Float> materials = new HashMap<String, Float>();
-		for (Zone zone : selectedZones) {
-			String type = zone.getTypeToText(res);
-			Float currentArea = types.get(type);
-			if (currentArea != null) {
-				types.put(type, currentArea + zone.area());
-			} else {
-				types.put(type, zone.area());
+		for (Element e : selectedZones) {
+			String type="";
+			PixelGeom pg = new PixelGeom();;
+			for(PixelGeom g : MainActivity.pixelGeom){
+				if(g.getPixelGeomId()==e.getPixelGeom_id()){
+					pg = g;
+				}
 			}
-			String material = zone.getMaterialToText(res);
+			for(ElementType et : MainActivity.elementType){
+				if(et.getElementType_id()==e.getElementType_id()){
+					type=et.getElementType_name();
+				}
+			}
+			Float currentArea = types.get(type);
+			//TODO finish to implement the database object
+			Zone z = new Zone(ConvertGeom.pixelGeomToZone(pg));
+			if (currentArea != null) {
+				types.put(type, currentArea + z.area());
+			} else {
+				types.put(type, z.area());
+			}
+			String material="";
+			for(Material  m : MainActivity.material){
+				if(m.getMaterial_id()==e.getMaterial_id()){
+					material=m.getMaterial_name();
+				}
+			}
 			currentArea = materials.get(material);
 			if (currentArea != null) {
-				materials.put(material, currentArea + zone.area());
+				materials.put(material, currentArea + z.area());
 			} else {
-				materials.put(material, zone.area());
+				materials.put(material, z.area());
 			}
-			totalArea += zone.area();
+			totalArea += z.area();
+			
 		}
 		for (String key : materials.keySet()) {
 			materials.put(key, materials.get(key) / totalArea);
@@ -279,9 +328,28 @@ public final class UtilCharacteristicsZone {
 			}
 		}
 		if (zonesToAdd.isEmpty()) {
+			PixelGeom pgeom = new PixelGeom();
+			pgeom.setPixelGeomId(MainActivity.pixelGeom.size()-1);
+			pgeom.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zone));
+			Element element = new Element();
+			element.setElement_id(MainActivity.element.size()+1);
+			element.setPhoto_id(MainActivity.photo.getPhoto_id());
+			element.setPixelGeom_id(pgeom.getPixelGeomId());
+			element.setElement_color(""+Color.RED);
+			element.setGpsGeom_id(1);//TODO DELETE
+			MainActivity.element.add(element);
+			MainActivity.pixelGeom.add(pgeom);
 			MainActivity.zones.add(zone);
 		} else {
 			for (Zone z : zonesToRemove) {
+				PixelGeom pgeom = new PixelGeom();
+				for(PixelGeom pg : MainActivity.pixelGeom){
+					if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(z))){
+						pgeom=pg;
+						break;
+					}
+				}
+				MainActivity.pixelGeom.remove(pgeom);
 				MainActivity.zones.remove(z);
 			}
 			try {
@@ -290,6 +358,18 @@ public final class UtilCharacteristicsZone {
 				}
 			} catch (TopologyException e) {
 				for (Zone z : zonesToRemove) {
+
+					PixelGeom pgeom = new PixelGeom();
+					pgeom.setPixelGeomId(MainActivity.pixelGeom.size());
+					pgeom.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(z));
+					MainActivity.pixelGeom.add(pgeom);
+					Element element = new Element();
+					element.setElement_id(MainActivity.element.size()+1);
+					element.setPhoto_id(MainActivity.photo.getPhoto_id());
+					element.setPixelGeom_id(pgeom.getPixelGeomId());
+					element.setElement_color(""+Color.RED);
+					element.setGpsGeom_id(1);//TODO DELETE
+					MainActivity.element.add(element);
 					MainActivity.zones.add(z);
 				}
 				throw e;
