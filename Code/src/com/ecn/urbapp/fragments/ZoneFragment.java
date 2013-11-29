@@ -48,7 +48,6 @@ import com.vividsolutions.jts.geom.TopologyException;
 
 public class ZoneFragment extends Fragment{
 	private int TOUCH_RADIUS_TOLERANCE = 10;//only for catching points in edit mode
-		//!! 1200x700 screen size reference, divided by ratio  
 	private Button create; 
 	private Button edit;
 	private Button delete;
@@ -149,8 +148,8 @@ public class ZoneFragment extends Fragment{
 		imageWidth = BitmapLoader.getWidth();
 		imageHeight = BitmapLoader.getHeight();
 		
-		float ratioW = (float) (1200.0/imageWidth);
-		float ratioH = (float) (700.0/imageHeight);
+		float ratioW =((float)getActivity().getWindow().getDecorView().getWidth()/imageWidth);
+		float ratioH =((float)getActivity().getWindow().getDecorView().getHeight()/imageHeight);
 		float ratio = ratioW < ratioH ? ratioW : ratioH ;
 			
 		Log.d("Size","ratioH:"+ ratioH + ";ratioW:" + ratioW + ";ratio:" + ratio);
