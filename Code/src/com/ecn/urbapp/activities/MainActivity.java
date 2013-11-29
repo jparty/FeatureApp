@@ -41,7 +41,6 @@ import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 import com.ecn.urbapp.utils.ConnexionCheck;
-import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.zones.Zone;
 
 /**
