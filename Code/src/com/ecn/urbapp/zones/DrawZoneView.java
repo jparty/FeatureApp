@@ -60,7 +60,8 @@ import com.ecn.urbapp.utils.ConvertGeom;
 public class DrawZoneView extends Drawable {
 	private Zone zone; private Point selected; private Vector<Point> intersections;
 	private boolean edit; private boolean create; Paint paintLastPoint; Paint paintFirstPoint;
-
+	float ratio = 1;
+	
 	//TODO Add description for javadoc
 	public DrawZoneView() {
 		super();
@@ -103,6 +104,10 @@ public class DrawZoneView extends Drawable {
 		edit = false;
 	}
 	
+	public void setRatio(float ratio){
+		this.ratio = ratio;
+	}
+	
 	/**
 	 * This method is called to draw the zones
 	 */
@@ -142,27 +147,27 @@ public class DrawZoneView extends Drawable {
 		Vector<Point> middles = zone.getMiddles();
 		
 		if(! points.isEmpty()){
-			canvas.drawCircle(points.get(0).x, points.get(0).y, 2, paintLastPoint);
+			canvas.drawCircle(points.get(0).x, points.get(0).y, 13/ratio, paintLastPoint);
 			if(points.size()>1){
-				canvas.drawCircle(points.lastElement().x, points.lastElement().y, 2, paintFirstPoint);
+				canvas.drawCircle(points.lastElement().x, points.lastElement().y, 13/ratio, paintFirstPoint);
 				canvas.drawLine(points.get(points.size()-2).x, points.get(points.size()-2).y, points.lastElement().x, points.lastElement().y, paintNormal);
 				if(edit){
-					canvas.drawCircle(middles.get(0).x, middles.get(0).y, 1, paintNormal);
+					canvas.drawCircle(middles.get(0).x, middles.get(0).y, 6/ratio, paintNormal);
 				}
 				if(points.size()>2){
 					for(int i=1; i<points.size()-1; i++){
-						canvas.drawCircle(points.get(i).x, points.get(i).y, 2, paintNormal);
+						canvas.drawCircle(points.get(i).x, points.get(i).y, 13/ratio, paintNormal);
 						canvas.drawLine(points.get(i-1).x, points.get(i-1).y, points.get(i).x, points.get(i).y, paintNormal);
 						if(edit){
-							canvas.drawCircle(middles.get(i).x, middles.get(i).y, 1, paintNormal);
+							canvas.drawCircle(middles.get(i).x, middles.get(i).y, 6/ratio, paintNormal);
 						}
 					}
 					if(edit){
-						canvas.drawCircle(middles.lastElement().x, middles.lastElement().y, 1, paintFirstPoint);
+						canvas.drawCircle(middles.lastElement().x, middles.lastElement().y, 6/ratio, paintFirstPoint);
 					}
 					canvas.drawLine(points.get(points.size()-1).x, points.get(points.size()-1).y, points.get(0).x, points.get(0).y, paintFirstPoint);
 					try{if(selected.x != 0 && selected.y != 0){
-						canvas.drawCircle(selected.x, selected.y, 5, paintNormal);
+						canvas.drawCircle(selected.x, selected.y, 33/ratio, paintNormal);
 					}}catch(Exception e){}
 				}
 			}
@@ -170,9 +175,9 @@ public class DrawZoneView extends Drawable {
 		try{Log.d("Intersection",intersections.toString());}catch(Exception e){}
 		if(intersections != null && !intersections.isEmpty()){
 			for(int i=0;i<intersections.size();i=i+2){
-				canvas.drawCircle(intersections.get(i).x, intersections.get(i).y, 2, paintIntersections);
+				canvas.drawCircle(intersections.get(i).x, intersections.get(i).y, 13/ratio, paintIntersections);
 				canvas.drawLine(intersections.get(i).x, intersections.get(i).y, intersections.get(i+1).x, intersections.get(i+1).y, paintIntersections);
-				canvas.drawCircle(intersections.get(i+1).x, intersections.get(i+1).y, 2, paintIntersections);
+				canvas.drawCircle(intersections.get(i+1).x, intersections.get(i+1).y, 13/ratio, paintIntersections);
 			}
 		}
 		
