@@ -1,26 +1,45 @@
 package com.ecn.urbapp.db;
 
-public class Composed {
+import android.content.ContentValues;
 
-	//TODO Adddescription for javadoc
+public class Composed extends DataObject{
+
+	//Attributes
+	/**
+	 * attribute that refers to the project_id that is relatated to the photo
+	 */
 	private long project_id;
 
-	//TODO Adddescription for javadoc
+	/**
+	 * attribute that refers to the photo_id that is relatated to the project_id
+	 */
 	private long photo_id;
 
-	//TODO Adddescription for javadoc
+	
+	
+	//Getters
+	/**
+	 * getter of the project_id
+	 * @return long id of the project
+	 */
+	//TODO delete and replace by getId from DataObject
 	public long getProject_id() {
 		return project_id;
 	}
-
-	//TODO Adddescription for javadoc
-	public void setProject_id(long project_id) {
-		this.project_id = project_id;
-	}
-
+	
+	/**
+	 * getter of the photo_id
+	 * @return long id of the photo
+	 */
 	//TODO Adddescription for javadoc
 	public long getPhoto_id() {
 		return photo_id;
+	}
+	
+	//Getters
+	//TODO Adddescription for javadoc
+	public void setProject_id(long project_id) {
+		this.project_id = project_id;
 	}
 
 	//TODO Adddescription for javadoc
@@ -28,9 +47,37 @@ public class Composed {
 		this.photo_id = photo_id;
 	}
 
+	
+	
+	//Override Methods
 	@Override
 	public String toString() {
 		return "Composed [project_id=" + project_id + ", photo_id=" + photo_id
 				+ "]";
+	}
+
+	//TODO shit happens
+	@Override
+	public long getId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	//TODO shit happens
+	@Override
+	public long setId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public void saveToLocal(LocalDataSource datasource) {
+		ContentValues values = new ContentValues(); 
+		values.put(MySQLiteHelper.COLUMN_PROJECTID, this.project_id);
+		values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
+		datasource.getDatabase().insert(MySQLiteHelper.TABLE_COMPOSED, null, values);		
 	}
 }

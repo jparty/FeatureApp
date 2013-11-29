@@ -1,8 +1,14 @@
 package com.ecn.urbapp.db;
 
-public class Photo {
+import android.content.ContentValues;
+
+import com.ecn.urbapp.activities.MainActivity;
+
+public class Photo extends DataObject  {
 	
 
+	
+	//Attributes
 	//TODO Adddescription for javadoc
 	private long photo_id;
 	private String photo_description;
@@ -13,6 +19,11 @@ public class Photo {
 	private String photo_url;
 	private long gpsGeom_id;
 
+	
+	
+	
+	
+	//Getters
 	//TODO Adddescription for javadoc
 	public long getGpsGeom_id() {
 		return gpsGeom_id;
@@ -31,6 +42,28 @@ public class Photo {
 		return Ext_GpsGeomCoord;
 	}
 
+	//TODO Adddescription for javadoc
+	public long getPhoto_id() {
+		return photo_id;
+	}
+
+	//TODO Adddescription for javadoc
+	public String getPhoto_description() {
+		return photo_description;
+	}
+
+	//TODO Adddescription for javadoc
+	public String getPhoto_author() {
+		return photo_author;
+	}
+	
+	
+	
+	
+	
+	
+	
+	//Setters
 	//TODO Adddescription for javadoc
 	public void setExt_GpsGeomCoord(String ext_GpsGeomCoord) {
 		Ext_GpsGeomCoord = ext_GpsGeomCoord;
@@ -61,22 +94,11 @@ public class Photo {
 	}
 
 
-	//TODO Adddescription for javadoc
-	public long getPhoto_id() {
-		return photo_id;
-	}
 
-	//TODO Adddescription for javadoc
-	public String getPhoto_description() {
-		return photo_description;
-	}
+	
+	
 
-	//TODO Adddescription for javadoc
-	public String getPhoto_author() {
-		return photo_author;
-	}
-
-
+	//Override methods
 	//TODO Adddescription for javadoc
 	@Override
 	public String toString() {
@@ -84,6 +106,30 @@ public class Photo {
 				+ photo_description + ", photo_author=" + photo_author
 				+ ", photo_url=" + photo_url + ", gps_Geom_id=" + gpsGeom_id +"&" + "  position =" + this.Ext_GpsGeomCoord
 				+ "]";
+	}
+
+	@Override
+	public long getId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public long setId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void saveToLocal(LocalDataSource datasource) {
+		ContentValues values = new ContentValues(); 
+		values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
+		values.put(MySQLiteHelper.COLUMN_PHOTOURL, this.photo_url);
+		values.put(MySQLiteHelper.COLUMN_PHOTODESCRIPTION,this.photo_description);
+		values.put(MySQLiteHelper.COLUMN_PHOTOAUTHOR, this.photo_author);
+		values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
+		MainActivity.datasource.getDatabase().insert(MySQLiteHelper.TABLE_PHOTO, null, values);		
+		
 	}
 
 
