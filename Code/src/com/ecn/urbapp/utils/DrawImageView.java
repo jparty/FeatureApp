@@ -35,6 +35,8 @@ knowledge of the CeCILL license and that you accept its terms.
 
 package com.ecn.urbapp.utils;
 
+import java.util.Vector;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -42,6 +44,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
+
+import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.zones.*;
 
 /**
@@ -52,18 +57,14 @@ import com.ecn.urbapp.zones.*;
  */
 public class DrawImageView extends Drawable {
 
-	/** Zones that need to be drawn */
-	public SetOfZone zones;
-
 	/**
 	 * Constructor of this class
 	 * 
 	 * @param zones
 	 *            the set of zones the need to be drawn
 	 */
-	public DrawImageView(SetOfZone zones) {
+	public DrawImageView() {
 		super();
-		this.zones = zones;
 	}
 
 	/**
@@ -71,12 +72,7 @@ public class DrawImageView extends Drawable {
 	 */
 	@Override
 	public void draw(Canvas canvas) {
-		// Paint for unfinished points
-		Paint unfinishedPaint = new Paint();
-		unfinishedPaint.setColor(Color.BLACK);
-		unfinishedPaint.setStyle(Paint.Style.STROKE);
 
-		// Paint for finished points
 		Paint finishedPaint = new Paint();
 		finishedPaint.setColor(Color.RED);
 		finishedPaint.setStyle(Paint.Style.STROKE);
@@ -87,56 +83,59 @@ public class DrawImageView extends Drawable {
 		fillPaint.setAlpha(50);
 
 		// For all the zones
-		for (int i = 0; i < zones.getZones().size(); i++) {
+		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
 			// If the zone is not selected, only draw the lines
-			if (!zones.getZones().get(i).isSelected()) {
-				// Paint in a different color depending on its state
-				if (zones.getZones().get(i).isFinished()) {
-					if (zones.getZones().get(i).getColor() != 0) {
-						finishedPaint.setColor(zones.getZones().get(i).getColor());
+
+			Zone zone = new Zone(ConvertGeom.pixelGeomToZone(MainActivity.pixelGeom.get(i)));
+			
+			if (!MainActivity.pixelGeom.get(i).selected) {
+				Element el=null;
+				for(Element e : MainActivity.element){
+					if(e.getPixelGeom_id()==MainActivity.pixelGeom.get(i).getPixelGeomId()){
+						el=e;
+						break;
 					}
+				}
+				if(el!=null){
+					if (Integer.parseInt(el.getElement_color()) != 0) {
+						finishedPaint.setColor(Integer.parseInt(el.getElement_color()));
+					}
+				}
 					// Add all the lines of the polygon
-					for (int j = 0; j < zones.getZones().get(i).points
+					for (int j = 0; j < zone.points
 							.size() - 1; j++) {
 						canvas.drawLine(
-								zones.getZones().get(i).points.get(j).x,
-								zones.getZones().get(i).points.get(j).y,
-								zones.getZones().get(i).points
-										.get(j + 1).x, zones.getZones()
-										.get(i).points.get(j + 1).y,
+								zone.points.get(j).x,
+								zone.points.get(j).y,
+								zone.points.get(j + 1).x,
+								zone.points.get(j + 1).y,
 								finishedPaint);
 					}
 					finishedPaint.setColor(Color.RED);
-				} else {
-					// Add all the lines of the polygon
-					for (int j = 0; j < zones.getZones().get(i).points.size() - 1; j++) {
-						canvas.drawLine(
-								zones.getZones().get(i).points.get(j).x,
-								zones.getZones().get(i).points.get(j).y,
-								zones.getZones().get(i).points
-										.get(j + 1).x, zones.getZones()
-										.get(i).points.get(j + 1).y,
-								unfinishedPaint);
-					}
-
-				}
 
 				// If the zone is selected, draw a filled polygon
 			} else {
 				// Create a closed path for the polygon
 				Path polyPath = new Path();
 				polyPath.moveTo(
-						zones.getZones().get(i).points.get(0).x,
-						zones.getZones().get(i).points.get(0).y);
-				for (int j = 0; j < zones.getZones().get(i).points
-						.size(); j++) {
+						zone.points.get(0).x,
+						zone.points.get(0).y);
+				for (int j = 0; j < zone.points.size(); j++) {
 					polyPath.lineTo(
-							zones.getZones().get(i).points.get(j).x,
-							zones.getZones().get(i).points.get(j).y);
+							zone.points.get(j).x,
+							zone.points.get(j).y);
+				}
+				for (int k = 0; k < zone.getPolygon().getNumInteriorRing(); k++) {
+					polyPath.close();
+					for (int j = 0; j < zone.getPolygon().getInteriorRingN(k).getNumPoints(); j++) {
+						polyPath.lineTo(
+								(int) zone.getPolygon().getInteriorRingN(k).reverse().getCoordinateN(j).x,
+								(int) zone.getPolygon().getInteriorRingN(k).reverse().getCoordinateN(j).y);
+					}
 				}
 
-				if (zones.getZones().get(i).getColor() != 0) {
-					fillPaint.setColor(zones.getZones().get(i).getColor());
+				if (zone.getColor() != 0) {
+					fillPaint.setColor(zone.getColor());
 					fillPaint.setAlpha(50);
 				}
 				// Draw the polygon

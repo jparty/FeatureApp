@@ -35,12 +35,12 @@
     <string name="definition_select_text">Cliquer sur les zones à sélectionner.</string>
     
     <string name="info_text_author">Auteur :</string>
-    <string name="info_text_deviceName">Nom de l\'appareil :</string>
+    <string name="info_text_description">Description de l\'image :</string>
     <string name="info_text_project">Projet :</string>
     <string name="info_text_adress">Adresse :</string>
     <string name="info_text_void"></string>
     <string name="info_edit_author">Auteur</string>
-    <string name="info_edit_deviceName">Appareil</string>
+    <string name="info_edit_description">Description</string>
     <string name="info_edit_project">Projet</string>
     <string name="info_edit_adress">Adresse</string>
     <string name="info_edit_complement">Complément</string>
@@ -67,6 +67,7 @@
     <string name="information_about_frontage">Informations sur cette zone</string>
     <string name="satellite">satellite</string>
     <string name="plan">plan</string>
+	<string name ="topology_exception">TopologyException</string>
     
     <string name="hybrid">hybride</string>
 	<string name="confirm">Confirmer</string>

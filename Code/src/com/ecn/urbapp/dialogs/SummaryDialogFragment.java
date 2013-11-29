@@ -48,7 +48,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.ecn.urbapp.R;
-import com.ecn.urbapp.fragments.CharacteristicsFragment;
+import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 
 /**
  * This class creates the dialog that give information about a zone
@@ -63,10 +63,11 @@ public class SummaryDialogFragment extends DialogFragment {
 		// Create a dialog and set the title
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.information_about_frontage);
-
-		Map<String, HashMap<String, Float>> summary = CharacteristicsFragment.getZones().getStatsForSelectedZones(getResources());
+		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
 		HashMap<String, Float> types = summary.get(getString(R.string.type));
-		HashMap<String, Float> materials = summary.get(getString(R.string.materials));
+		HashMap<String, Float> materials = summary
+				.get(getString(R.string.materials));
+
 		String contenu = "<b><u>" + getString(R.string.type) + " :</b></u>";
 		if (types.keySet().size() == 1) {
 			contenu += " ";
@@ -83,16 +84,18 @@ public class SummaryDialogFragment extends DialogFragment {
 			contenu += "<br>";
 		}
 		for (String material : materials.keySet()) {
-			contenu += material + " (" + (float) (Math.rint(materials.get(material) *1e4) / 100)+" %)<br>";
+			contenu += material + " (" + (float) (Math.rint(materials.get(material) *1e4) / 100)
+					+ " %)<br>";
 		}
-		contenu = contenu + "<br><b><u>" + getString(R.string.color)+ " :</b></u>";
+
+		contenu = contenu + "<br><b><u>" + getString(R.string.color)
+				+ " :</b></u>";
 		builder.setMessage(Html.fromHtml(contenu));
-		
 		// Add a rectangle of the color of the zone to the dialog
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View dialoglayout = inflater.inflate(R.layout.summary_dialog, null);
 		View colorView = dialoglayout.findViewById(R.id.color);
-		colorView.setBackgroundColor(CharacteristicsFragment.getZones()
+		colorView.setBackgroundColor(UtilCharacteristicsZone
 				.getColorForSelectedZones());
 		builder.setView(dialoglayout);
 

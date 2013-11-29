@@ -36,10 +36,10 @@
                 android:layout_alignParentTop="true"/>
             
             <TextView
-                android:id="@+id/info_text_deviceName"
+                android:id="@+id/info_text_description"
                 android:layout_width="wrap_content"
                 android:layout_height="55dp"
-                android:text="@string/info_text_deviceName"
+                android:text="@string/info_text_description"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/info_text_author"
          		android:layout_marginTop="8dp"/>
@@ -50,7 +50,7 @@
                 android:layout_height="35dp"
                 android:text="@string/info_text_project"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/info_text_deviceName"/>
+                android:layout_below="@+id/info_text_description"/>
             
             <TextView
                 android:id="@+id/info_text_adress"
@@ -85,12 +85,12 @@
                 android:layout_alignParentTop="true"/>
             
             <EditText
-                android:id="@+id/info_edit_deviceName"
+                android:id="@+id/info_edit_description"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/info_edit_author"
-                android:hint="@string/info_edit_deviceName"
+                android:hint="@string/info_edit_description"
                 android:inputType="text"/>
             
             <EditText
@@ -98,7 +98,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/info_edit_deviceName"
+                android:layout_below="@+id/info_edit_description"
                 android:hint="@string/info_edit_project"
                 android:inputType="text"/>
             

@@ -3,17 +3,26 @@ package com.ecn.urbapp.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ecn.urbapp.activities.MainActivity;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class LocalDataSource {
 	
 	//Database fields
 	//TODO Adddescription for javadoc
 	private SQLiteDatabase database;
+	
+	public SQLiteDatabase getDatabase() {
+		return database;
+	}
+
+
 	//TODO Adddescription for javadoc
 	private MySQLiteHelper dbHelper;
 
@@ -170,6 +179,18 @@ public class LocalDataSource {
 			+";"
 		;
 
+	/**
+	 * query to get the biggest photo_id from local db
+	 * 
+	 */
+	private static final String
+		GETMAXPHOTOID = 
+			"SELECT "+MySQLiteHelper.TABLE_PHOTO+"."+MySQLiteHelper.COLUMN_PHOTOID+" FROM "
+			+ MySQLiteHelper.TABLE_PHOTO 
+			+" ORDER BY DESC LIMIT 1 ;"
+		;
+	
+	
 	//TODO Adddescription for javadoc
 	private static final String
 	GETPHOTOLINK = 
@@ -244,6 +265,20 @@ public class LocalDataSource {
 		return photosList;
 	}
 
+	
+	//TODO Adddescription for javadoc
+	public void getmaxPhotoId(){
+		long maxPhotoId = 0;
+		
+		Cursor cursor = database.rawQuery(GETMAXPHOTOID,null);
+		
+		cursor.moveToFirst();
+		maxPhotoId=cursor.getLong(0);
+		cursor.close();
+		MainActivity.maxPhotoIdLocal=maxPhotoId;
+	}
+	
+	
 	//TODO Adddescription for javadoc
 	public List<Photo> getAllPhotolinkedtoProject(long project_id){
 		List<Photo> photosList = new ArrayList<Photo>();
@@ -295,7 +330,7 @@ public class LocalDataSource {
 	    p1.setPhoto_description(cursor.getString(1));
 	    p1.setPhoto_author(cursor.getString(2)); 
 	    p1.setPhoto_url(cursor.getString(3)); 
-	    p1.setGps_Geom_id(cursor.getLong(4)); 
+	    p1.setGpsGeom_id(cursor.getLong(4)); 
 	    //TODO créer 2 fonctions, une pour l'instanciation du projet, une pour la recopie des gpsgeom
 	    try{
 	    	p1.setExt_GpsGeomCoord(cursor.getString(6));
@@ -329,7 +364,6 @@ public class LocalDataSource {
 		ContentValues args = new ContentValues();
 		args.put(MySQLiteHelper.COLUMN_GPSGEOMID, gps1.getGpsGeomsId());
 		int d = database.update(MySQLiteHelper.TABLE_PHOTO, args, MySQLiteHelper.COLUMN_PHOTOID +"=" + id, null);
-		 
 		return gps1;
 	}
 	
@@ -385,7 +419,7 @@ public class LocalDataSource {
 	/**
 	 * convert the cursor to the object gpsGeom
 	 * @param cursor
-	 * @return
+	 * @return GpsGeom
 	 */
 	private GpsGeom cursorToGpsGeom(Cursor cursor) {
 	    GpsGeom p1 = new GpsGeom();
@@ -499,4 +533,177 @@ public class LocalDataSource {
 		e.setElementType_name(cursor.getString(1));
 		return e;
 	}
+
+
+	
+	
+	//METHODS FOR ELMENTS TYPE
+	
+	//Create ellementType in the database
+	//TODO sync with the external database
+	/**
+	 * method that register a new type in the DB
+	 */
+	public void createElementTypeInDB(String str){
+		ContentValues values = new ContentValues(); 
+		values.put(MySQLiteHelper.COLUMN_ELEMENTTYPENAME, str);
+		long insertId = database.insert(MySQLiteHelper.TABLE_ELEMENTTYPE, null, values);
+	}
+	
+	
+	
+	
+	/**
+	 * sql query that counts the number of element type
+	 */
+	private static final String
+	GETALLELEMENTTYPEID = 
+		"SELECT * FROM "
+		+ MySQLiteHelper.TABLE_ELEMENTTYPE 
+		+";"
+	;
+	
+	
+	public void getAllElementType(){
+		List<ElementType> elementTypeList = new ArrayList<ElementType>();
+		
+		Cursor cursor = database.rawQuery(GETALLELEMENTTYPEID,null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			ElementType p1 = cursorToElementType(cursor);
+			elementTypeList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		MainActivity.elementType=(ArrayList<ElementType>) elementTypeList;
+		Log.w("neuneu","neuneu");
+		
+	}
+	
+	//TODO method that create the 3 elements in the db
+	
+		
+	
+	//METHODS FOR MATERIALS
+	
+	//Create ellementType in the database
+	//TODO sync with the external database
+	/**
+	 * method that register a new type in the DB
+	 */
+	public void createMaterialInDB(String str){
+		ContentValues values = new ContentValues(); 
+		values.put(MySQLiteHelper.COLUMN_MATERIALNAME, str);
+		long insertId = database.insert(MySQLiteHelper.TABLE_MATERIAL, null, values);
+	}
+	
+	
+	
+	
+	/**
+	 * sql query that counts the number of element type
+	 */
+	private static final String
+	GETALLMATERIALID = 
+		"SELECT * FROM "
+		+ MySQLiteHelper.TABLE_MATERIAL 
+		+";"
+	;
+	
+	
+	public void getAllMaterial(){
+		List<Material> materialList = new ArrayList<Material>();
+		
+		Cursor cursor = database.rawQuery(GETALLMATERIALID,null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			Material p1 = cursorToMaterial(cursor);
+			materialList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		MainActivity.material=(ArrayList<Material>) materialList;
+		Log.w("neuneu","neuneu");
+		
+	}
+	
+	//TODO method that create the 3 elements in the db
+	
+
+	
+	
+	
+	
+	/**
+	 * get information from datasource.database to public static fields from main activity once a local project is loaded
+	 */
+	
+	/**
+	 * SQL query that select every pixelgeom link to the registred photo
+	 */
+	private static final String
+	GETALLPIXELGEOMFROMAPHOTO = 
+		"SELECT "
+		+ MySQLiteHelper.TABLE_PIXELGEOM+"."+MySQLiteHelper.COLUMN_PIXELGEOMID+", "
+		+ MySQLiteHelper.TABLE_PIXELGEOM+"."+MySQLiteHelper.COLUMN_PIXELGEOMCOORD
+		+" FROM "
+		+ MySQLiteHelper.TABLE_PIXELGEOM
+		+" INNER JOIN " + MySQLiteHelper.TABLE_ELEMENT 
+		+" ON " + MySQLiteHelper.TABLE_ELEMENT + "." + MySQLiteHelper.COLUMN_PIXELGEOMID +" = " + MySQLiteHelper.TABLE_PIXELGEOM + "." + MySQLiteHelper.COLUMN_PIXELGEOMID
+		+" WHERE " + MySQLiteHelper.TABLE_ELEMENT + "." + MySQLiteHelper.COLUMN_PHOTOID+" = " 
+		//need to complete with PHOTO_ID and ";"
+	;
+
+	/**
+	 * register values from the above query in the static public field pixelGeom (instance of arrayList) from MainActivity
+	 */
+	public void instanciateAllpixelGeom(){
+		ArrayList<PixelGeom> pixelGeomList = new ArrayList<PixelGeom>();
+		
+		Cursor cursor = database.rawQuery(GETALLPIXELGEOMFROMAPHOTO + MainActivity.photo.getPhoto_id() +" ;",null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			PixelGeom p1 = cursorToPixelGeom(cursor);
+			pixelGeomList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		MainActivity.pixelGeom= pixelGeomList;		
+		
+	}
+	
+
+	
+	
+	/**
+	 * get information from datasource.database to public static fields photo in main activity once a local project is loaded
+	 */
+	
+	/**
+	 * SQL query that select every pixelgeom link to the registred photo
+	 */
+	private static final String
+	GETPHOTO = 
+		"SELECT * FROM "
+		+ MySQLiteHelper.TABLE_PHOTO
+		+" WHERE " + MySQLiteHelper.TABLE_PHOTO + "." + MySQLiteHelper.COLUMN_PHOTOID+" = " 
+		//need to complete with PHOTO_ID and ";"
+	;
+
+	/**
+	 * register values from the above query in the static public field pixelGeom (instance of arrayList) from MainActivity
+	 */
+	public void instanciatePhoto(long id ){
+		Cursor cursor = database.rawQuery(GETPHOTO + id +" ;",null);
+		cursor.moveToFirst();
+		Photo photoLoaded = cursorToPhoto(cursor);
+		cursor.close();
+		MainActivity.photo= photoLoaded;		
+		
+	}
+	
+
 }

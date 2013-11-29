@@ -25,6 +25,12 @@ public class Test extends ListActivity {
 
 	private Button delete = null;
 	
+	private Button generateTypes = null;
+	private Button instanciateTypes = null;
+	
+	private Button generateMaterial = null;
+	private Button instanciateMaterial = null;
+	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +46,21 @@ public class Test extends ListActivity {
 
         delete = (Button)findViewById(R.id.delete);
         
+        generateTypes = (Button)findViewById(R.id.createElementType);
+        instanciateTypes = (Button)findViewById(R.id.instanciateElementType);
+        
+        generateMaterial = (Button)findViewById(R.id.createMaterial);
+        instanciateMaterial = (Button)findViewById(R.id.instanciateMaterial);
+        
         addProject.setOnClickListener(clickListenerBoutonsAddProject);
 
         delete.setOnClickListener( clickListenerBoutonsDelete);
+        
+        generateTypes.setOnClickListener( clickListenerBoutonsGenerateTypes);
+        instanciateTypes.setOnClickListener( clickListenerBoutonsInstanciateTypes);
+        
+        generateMaterial.setOnClickListener( clickListenerBoutonsGenerateMaterial);
+        instanciateMaterial.setOnClickListener( clickListenerBoutonsInstanciateMaterial);
     }
     
     protected void onClose() {      
@@ -104,6 +122,42 @@ public class Test extends ListActivity {
 				adapter.remove(Project);
 			}
     		adapter.notifyDataSetChanged();
+    	};
+    };
+    
+    private OnClickListener clickListenerBoutonsGenerateTypes = new OnClickListener(){
+    	public void onClick(View view){
+    		datasource.createElementTypeInDB("Toit");
+    		datasource.createElementTypeInDB("Façade");
+    		datasource.createElementTypeInDB("Sol");
+    	};
+    };
+    
+    private OnClickListener clickListenerBoutonsInstanciateTypes = new OnClickListener(){
+    	public void onClick(View view){
+    		datasource.getAllElementType();
+    	};
+    };
+    
+    private OnClickListener clickListenerBoutonsGenerateMaterial = new OnClickListener(){
+    	public void onClick(View view){
+    		datasource.createMaterialInDB("Acier");
+    		datasource.createMaterialInDB("Ardoises");
+    		datasource.createMaterialInDB("Bois");
+    		datasource.createMaterialInDB("Béton");
+    		datasource.createMaterialInDB("Cuivre");
+    		datasource.createMaterialInDB("Enrobé");
+    		datasource.createMaterialInDB("Goudron");
+    		datasource.createMaterialInDB("Herbe");
+    		datasource.createMaterialInDB("Terre");
+    		datasource.createMaterialInDB("Tuiles");
+    		datasource.createMaterialInDB("Verre");
+    	};
+    };
+    
+    private OnClickListener clickListenerBoutonsInstanciateMaterial = new OnClickListener(){
+    	public void onClick(View view){
+    		datasource.getAllMaterial();
     	};
     };
 }

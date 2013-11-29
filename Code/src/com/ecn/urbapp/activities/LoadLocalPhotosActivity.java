@@ -18,6 +18,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.utils.CustomListViewAdapter;
+import com.ecn.urbapp.utils.MathOperation;
 import com.ecn.urbapp.utils.RowItem;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
@@ -112,9 +113,13 @@ public class LoadLocalPhotosActivity extends Activity{
 			@Override
 			public void onInfoWindowClick(Marker marker) {
 				Toast.makeText(MainActivity.baseContext, refreshedValues.get(photosMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
-
+				
+				//TODO Sebastien has to make it more readable
+				MainActivity.datasource.instanciatePhoto(refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_id());
+				
 				//TODO do a better way to have the path !
 				MainActivity.pathImage=Environment.getExternalStorageDirectory()+"/featureapp/"+refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_url();
+				
 				finish();
 
 			}
@@ -150,7 +155,7 @@ public class LoadLocalPhotosActivity extends Activity{
 
 		rowItems = new ArrayList<RowItem>();
 		for (Photo image:refreshedValues) {
-			RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(), image.getPhoto_author(), image.getPhoto_description());
+			RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(), image.getPhoto_url(), image.getPhoto_description());
 			rowItems.add(item);
 		}
 
@@ -158,19 +163,32 @@ public class LoadLocalPhotosActivity extends Activity{
 				R.layout.layout_photolistview, rowItems);
 		listePhotos.setAdapter(adapter);
 
-		//ArrayAdapter<com.ecn.urbapp.db.Photo> adapterPhoto = new ArrayAdapter<com.ecn.urbapp.db.Photo>(this, android.R.layout.simple_expandable_list_item_1,refreshedValues);
-		//listePhotos.setAdapter(adapterPhoto);  
-
 		/**
 		 * Put markers on the map
 		 */
 		Integer i = Integer.valueOf(0);
 		for (Photo enCours:refreshedValues){
+			
+			//TODO Get the real GPSGeom from Photo table in local Database !!!
+			//Fake one ! for testing purpose
 			String[] coord = enCours.getExt_GpsGeomCoord().split("//");
 			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
-			Marker marker = map.addMarker(new MarkerOptions()
-			.position(coordPhoto)
-			.title("Cliquez ici pour valider cette photo"));
+			LatLng coordPhoto1 = new LatLng(Double.parseDouble(coord[0])+0.2, Double.parseDouble(coord[1])+0.2);
+
+			ArrayList<LatLng> photoGPS = new ArrayList<LatLng>();
+			photoGPS.add(coordPhoto);
+			photoGPS.add(coordPhoto1);
+			//end of fake photoGPS values
+			
+			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
+					
+			Marker marker = displayedMap.addMarkersColored(i, "Cliquez ici pour valider cette photo", GPSCentered);
+			
+			/**
+			 * Adding the line in the map
+			 */
+			
+			displayedMap.drawPolygon(photoGPS, false);
 
 			photosMarkers.put(marker.getId(), i);
 			i++;
@@ -186,10 +204,20 @@ public class LoadLocalPhotosActivity extends Activity{
 		public void onItemClick(AdapterView<?> arg0, View v, int position,
 				long id) {
 
+			//TODO Get the real GPSGeom from Photo table in local Database !!!
+			//Fake one ! for testing purpose
 			String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
 			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
-			displayedMap = new GeoActivity(false, coordPhoto, map);
-			Toast.makeText(getApplicationContext(), coordPhoto.toString(), Toast.LENGTH_LONG).show();                  
+			LatLng coordPhoto1 = new LatLng(Double.parseDouble(coord[0])+0.2, Double.parseDouble(coord[1])+0.2);
+
+			ArrayList<LatLng> photoGPS = new ArrayList<LatLng>();
+			photoGPS.add(coordPhoto);
+			photoGPS.add(coordPhoto1);
+			//end of fake photoGPS values
+			
+			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
+			displayedMap = new GeoActivity(false, GPSCentered, map);
+			Toast.makeText(getApplicationContext(), refreshedValues.get(position).getPhoto_url(), Toast.LENGTH_LONG).show();                  
 		}
 	};
 }
