@@ -71,17 +71,25 @@ public class GpsGeom extends DataObject{
 
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
-		if(!this.getRegistredInLocal()){
+		ContentValues values = new ContentValues(); 
+		
+		values.put(MySQLiteHelper.COLUMN_GPSGEOMCOORD, this.gpsGeom_the_geom);
+		
+		if(this.registredInLocal){
+			String[] s=new String[1];
+			s[0]= ""+this.gpsGeom_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_GPSGEOM, values, MySQLiteHelper.COLUMN_GPSGEOMID,s );
+		}
+		else{
+			//TODO trigger
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXGPSGEOMID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				this.setGpsGeomId(this.getGpsGeomsId()+cursor.getLong(0));
 			}
+			values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);	
 		}
-		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
-		values.put(MySQLiteHelper.COLUMN_GPSGEOMCOORD, this.gpsGeom_the_geom);
-		datasource.getDatabase().insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);	
 	}		
 	/**
 	 * query to get the biggest GpsGeom_id from local db

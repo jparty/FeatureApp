@@ -71,8 +71,18 @@ public class ElementType extends DataObject {
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
 		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_ELEMENTTYPEID, this.elementType_id);
+
 		values.put(MySQLiteHelper.COLUMN_ELEMENTTYPENAME, this.elementType_name);
-		datasource.getDatabase().insert(MySQLiteHelper.TABLE_ELEMENTTYPE, null, values);		
+		
+		if(this.registredInLocal){
+			String[] s=new String[1];
+			s[0]= ""+this.elementType_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_ELEMENTTYPE, values, MySQLiteHelper.COLUMN_ELEMENTTYPEID,s );
+		}
+		else{
+			values.put(MySQLiteHelper.COLUMN_ELEMENTTYPEID, this.elementType_id);
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_ELEMENTTYPE, null, values);
+		}
 	}
+	
 }

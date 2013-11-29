@@ -83,18 +83,25 @@ public class PixelGeom extends DataObject  {
 
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
-		if(!this.getRegistredInLocal()){
+		ContentValues values = new ContentValues(); 
+		
+		values.put(MySQLiteHelper.COLUMN_PIXELGEOMCOORD, this.pixelGeom_the_geom);
+		
+		if(this.registredInLocal){
+			String[] s=new String[1];
+			s[0]= ""+this.pixelGeom_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_PIXELGEOM, values, MySQLiteHelper.COLUMN_PIXELGEOMID,s );
+		}
+		else{
+			//TODO trigger
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXPIXELGEOMID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				this.setPixelGeomId(this.getPixelGeomId()+cursor.getLong(0));
 			}
+			values.put(MySQLiteHelper.COLUMN_PIXELGEOMID, this.pixelGeom_id);
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_PIXELGEOM, null, values);
 		}
-		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_PIXELGEOMID, this.pixelGeom_id);
-		values.put(MySQLiteHelper.COLUMN_PIXELGEOMCOORD, this.pixelGeom_the_geom);
-		datasource.getDatabase().insert(MySQLiteHelper.TABLE_PIXELGEOM, null, values);		
-		
 	}
 	/**
 	 * query to get the biggest photo_id from local db
@@ -107,7 +114,6 @@ public class PixelGeom extends DataObject  {
 			+" ORDER BY "+MySQLiteHelper.TABLE_PIXELGEOM+"."+MySQLiteHelper.COLUMN_PIXELGEOMID
 			+" DESC LIMIT 1 ;"
 		;
-
 
 	
 }

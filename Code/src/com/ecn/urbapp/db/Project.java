@@ -91,18 +91,27 @@ public class Project extends DataObject {
 
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
-		if(!this.getRegistredInLocal()){
+		ContentValues values = new ContentValues(); 
+		
+		values.put(MySQLiteHelper.COLUMN_PROJECTNAME, this.project_name);
+		
+			
+		if(this.registredInLocal){
+			String[] s=new String[1];
+			s[0]= ""+this.project_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_PROJECT, values, MySQLiteHelper.COLUMN_PROJECTID,s );
+		}
+		else{
+			//TODO trigger
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXPROJECTID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				this.setProjectId(this.getProjectId()+cursor.getLong(0));
 			}
+			values.put(MySQLiteHelper.COLUMN_PROJECTID, this.project_id);
+			values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_PROJECT, null, values);
 		}
-		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_PROJECTID, this.project_id);
-		values.put(MySQLiteHelper.COLUMN_PROJECTNAME, this.project_name);
-		values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
-		datasource.getDatabase().insert(MySQLiteHelper.TABLE_PROJECT, null, values);
 	}	
 	/**
 	 * query to get the biggest photo_id from local db

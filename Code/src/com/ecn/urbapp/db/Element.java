@@ -128,22 +128,30 @@ public class Element extends DataObject {
 
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
-		if(!this.getRegistredInLocal()){
+		ContentValues values = new ContentValues(); 
+
+		values.put(MySQLiteHelper.COLUMN_ELEMENTCOLOR, this.element_color);
+		
+		if(this.registredInLocal){
+			String[] s=new String[1];
+			s[0]= ""+this.element_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_ELEMENT, values, MySQLiteHelper.COLUMN_ELEMENTID,s );
+		}
+		else{
+			//TODO trigger
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXELEMENTID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				this.setElement_id(this.getElement_id()+cursor.getLong(0));
 			}
+			values.put(MySQLiteHelper.COLUMN_ELEMENTID, this.element_id);
+			values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
+			values.put(MySQLiteHelper.COLUMN_MATERIALID, this.material_id);
+			values.put(MySQLiteHelper.COLUMN_ELEMENTTYPEID, this.elementType_id);
+			values.put(MySQLiteHelper.COLUMN_PIXELGEOMID, this.pixelGeom_id);
+			values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_ELEMENT, null, values);
 		}
-		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_ELEMENTID, this.element_id);
-		values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
-		values.put(MySQLiteHelper.COLUMN_MATERIALID, this.material_id);
-		values.put(MySQLiteHelper.COLUMN_ELEMENTTYPEID, this.elementType_id);
-		values.put(MySQLiteHelper.COLUMN_PIXELGEOMID, this.pixelGeom_id);
-		values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
-		values.put(MySQLiteHelper.COLUMN_ELEMENTCOLOR, this.element_color);
-		datasource.getDatabase().insert(MySQLiteHelper.TABLE_ELEMENT, null, values);	
 	}
 	/**
 	 * query to get the biggest Element_id from local db

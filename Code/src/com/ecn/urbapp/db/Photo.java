@@ -2,6 +2,7 @@ package com.ecn.urbapp.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.provider.SyncStateContract.Columns;
 
 import com.ecn.urbapp.activities.MainActivity;
 
@@ -123,21 +124,29 @@ public class Photo extends DataObject  {
 
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
-		if(!this.getRegistredInLocal()){
+		ContentValues values = new ContentValues(); 
+		
+		values.put(MySQLiteHelper.COLUMN_PHOTOURL, this.photo_url);
+		values.put(MySQLiteHelper.COLUMN_PHOTODESCRIPTION,this.photo_description);
+		values.put(MySQLiteHelper.COLUMN_PHOTOAUTHOR, this.photo_author);
+		
+		
+		if(this.registredInLocal){
+			String[] s=new String[1];
+			s[0]= ""+this.photo_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_PHOTO, values, MySQLiteHelper.COLUMN_PHOTOID,s );
+		}
+		else{
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXPHOTOID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				this.setPhoto_id(this.getPhoto_id()+cursor.getLong(0));
 			}
+			//TODO trigger
+			values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
+			values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_PHOTO, null, values);	
 		}
-		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
-		values.put(MySQLiteHelper.COLUMN_PHOTOURL, this.photo_url);
-		values.put(MySQLiteHelper.COLUMN_PHOTODESCRIPTION,this.photo_description);
-		values.put(MySQLiteHelper.COLUMN_PHOTOAUTHOR, this.photo_author);
-		values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
-		MainActivity.datasource.getDatabase().insert(MySQLiteHelper.TABLE_PHOTO, null, values);		
-		
 	}
 
 	/**
