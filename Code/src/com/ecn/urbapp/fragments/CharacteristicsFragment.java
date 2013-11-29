@@ -81,18 +81,6 @@ public class CharacteristicsFragment extends Fragment {
 		delete = (Button) v.findViewById(R.id.definition_button_delete);
 		recap = (Button) v.findViewById(R.id.definition_button_recap);
 		
-		draw();
-		
-		myImage.setOnTouchListener(touchListenerSelectImage);
-		
-	    define.setOnClickListener(clickListenerDefine);
-	    delete.setOnClickListener(clickListenerDelete);
-	    recap.setOnClickListener(clickListenerRecap);
-
-		return v;
-	}
-	
-	private void draw(){
 		zones = new Vector<Zone>();
 		
 		for(PixelGeom pg : MainActivity.pixelGeom){
@@ -107,7 +95,9 @@ public class CharacteristicsFragment extends Fragment {
 
 
 		MainActivity.sphoto=new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());
+
 		DrawImageView view = new DrawImageView(zones);
+
 	
 		Drawable[] drawables = {
 				new BitmapDrawable(
@@ -116,6 +106,14 @@ public class CharacteristicsFragment extends Fragment {
 							Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(), 1000, 1000)), view
 		};
 		myImage.setImageDrawable(new LayerDrawable(drawables));
+		
+		myImage.setOnTouchListener(touchListenerSelectImage);
+		
+	    define.setOnClickListener(clickListenerDefine);
+	    delete.setOnClickListener(clickListenerDelete);
+	    recap.setOnClickListener(clickListenerRecap);
+
+		return v;
 	}
 
 	/**
@@ -136,8 +134,7 @@ public class CharacteristicsFragment extends Fragment {
 			UtilCharacteristicsZone.select(UtilCharacteristicsZone.isInsideZone(this.convertTouchPoint(event.getX(), event.getY())));
 
 			// Ask to draw again
-			//myImage.invalidate();
-			draw();
+			myImage.invalidate();
 			return false;
 		}
 

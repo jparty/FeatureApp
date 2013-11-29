@@ -337,8 +337,8 @@ public class MainActivity extends Activity {
 	
 	@Override
 	public void onBackPressed(){
-
 		//TODO add back fragment
+
 		int i=0;
 		for(Fragment f : fragments){
 			if(f.isVisible()){
@@ -353,6 +353,5 @@ public class MainActivity extends Activity {
 			getActionBar().selectTab(getActionBar().getTabAt(i-1));
 		}
 
-		
 	}
 }

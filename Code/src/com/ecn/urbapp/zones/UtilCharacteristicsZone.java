@@ -35,13 +35,14 @@ knowledge of the CeCILL license and that you accept its terms.
 
 package com.ecn.urbapp.zones;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Point;
 
 import com.ecn.urbapp.R;
@@ -51,6 +52,12 @@ import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.utils.ConvertGeom;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.TopologyException;
 
 //TODO only dsplay databased material and not those put into ressources
 
@@ -61,6 +68,8 @@ import com.ecn.urbapp.utils.ConvertGeom;
  * 
  */
 public final class UtilCharacteristicsZone {
+
+	private static GeometryFactory gf = new GeometryFactory();
 
 	/**
 	 * Set the type of all the selected zones
@@ -241,10 +250,11 @@ public final class UtilCharacteristicsZone {
 			}
 			Float currentArea = types.get(type);
 			//TODO finish to implement the database object
+			Zone z = new Zone(ConvertGeom.pixelGeomToZone(pg));
 			if (currentArea != null) {
-				types.put(type, currentArea + ConvertGeom.pixelGeomToZone(pg).area());
+				types.put(type, currentArea + z.area());
 			} else {
-				types.put(type, ConvertGeom.pixelGeomToZone(pg).area());
+				types.put(type, z.area());
 			}
 			String material="";
 			for(Material  m : MainActivity.material){
@@ -254,11 +264,11 @@ public final class UtilCharacteristicsZone {
 			}
 			currentArea = materials.get(material);
 			if (currentArea != null) {
-				materials.put(material, currentArea + ConvertGeom.pixelGeomToZone(pg).area());
+				materials.put(material, currentArea + z.area());
 			} else {
-				materials.put(material, ConvertGeom.pixelGeomToZone(pg).area());
+				materials.put(material, z.area());
 			}
-			totalArea += ConvertGeom.pixelGeomToZone(pg).area();
+			totalArea += z.area();
 			
 		}
 		for (String key : materials.keySet()) {
@@ -274,4 +284,114 @@ public final class UtilCharacteristicsZone {
 		return summary;
 	}
 
+	public static void addInMainActivityZones(Zone zone) throws TopologyException {
+		List<Zone> zonesToRemove =  new ArrayList<Zone>();
+		List<Zone> zonesToAdd =  new ArrayList<Zone>();
+		Geometry geom = null;
+		if (zone.getPolygon() == null) {
+			zone = new Zone(zone);
+		}
+		for (Zone oldZone : MainActivity.zones) {
+			if (zone.getPolygon().contains(oldZone.getPolygon())) {
+				if (geom == null) { 
+					geom = gf.createGeometry(oldZone.getPolygon());
+				} else {
+					geom = geom.union(oldZone.getPolygon());
+				}
+			}
+		}
+		if (geom instanceof GeometryCollection) {
+			GeometryCollection geomColl = (GeometryCollection) geom;
+			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
+				if (geomColl.getGeometryN(i) instanceof Polygon) {
+					zone.createHole((Polygon) geomColl.getGeometryN(i));
+				}
+			}
+		} else if (geom instanceof Polygon) {
+			zone.createHole((Polygon) geom);
+		}
+		for (Zone oldZone : MainActivity.zones) {
+			if (zone.getPolygon().within(oldZone.getPolygon())) {
+				oldZone.createHole(zone.getPolygon());
+				zonesToAdd.add(zone);
+				break;
+			} else if (zone.getPolygon().intersects(oldZone.getPolygon())
+					&& !zone.getPolygon().touches(oldZone.getPolygon())) {
+				zonesToRemove.add(oldZone);
+				geom = zone.getPolygon().intersection(oldZone.getPolygon());
+				zonesToAdd.addAll(getZonesFromGeom(geom));
+				geom = zone.getPolygon().difference(oldZone.getPolygon());
+				zonesToAdd.addAll(getZonesFromGeom(geom));
+				geom = oldZone.getPolygon().difference(zone.getPolygon());
+				zonesToAdd.addAll(getZonesFromGeom(geom));
+				break;
+			}
+		}
+		if (zonesToAdd.isEmpty()) {
+			PixelGeom pgeom = new PixelGeom();
+			pgeom.setPixelGeomId(MainActivity.pixelGeom.size()-1);
+			pgeom.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zone));
+			Element element = new Element();
+			element.setElement_id(MainActivity.element.size()+1);
+			element.setPhoto_id(MainActivity.photo.getPhoto_id());
+			element.setPixelGeom_id(pgeom.getPixelGeomId());
+			element.setElement_color(""+Color.RED);
+			element.setGpsGeom_id(1);//TODO DELETE
+			MainActivity.element.add(element);
+			MainActivity.pixelGeom.add(pgeom);
+			MainActivity.zones.add(zone);
+		} else {
+			for (Zone z : zonesToRemove) {
+				PixelGeom pgeom = new PixelGeom();
+				for(PixelGeom pg : MainActivity.pixelGeom){
+					if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(z))){
+						pgeom=pg;
+						break;
+					}
+				}
+				MainActivity.pixelGeom.remove(pgeom);
+				MainActivity.zones.remove(z);
+			}
+			try {
+				for (Zone z : zonesToAdd) {
+					addInMainActivityZones(z);
+				}
+			} catch (TopologyException e) {
+				for (Zone z : zonesToRemove) {
+
+					PixelGeom pgeom = new PixelGeom();
+					pgeom.setPixelGeomId(MainActivity.pixelGeom.size());
+					pgeom.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(z));
+					MainActivity.pixelGeom.add(pgeom);
+					Element element = new Element();
+					element.setElement_id(MainActivity.element.size()+1);
+					element.setPhoto_id(MainActivity.photo.getPhoto_id());
+					element.setPixelGeom_id(pgeom.getPixelGeomId());
+					element.setElement_color(""+Color.RED);
+					element.setGpsGeom_id(1);//TODO DELETE
+					MainActivity.element.add(element);
+					MainActivity.zones.add(z);
+				}
+				throw e;
+			}
+		}
+	}
+
+	private static List<Zone> getZonesFromGeom(Geometry geom) {
+		List<Zone> result = new ArrayList<Zone>();
+		if (geom instanceof GeometryCollection) {
+			GeometryCollection geomColl = (GeometryCollection) geom;
+			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
+				result.addAll(getZonesFromGeom(geomColl.getGeometryN(i)));
+			}
+		} else if (geom instanceof Polygon) {
+			Coordinate[] coords = geom.getCoordinates();
+			Zone zone = new Zone();
+			for (int i = 0; i < coords.length; i++) {
+				zone.addPoint(new Point((int) coords[i].x, (int) coords[i].y));
+			}
+			result.add(zone);
+		}
+		return result;
+	}
 }
