@@ -68,7 +68,7 @@ public class SummaryDialogFragment extends DialogFragment {
 		HashMap<String, Float> types = summary.get(getString(R.string.type));
 		HashMap<String, Float> materials = summary
 				.get(getString(R.string.materials));
-		
+
 		String contenu = "<b><u>" + getString(R.string.type) + " :</b></u>";
 		if (types.keySet().size() == 1) {
 			contenu += " ";

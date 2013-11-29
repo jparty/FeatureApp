@@ -18,6 +18,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 import com.ecn.urbapp.utils.ConnexionCheck;
+import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.zones.Zone;
 
 /**
@@ -106,30 +108,56 @@ public class MainActivity extends Activity {
 	public static String pathTampon=null;
 	//TODO add description for javadoc
 	public static File sphoto=null;
+	//TODO add description for javadoc
+	public static long maxPhotoIdLocal; 
 	//TODO add the set of this bool into each function loading a photo
 	public static boolean isPhoto=false;
 	//TODO add description for javadoc
 	public static boolean start = true;
+	//TODO add description for javadoc
+	public static boolean local = false;
 
 	//TODO add description for javadoc
 	private Vector<Fragment> fragments=null;
 	
 	/**ArrayList for the elements of the database**/
 
-	private ArrayList<Composed> composed=null;
-	private ArrayList<Element> element=null;
-	private ArrayList<ElementType> ElementType=null;
-	private ArrayList<GpsGeom> gpsGeom=null;
-	private ArrayList<Material> material=null;
-	private ArrayList<PixelGeom> pixelGeom=null;
-	private ArrayList<Project> project=null;
-	private Photo photo=null;
+	public static ArrayList<Composed> composed=null;
+	public static ArrayList<Element> element=null;
+	public static ArrayList<ElementType> elementType=null;
+	public static ArrayList<GpsGeom> gpsGeom=null;
+	public static ArrayList<Material> material=null;
+	public static ArrayList<PixelGeom> pixelGeom=null;
+	public static ArrayList<Project> project=null;
+	public static boolean projectSet = false;
+	public static Photo photo=null;
 	
+	
+	//TODO delete this field
+	public static GpsGeom gpsGeomFixe = new GpsGeom();
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+
+		
+		composed = new ArrayList<Composed>();
+		element = new ArrayList<Element>();
+		elementType = new ArrayList<ElementType>();
+		gpsGeom = new ArrayList<GpsGeom>();
+		material = new ArrayList<Material>();
+		pixelGeom = new ArrayList<PixelGeom>();
+		project = new ArrayList<Project>();
+		photo = new Photo();
+		
+		
+		//TODO delete this field
+		gpsGeomFixe.setGpsGeomId(1);
+		gpsGeomFixe.setGpsGeomCoord("48.853//2.35");//"POLYGON((48.853 2.35))"
+		gpsGeom.add(gpsGeomFixe);
+		
 		
 		fragments=new Vector<Fragment>();
 		
@@ -232,11 +260,14 @@ public class MainActivity extends Activity {
 		alertDialog.show();		
 	}
 
-	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
             	confirm();
+            	//Setting the photo path from the pathImage
+            	MainActivity.photo.setPhoto_url(pathImage.split("/")[pathImage.split("/").length-1]);
+            	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
+            	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
             	transaction.replace(android.R.id.content, fragments.get(1));
@@ -249,6 +280,7 @@ public class MainActivity extends Activity {
         if (requestCode == 1) {
             if (pathImage != null) {
         	//TODO check that this is not a crash
+            	MainActivity.local=true;
             	confirm();
                             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -257,12 +289,18 @@ public class MainActivity extends Activity {
                 transaction.commit();
                 getActionBar().setSelectedNavigationItem(2);
                 MainActivity.isPhoto=true;
+                datasource.instanciateAllpixelGeom(); //load pixelGeom linked to the photo in the relative public static arrayList
+                Log.w("papa","p");
             }
         }
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
             	confirm();
-            	MainActivity.pathImage = getRealPathFromURI(baseContext, data.getData());
+            	//Setting the photo path
+            	String url = getRealPathFromURI(baseContext, data.getData());
+            	MainActivity.photo.setPhoto_url(url.split("/")[url.split("/").length-1]);
+            	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
+            	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
             	FragmentManager fragmentManager = getFragmentManager();
             	FragmentTransaction transaction = fragmentManager.beginTransaction();
             	transaction.replace(android.R.id.content, fragments.get(1));
@@ -300,6 +338,22 @@ public class MainActivity extends Activity {
 	
 	@Override
 	public void onBackPressed(){
+
+		//TODO add back fragment
+		int i=0;
+		for(Fragment f : fragments){
+			if(f.isVisible()){
+				break;
+			}
+			i++;
+		}
+		if(i>0){
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			ft.replace(android.R.id.content, fragments.get(i-1));
+			ft.commit();
+			getActionBar().selectTab(getActionBar().getTabAt(i-1));
+		}
+
 		
 	}
 }
