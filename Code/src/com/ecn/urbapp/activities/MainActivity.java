@@ -336,10 +336,12 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Function called when the back button of the screen is called. It will display the previous fragment.
+	 */
 	@Override
 	public void onBackPressed(){
-		//TODO add back fragment thefollowing code doesn't work well
-		/*
+		
 		int i=0;
 		for(Fragment f : fragments){
 			if(f.isVisible()){
@@ -348,10 +350,7 @@ public class MainActivity extends Activity {
 			i++;
 		}
 		if(i>0){
-			FragmentTransaction ft = getFragmentManager().beginTransaction();
-			ft.replace(android.R.id.content, fragments.get(i-1));
-			ft.commit();
 			getActionBar().selectTab(getActionBar().getTabAt(i-1));
-		}*/
+		}
 	}
 }
