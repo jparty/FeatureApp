@@ -15,14 +15,16 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.utils.ConvertGeom;
+import com.ecn.urbapp.utils.MathOperation;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class LoadLocalProjectsActivity extends Activity {
 
@@ -123,12 +125,26 @@ public class LoadLocalProjectsActivity extends Activity {
           
      }
     
+	//TODO add description for javadoc
+    /**
+     * loading the different projects of the local db
+     * @return
+     */
+    public List<GpsGeom> recupGpsGeom() {
+         
+         List<GpsGeom> values = this.datasource.getAllGpsGeom();
+         
+         return values;
+          
+     }
+    
     /**
      * creating a list of project and loads in the view
      */
     public void refreshList(){      
     	
     	refreshedValues = recupProject();
+    	List<GpsGeom> allGpsGeom = recupGpsGeom();
     	
         ArrayAdapter<Project> adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_list_item_1, refreshedValues);
         listeProjects.setAdapter(adapter);
@@ -138,8 +154,12 @@ public class LoadLocalProjectsActivity extends Activity {
          */
         Integer i = Integer.valueOf(0);
         for (Project enCours:refreshedValues){
-        	String[] coord = enCours.getExt_GpsGeomCoord().split("//");
-			LatLng coordProjet = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
+			LatLng coordProjet = null;
+        	for(GpsGeom gg : allGpsGeom){
+        		if(enCours.getGpsGeom_id()==gg.getGpsGeomsId()){
+        			coordProjet =  MathOperation.barycenter(ConvertGeom.gpsGeomToLatLng(gg));
+        		}
+        	}
         	
         	Marker marker = displayedMap.addMarkersColored(i, "Cliquez ici pour charger le projet", coordProjet);
             
@@ -156,8 +176,15 @@ public class LoadLocalProjectsActivity extends Activity {
     {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
-			String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
-			LatLng coordProjet = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
+			LatLng coordProjet = null;
+        	List<GpsGeom> allGpsGeom = recupGpsGeom();
+        	for(GpsGeom gg : allGpsGeom){
+        		if(refreshedValues.get(position).getGpsGeom_id()==gg.getGpsGeomsId()){
+        			coordProjet =  MathOperation.barycenter(ConvertGeom.gpsGeomToLatLng(gg));
+        		}
+        	}
+			/*String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
+			LatLng coordProjet = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));*/
 			displayedMap = new GeoActivity(false, coordProjet, map);
     		Toast.makeText(getApplicationContext(), coordProjet.toString(), Toast.LENGTH_LONG).show();                  
 		}

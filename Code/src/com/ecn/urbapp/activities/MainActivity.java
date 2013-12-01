@@ -95,9 +95,6 @@ public class MainActivity extends Activity {
 	public static String sproject = "";
 	//TODO add description for javadoc
 	public static String address = "";
-
-	//TODO add description for javadoc
-	public static Vector<Zone> zones=null;
 	//TODO add description for javadoc
 	public static ImageView myImage=null;
 
@@ -153,9 +150,9 @@ public class MainActivity extends Activity {
 		
 		
 		//TODO delete this field
-		gpsGeomFixe.setGpsGeomId(1);
+		/*gpsGeomFixe.setGpsGeomId(1);
 		gpsGeomFixe.setGpsGeomCoord("48.853//2.35");//"POLYGON((48.853 2.35))"
-		gpsGeom.add(gpsGeomFixe);
+		gpsGeom.add(gpsGeomFixe);*/
 		
 		
 		fragments=new Vector<Fragment>();
@@ -218,9 +215,6 @@ public class MainActivity extends Activity {
 		tabSave.setTabListener(new MyTabListener(save, this));
 		bar.addTab(tabSave);
 		fragments.add(save);
-		
-		//create zones' list for new image
-		zones = new Vector<Zone>();
 	}
 
 	@Override
@@ -335,10 +329,12 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Function called when the back button of the screen is called. It will display the previous fragment.
+	 */
 	@Override
 	public void onBackPressed(){
 
-		//TODO add back fragment
 		int i=0;
 		for(Fragment f : fragments){
 			if(f.isVisible()){
@@ -347,12 +343,8 @@ public class MainActivity extends Activity {
 			i++;
 		}
 		if(i>0){
-			FragmentTransaction ft = getFragmentManager().beginTransaction();
-			ft.replace(android.R.id.content, fragments.get(i-1));
-			ft.commit();
 			getActionBar().selectTab(getActionBar().getTabAt(i-1));
 		}
 
-		
 	}
 }

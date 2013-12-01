@@ -8,6 +8,10 @@ import android.graphics.Point;
 import android.util.Log;
 
 import com.ecn.urbapp.R;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 
 //TODO Check if it's possible to supress the commented code
 public class Zone {
@@ -15,9 +19,6 @@ public class Zone {
 	 * List of the points composing the polygon; the last point is listed twice
 	 */
 	public Vector<Point> points;
-
-	/** The state of the zone (finished or unfinished) */
-	protected boolean finished;
 
 	/** Material of this zone */
 	protected String material;
@@ -34,26 +35,65 @@ public class Zone {
 	/** List of small points displayed between normal points in zone edition mode **/
 	protected Vector<Point> middles;//useful for updateMiddles only, otherwise it's built everytime its getter is used
 
+	/** JTS Polygon representation of the zone. */
+	private Polygon poly;
+
+	/** The geometry factory used to create geometries. */
+	GeometryFactory gf = new GeometryFactory();
+
 	/**
 	 * Constructor of a new points (unfinished by default)
 	 */
 	public Zone() {
 		points = new Vector<Point>();
-		finished = false;
 		selected = false;
 		middles = new Vector<Point>();
 		color = Color.RED;
 	}
-	
+
+	/**
+	 * Set a zone coordinates from an other ones
+	 * 
+	 * @param zone
+	 */
+	public void setZone(Zone zone) {
+		this.points = new Vector<Point>();
+		for (Point p : zone.getPoints()) {
+			points.add(new Point(p));
+		}
+	}
+
 	/**
 	 * Constructor of a zone by copying an other
+	 *
 	 * @param zone
 	 */
 	public Zone(Zone zone){
 		this();
-		for (Point p : zone.getPoints()) {
-			points.add(new Point(p));
+		Vector<Point> vectPoints = zone.getPoints();
+		int nbrPoints = vectPoints.size();
+		Coordinate[] coordinates;
+		if (vectPoints.get(0).equals(vectPoints.get(nbrPoints - 1))) {
+			coordinates = new Coordinate[nbrPoints];
+		} else {
+			coordinates = new Coordinate[nbrPoints + 1];
 		}
+		int i = 0;
+		for (Point p : vectPoints) {
+			points.add(new Point(p));
+			coordinates[i] = new Coordinate(p.x, p.y);
+			i++;
+		}
+		if (!vectPoints.get(0).equals(vectPoints.get(nbrPoints - 1))) {
+			coordinates[nbrPoints] = coordinates[0];
+			points.add(vectPoints.get(0));
+		}
+		LinearRing lr = gf.createLinearRing(coordinates);
+		if ((coordinates[0].x - coordinates[1].x) * (coordinates[2].y - coordinates[0].y)
+				-  (coordinates[0].y - coordinates[1].y) * (coordinates[2].x - coordinates[0].x) > 0) {
+			lr = gf.createLinearRing(lr.reverse().getCoordinates());
+		}
+		poly = gf.createPolygon(lr, null);
 	}
 
 	//TODO Add description for javadoc
@@ -66,6 +106,32 @@ public class Zone {
 		buildMiddles();
 		return middles;
 	}
+
+	 /**
+	  * Return the jts-polygon representing the zone.
+	  */
+	 public Polygon getPolygon() {
+		 return poly;
+	 }
+
+	 public void createHole(Polygon polygon) {
+		LinearRing shell = gf.createLinearRing(poly.getExteriorRing()
+				.getCoordinates());
+		int nbrHoles = poly.getNumInteriorRing();
+		LinearRing[] holes = new LinearRing[nbrHoles + 1];
+		for (int i = 0; i < nbrHoles; i++) {
+			holes[i] = gf.createLinearRing(poly.getInteriorRingN(i).getCoordinates());
+		}
+		Coordinate[] coordinates = polygon.getExteriorRing().getCoordinates();
+		LinearRing lr = gf.createLinearRing(coordinates);
+		if ((coordinates[0].x - coordinates[1].x) * (coordinates[2].y - coordinates[0].y)
+				-  (coordinates[0].y - coordinates[1].y) * (coordinates[2].x - coordinates[0].x) > 0) {
+			lr = gf.createLinearRing(lr.reverse().getCoordinates());
+		}
+		holes[nbrHoles] = lr;
+		
+		poly = gf.createPolygon(shell, holes);
+	}
 	
 	/**
 	 * Move a point to its new coordinates
@@ -74,11 +140,22 @@ public class Zone {
 	 * @return
 	 */
 	public boolean updatePoint(Point oldPoint, Point newPoint){
-		try{
-			points.setElementAt(newPoint,points.indexOf(oldPoint));
-			return true;
-		}catch(Exception e){
-			return false;
+		if(points.get(0).equals(oldPoint) || points.lastElement().equals(oldPoint)){
+			try{
+				points.setElementAt(newPoint,0);
+				points.setElementAt(newPoint,points.size()-1);
+				return true;
+			}catch(Exception e){
+				return false;
+			}
+		}
+		else{
+			try{
+				points.setElementAt(newPoint,points.indexOf(oldPoint));
+				return true;
+			}catch(Exception e){
+				return false;
+			}
 		}
 	}
 	
@@ -153,14 +230,6 @@ public class Zone {
 	public boolean isSelected() {
 		return this.selected;
 	}
-	
-	/**
-	 * Getter of finished
-	 * @return true if the zone is finished
-	 */
-	public boolean isFinished(){
-		return this.finished;
-	}
 
 	/**
 	 * Return the type in text form (with written not defined if it is null)
@@ -200,9 +269,6 @@ public class Zone {
 	 */
 	public void addPoint(Point point) {
 		points.add(point);
-		if (point.x == points.get(0).x && point.y == points.get(0).y) {
-			this.finished = true;
-		}
 	}
 	
 	/**
@@ -237,15 +303,7 @@ public class Zone {
 	 * @return the area
 	 */
 	public float area() {
-		float result = 0;
-		for (int i = 0; i < points.size() - 1; i++) {
-			result = result + points.get(i).x * points.get(i + 1).y
-					- points.get(i + 1).x * points.get(i).y;
-		}
-
-		result = (float) (0.5 * Math.abs(result));
-
-		return result;
+		return (float) poly.getArea();
 	}
 
 	/**
@@ -292,38 +350,6 @@ public class Zone {
 		points.remove(points.size()-1);
 		return result;//possibly null
 	}
-	
-	 //méthode de Jules
-	 /* public boolean intersect(Point p11, Point p12, Point p21, Point p22){
-		double denominateur = (p22.x - p21.x) * (p12.y - p11.y) - (p12.x - p11.x) * (p22.y - p21.y);
-		Log.d("Intersect","den:"+denominateur);
-		if (denominateur != 0.0) {
-			Log.d("Intersect","droites non //");
-			double x;
-			double y;
-			if (p22.x != p21.x) {
-				// Cas où les droites sont sécantes (pas forcément les segments !
-				x = (-(p12.x - p11.x) * (p22.x - p21.x) * (p21.y - p11.y)
-					+ p11.x * (p22.x - p21.x) * (p12.y - p11.y)
-					- p21.x * (p12.x - p11.x) * (p22.y - p21.y))
-					/ denominateur;
-				y = p21.y - (p22.y - p21.y) * (x - p21.x)
-					/ (p22.x - p21.x);
-			} else {
-				x = p21.x;
-				y = p11.y - (p12.y - p11.y) * (x - p11.x) / (p12.x - p11.x);
-			}
-			return isInSegment(x, y, p11, p12)
-			&& isInSegment(x, y, p21, p22);
-		} else {
-			Log.d("intersectest","droites oui //");
-			//TODO Cas où les droites sont parallèles
-			return isInSegment(p11.x, p11.y, p21, p22)
-			|| isInSegment(p12.x, p12.y, p21, p22)
-			|| isInSegment(p21.x, p21.y, p11, p12)
-			|| isInSegment(p22.x, p22.y, p11, p12);
-		}
-	}*/
 	
 	/**
 	 * Check if two segments, from 4 points, are intersecting.
@@ -407,12 +433,4 @@ public class Zone {
 				return false;
 			}
 		}
-
-
-	/*
-	public static boolean isInSegment(double x, double y, Point p1, Point p2) {
-		return ((p2.x - p1.x) * (y - p1.y) + (p2.y - p1.y) * (x - p1.x) == 0
-		&& (Math.min(p1.x, p2.x) <= x) && (Math.max(p1.x, p2.x) >= x)
-		&& (Math.min(p1.y, p2.y) <= y) && (Math.max(p1.y, p2.y) >= y));
-}*/
 }

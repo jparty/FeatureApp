@@ -35,22 +35,33 @@ knowledge of the CeCILL license and that you accept its terms.
 
 package com.ecn.urbapp.zones;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Point;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.ElementType;
+import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.utils.ConvertGeom;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.TopologyException;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 //TODO only dsplay databased material and not those put into ressources
 
@@ -61,6 +72,9 @@ import com.ecn.urbapp.utils.ConvertGeom;
  * 
  */
 public final class UtilCharacteristicsZone {
+
+	private static GeometryFactory gf = new GeometryFactory();
+	private static WKTReader wktr = new WKTReader(gf);
 
 	/**
 	 * Set the type of all the selected zones
@@ -241,10 +255,11 @@ public final class UtilCharacteristicsZone {
 			}
 			Float currentArea = types.get(type);
 			//TODO finish to implement the database object
+			Zone z = new Zone(ConvertGeom.pixelGeomToZone(pg));
 			if (currentArea != null) {
-				types.put(type, currentArea + ConvertGeom.pixelGeomToZone(pg).area());
+				types.put(type, currentArea + z.area());
 			} else {
-				types.put(type, ConvertGeom.pixelGeomToZone(pg).area());
+				types.put(type, z.area());
 			}
 			String material="";
 			for(Material  m : MainActivity.material){
@@ -254,11 +269,11 @@ public final class UtilCharacteristicsZone {
 			}
 			currentArea = materials.get(material);
 			if (currentArea != null) {
-				materials.put(material, currentArea + ConvertGeom.pixelGeomToZone(pg).area());
+				materials.put(material, currentArea + z.area());
 			} else {
-				materials.put(material, ConvertGeom.pixelGeomToZone(pg).area());
+				materials.put(material, z.area());
 			}
-			totalArea += ConvertGeom.pixelGeomToZone(pg).area();
+			totalArea += z.area();
 			
 		}
 		for (String key : materials.keySet()) {
@@ -274,4 +289,131 @@ public final class UtilCharacteristicsZone {
 		return summary;
 	}
 
+	public static void addInMainActivityZones(Polygon poly)
+			throws TopologyException, ParseException {
+		if (poly != null) {
+			List<PixelGeom> pixelGeomToRemove = new ArrayList<PixelGeom>();
+			List<Polygon> polygonsToAdd = new ArrayList<Polygon>();
+			Geometry geom = null;
+			for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
+				if (poly.contains(ConvertGeom.pixelGeomToZone(oldPixelGeom)
+						.getPolygon())) {
+					if (geom == null) {
+						geom = gf.createGeometry(ConvertGeom.pixelGeomToZone(
+								oldPixelGeom).getPolygon());
+					} else {
+						geom = geom.union(ConvertGeom.pixelGeomToZone(
+								oldPixelGeom).getPolygon());
+					}
+				}
+			}
+			if (geom instanceof GeometryCollection) {
+				GeometryCollection geomColl = (GeometryCollection) geom;
+				for (int i = 0; i < geomColl.getNumGeometries(); i++) {
+					if (geomColl.getGeometryN(i) instanceof Polygon) {
+						poly = createHole(poly,
+								(Polygon) geomColl.getGeometryN(i));
+					}
+				}
+			} else if (geom instanceof Polygon) {
+				poly = createHole(poly, (Polygon) geom);
+			}
+			for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
+				if (poly.within(
+						ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon())) {
+					geom = wktr.read(oldPixelGeom.getPixelGeom_the_geom());
+					Polygon polyGeom = createHole((Polygon) geom, poly);
+					pixelGeomToRemove.add(oldPixelGeom);
+					polygonsToAdd.add(polyGeom);
+					polygonsToAdd.add(poly);
+					break;
+				} else if (poly.intersects(
+						ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon())
+						&& !poly.touches(
+								ConvertGeom.pixelGeomToZone(oldPixelGeom)
+										.getPolygon())) {
+					pixelGeomToRemove.add(oldPixelGeom);
+					geom = poly.intersection(
+							ConvertGeom.pixelGeomToZone(oldPixelGeom)
+									.getPolygon());
+					polygonsToAdd.addAll(getPolygonsFromGeom(geom));
+					geom = poly.difference(
+							ConvertGeom.pixelGeomToZone(oldPixelGeom)
+									.getPolygon());
+					polygonsToAdd.addAll(getPolygonsFromGeom(geom));
+					geom = ConvertGeom.pixelGeomToZone(oldPixelGeom)
+							.getPolygon().difference(poly);
+					polygonsToAdd.addAll(getPolygonsFromGeom(geom));
+					break;
+				}
+			}
+			if (polygonsToAdd.isEmpty()) {
+				PixelGeom pgeom = new PixelGeom();
+				pgeom.setPixelGeomId(MainActivity.pixelGeom.size() - 1);
+				pgeom.setPixelGeom_the_geom(geom.toText());
+				Element element = new Element();
+				element.setElement_id(MainActivity.element.size() + 1);
+				element.setPhoto_id(MainActivity.photo.getPhoto_id());
+				element.setPixelGeom_id(pgeom.getPixelGeomId());
+				element.setElement_color("" + Color.RED);
+				element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
+				MainActivity.element.add(element);
+				MainActivity.pixelGeom.add(pgeom);
+			} else {
+				for (PixelGeom pgeom : pixelGeomToRemove) {
+					MainActivity.pixelGeom.remove(pgeom);
+				}
+				try {
+					for (Polygon polygon : polygonsToAdd) {
+						addInMainActivityZones(polygon);
+					}
+				} catch (TopologyException e) {
+					for (PixelGeom pgeom : pixelGeomToRemove) {
+						pgeom.setPixelGeomId(MainActivity.pixelGeom.size() + 1);
+						MainActivity.pixelGeom.add(pgeom);
+						Element element = new Element();
+						element.setElement_id(MainActivity.element.size() + 1);
+						element.setPhoto_id(MainActivity.photo.getPhoto_id());
+						element.setPixelGeom_id(pgeom.getPixelGeomId());
+						element.setElement_color("" + Color.RED);
+						element.setGpsGeom_id(MainActivity.photo
+								.getGpsGeom_id());
+						MainActivity.element.add(element);
+					}
+					throw e;
+				}
+			}
+		}
+	}
+
+	private static List<Polygon> getPolygonsFromGeom(Geometry geom) {
+		List<Polygon> result = new ArrayList<Polygon>();
+		if (geom instanceof GeometryCollection) {
+			GeometryCollection geomColl = (GeometryCollection) geom;
+			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
+				result.addAll(getPolygonsFromGeom(geomColl.getGeometryN(i)));
+			}
+		} else if (geom instanceof Polygon) {
+			result.add((Polygon) geom);
+		}
+		return result;
+	}
+
+	 public static Polygon createHole(Polygon polyShell, Polygon polyHole) {
+		LinearRing shell = gf.createLinearRing(polyShell.getExteriorRing()
+				.getCoordinates());
+		int nbrHoles = polyShell.getNumInteriorRing();
+		LinearRing[] holes = new LinearRing[nbrHoles + 1];
+		for (int i = 0; i < nbrHoles; i++) {
+			holes[i] = gf.createLinearRing(polyShell.getInteriorRingN(i).getCoordinates());
+		}
+		Coordinate[] coordinates = polyHole.getExteriorRing().getCoordinates();
+		LinearRing lr = gf.createLinearRing(coordinates);
+		if ((coordinates[0].x - coordinates[1].x) * (coordinates[2].y - coordinates[0].y)
+				-  (coordinates[0].y - coordinates[1].y) * (coordinates[2].x - coordinates[0].x) > 0) {
+			lr = gf.createLinearRing(lr.reverse().getCoordinates());
+		}
+		holes[nbrHoles] = lr;
+		return gf.createPolygon(shell, holes);
+	}
 }

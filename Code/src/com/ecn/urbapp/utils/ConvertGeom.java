@@ -26,7 +26,7 @@ public class ConvertGeom{
 		for(Point p : list){
 			z.addPoint(p);
 		}
-		return z;
+		return new Zone(z);
 	}
 	
 	public static String ZoneToPixelGeom(Zone zone){

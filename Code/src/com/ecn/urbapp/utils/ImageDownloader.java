@@ -30,7 +30,7 @@ import com.ecn.urbapp.activities.MainActivity;
  */
 public class ImageDownloader {
 	/** Path of the directory where image is going to be registered	 */
-	private final File path=MainActivity.baseContext.getCacheDir();
+	private final File path=com.ecn.urbapp.activities.MainActivity.baseContext.getCacheDir();
 	/** Name of the file to be registered */
 	private String name;
 
