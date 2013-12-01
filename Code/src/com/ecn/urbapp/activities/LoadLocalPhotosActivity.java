@@ -186,15 +186,6 @@ public class LoadLocalPhotosActivity extends Activity{
 		Integer i = Integer.valueOf(0);
 		for (Photo enCours:refreshedValues){
 			
-			//TODO Get the real GPSGeom from Photo table in local Database !!!
-			//Fake one ! for testing purpose
-			/*String[] coord = enCours.getExt_GpsGeomCoord().split("//");
-			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
-			LatLng coordPhoto1 = new LatLng(Double.parseDouble(coord[0])+0.2, Double.parseDouble(coord[1])+0.2);
-
-			ArrayList<LatLng> photoGPS = new ArrayList<LatLng>();
-			photoGPS.add(coordPhoto);
-			photoGPS.add(coordPhoto1);*/
 			//TODO request for GPSGeom
 			ArrayList<LatLng> photoGPS = null;
 			for(GpsGeom gg : allGpsGeom){
