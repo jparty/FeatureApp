@@ -292,12 +292,12 @@ public final class UtilCharacteristicsZone {
 		if (zone.getPolygon() == null) {
 			zone = new Zone(zone);
 		}
-		for (Zone oldZone : MainActivity.zones) {
-			if (zone.getPolygon().contains(oldZone.getPolygon())) {
+		for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
+			if (zone.getPolygon().contains(ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon())) {
 				if (geom == null) { 
-					geom = gf.createGeometry(oldZone.getPolygon());
+					geom = gf.createGeometry(ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon());
 				} else {
-					geom = geom.union(oldZone.getPolygon());
+					geom = geom.union(ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon());
 				}
 			}
 		}
@@ -309,21 +309,23 @@ public final class UtilCharacteristicsZone {
 				}
 			}
 		} else if (geom instanceof Polygon) {
-			zone.createHole((Polygon) geom);
+			//TODO add hole inpixel geom
+			//zone.createHole((Polygon) geom);
 		}
-		for (Zone oldZone : MainActivity.zones) {
-			if (zone.getPolygon().within(oldZone.getPolygon())) {
-				oldZone.createHole(zone.getPolygon());
-				zonesToAdd.add(zone);
+		for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
+			if (zone.getPolygon().within(ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon())) {
+				//TODO add hole inpixel geom
+				/*ConvertGeom.pixelGeomToZone(oldPixelGeom).createHole(zone.getPolygon());
+				zonesToAdd.add(zone);*/
 				break;
-			} else if (zone.getPolygon().intersects(oldZone.getPolygon())
-					&& !zone.getPolygon().touches(oldZone.getPolygon())) {
-				zonesToRemove.add(oldZone);
-				geom = zone.getPolygon().intersection(oldZone.getPolygon());
+			} else if (zone.getPolygon().intersects(ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon())
+					&& !zone.getPolygon().touches(ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon())) {
+				zonesToRemove.add(ConvertGeom.pixelGeomToZone(oldPixelGeom));
+				geom = zone.getPolygon().intersection(ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon());
 				zonesToAdd.addAll(getZonesFromGeom(geom));
-				geom = zone.getPolygon().difference(oldZone.getPolygon());
+				geom = zone.getPolygon().difference(ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon());
 				zonesToAdd.addAll(getZonesFromGeom(geom));
-				geom = oldZone.getPolygon().difference(zone.getPolygon());
+				geom = ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon().difference(zone.getPolygon());
 				zonesToAdd.addAll(getZonesFromGeom(geom));
 				break;
 			}
@@ -340,7 +342,6 @@ public final class UtilCharacteristicsZone {
 			element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
 			MainActivity.element.add(element);
 			MainActivity.pixelGeom.add(pgeom);
-			MainActivity.zones.add(zone);
 		} else {
 			for (Zone z : zonesToRemove) {
 				PixelGeom pgeom = new PixelGeom();
@@ -351,7 +352,6 @@ public final class UtilCharacteristicsZone {
 					}
 				}
 				MainActivity.pixelGeom.remove(pgeom);
-				MainActivity.zones.remove(z);
 			}
 			try {
 				for (Zone z : zonesToAdd) {
@@ -371,7 +371,6 @@ public final class UtilCharacteristicsZone {
 					element.setElement_color(""+Color.RED);
 					element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
 					MainActivity.element.add(element);
-					MainActivity.zones.add(z);
 				}
 				throw e;
 			}

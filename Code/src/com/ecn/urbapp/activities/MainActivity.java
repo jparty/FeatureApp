@@ -96,9 +96,6 @@ public class MainActivity extends Activity {
 	public static String sproject = "";
 	//TODO add description for javadoc
 	public static String address = "";
-
-	//TODO add description for javadoc
-	public static Vector<Zone> zones=null;
 	//TODO add description for javadoc
 	public static ImageView myImage=null;
 
@@ -219,9 +216,6 @@ public class MainActivity extends Activity {
 		tabSave.setTabListener(new MyTabListener(save, this));
 		bar.addTab(tabSave);
 		fragments.add(save);
-		
-		//create zones' list for new image
-		zones = new Vector<Zone>();
 	}
 
 	@Override

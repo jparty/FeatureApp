@@ -47,7 +47,7 @@ import com.vividsolutions.jts.geom.TopologyException;
  */
 
 public class ZoneFragment extends Fragment{
-	private int TOUCH_RADIUS_TOLERANCE = 10;//only for catching points in edit mode
+	private int TOUCH_RADIUS_TOLERANCE = 20;//only for catching points in edit mode
 	private Button create; 
 	private Button edit;
 	private Button delete;
@@ -70,6 +70,7 @@ public class ZoneFragment extends Fragment{
 
 	private ImageView myImage; private Matrix matrix;
 	private Zone zoneCache ; 
+	private PixelGeom geomCache;
 	private Zone zone;
 	private Point selected;
 	private DrawZoneView drawzoneview;
@@ -397,7 +398,11 @@ public class ZoneFragment extends Fragment{
 //<<<<<<< HEAD
 							zoneCache = test;
 							zone.setZone(test);
-							//TODO
+							for(PixelGeom pg : MainActivity.pixelGeom){
+								if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
+									geomCache = pg;
+								}
+							}
 /*=======
 							zoneCache = new Zone(test);
 							zone = new Zone(test);;
@@ -457,6 +462,7 @@ public class ZoneFragment extends Fragment{
 	
 			try {
 				//MainActivity.zones.remove(zoneCache); //delete original
+				MainActivity.pixelGeom.remove(geomCache);
 				UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
 				exitAction();
 			} catch(TopologyException e) {
@@ -488,7 +494,12 @@ public class ZoneFragment extends Fragment{
 		@Override
 		public void onClick(View v) {
 			if(zoneCache != null){//if user is coming from CreateZone there is no original to save
-				MainActivity.zones.add(new Zone(zoneCache));//save original
+				//MainActivity.zones.add(new Zone(zoneCache));//save original
+				PixelGeom pgeom = new PixelGeom();
+				pgeom.setPixelGeomId(MainActivity.pixelGeom.size());
+				pgeom.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zoneCache));
+				
+				MainActivity.pixelGeom.add(pgeom);
 			}
             exitAction();
 		}
@@ -556,7 +567,7 @@ public class ZoneFragment extends Fragment{
 						}
 						MainActivity.pixelGeom.remove(pgeom);
 						
-						MainActivity.zones.remove(zoneCache);						
+						//MainActivity.zones.remove(zoneCache);						
 			            exitAction();
 					}
 				}
