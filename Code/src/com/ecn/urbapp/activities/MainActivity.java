@@ -73,7 +73,6 @@ public class MainActivity extends Activity {
 
 	
 	/**
-
 	 * baseContext to get the static context of app anywhere (for file)
 	 */
     public static Context baseContext;

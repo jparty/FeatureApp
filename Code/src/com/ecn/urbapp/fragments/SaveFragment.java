@@ -19,12 +19,11 @@ import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
-
-
+import com.ecn.urbapp.syncToExt.Sync;
 
 
 /**
- * @author	COHENDET S�bastien
+ * @author	COHENDET Sebastien
  * 			DAVID Nicolas
  * 			GUILBART Gabriel
  * 			PALOMINOS Sylvain
@@ -42,6 +41,7 @@ public class SaveFragment extends Fragment{
 	
 
 	private Button saveToLocal = null;
+	private Button saveToExt = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,8 +54,11 @@ public class SaveFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_save, null);
 		
-		saveToLocal=(Button)v.findViewById(R.id.save_button_ync);
+		saveToLocal = (Button)v.findViewById(R.id.save_button_ync);
 		saveToLocal.setOnClickListener(OnClickSaveToLocal);
+		
+		saveToExt = (Button)v.findViewById(R.id.save_button_ext);
+		saveToExt.setOnClickListener(OnClickSaveToExt);
 		
 		return v;
 	}
@@ -74,7 +77,17 @@ public class SaveFragment extends Fragment{
     		MainActivity.datasource.close();
     		
     		
-    	};
+    	}
+    };
+    	
+    private OnClickListener OnClickSaveToExt = new OnClickListener(){
+    	public void onClick(View view){
+    		
+    		Sync synchroExt = new Sync();
+    		synchroExt.doSync();
+    		
+    		
+    	}
     };
 	
 	//TODO pour la photo il faut appeler direct la liste car on n'a pas de list de photo vu qu'ion bosse avecu ne seule.

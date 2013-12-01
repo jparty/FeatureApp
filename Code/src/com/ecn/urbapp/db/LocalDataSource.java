@@ -48,8 +48,10 @@ public class LocalDataSource {
 		dbHelper = new MySQLiteHelper(context);
 	}
 
-	//TODO Adddescription for javadoc
-	//Open and close database
+	/**
+	 * Open and close database
+	 * @throws SQLException
+	 */
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 	}

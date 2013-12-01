@@ -229,7 +229,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 					*/
                     break;
                 }
-
+                //TODO do the GPS centered !!
         }
      }
 
@@ -300,6 +300,20 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 
     		map.setOnMapClickListener(ajoutPoints);
     		map.setOnMarkerDragListener(markerDrag);
+    		for (GpsGeom gps:MainActivity.gpsGeom){
+    			
+    			for(LatLng point:ConvertGeom.gpsGeomToLatLng(gps)) {
+    				Marker marker = map.addMarker(new MarkerOptions()
+    				.position(point)
+    				.title("Adresse postale")
+    				.draggable(true));
+
+    				markers.add(marker);
+
+    				MarkerPos markerpos = new MarkerPos(marker, point);
+    				getAddress(markerpos);
+    			}
+    		}
     	}}
     
     /**
@@ -341,7 +355,6 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     		// Connect the client.
     		//TODO check the threat order
     		//CONNECTION TODO
-
     	}
 
     	//check

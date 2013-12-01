@@ -2,6 +2,7 @@ package com.ecn.urbapp.syncToExt;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
@@ -14,281 +15,134 @@ import org.apache.http.message.BasicNameValuePair;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Composed;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.GpsGeom;
-import com.ecn.urbapp.db.LocalDataSource;
-import com.ecn.urbapp.db.MainActivity;
 import com.ecn.urbapp.db.Material;
-import com.ecn.urbapp.db.MySQLiteHelper;
-import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
-import com.google.gson.Gson;
 
 public class Sync
 {
-
-	private SQLiteDatabase database;
-	private MySQLiteHelper dbHelper;
-	public Photo SyncablePhoto;
-	public Project SyncableProject;
-	public GpsGeom SyncableGpsGeom;
-	public List<Element> SyncableElements;
-	public List<PixelGeom> SyncablePixelGeoms;
-	public List<Material> SyncableMaterials;
-	public List<ElementType> SyncableElementTypes;
 	public Activity context;
+	public String JSON="";
+	public static HashMap<String, Integer> maxId;
 
-	public Boolean doSync(long photoID)
+	/**
+	 * Launch the sync to external DB
+	 * @return Boolean if success of not
+	 */
+	public Boolean doSync()
 	{
 		Boolean success = false;
-		boolean successFromLocal = this.getAllFromLocal(photoID);
-		if (successFromLocal)
-		{
+		
 			try
 			{
-				this.syncInfoPhoto(this.SyncablePhoto);
-				this.syncInfoGpsGeom(this.SyncableGpsGeom);
-				this.syncInfoProject(this.SyncableProject);
-				this.syncInfoElement(this.SyncableElements);
-				this.syncInfoPixelGeom(this.SyncablePixelGeoms);
-				this.syncInfoMaterial(this.SyncableMaterials);
-				this.syncInfoElementType(this.SyncableElementTypes);
+				Gson gson = new Gson();
+				String dataJson = gson.toJson(MainActivity.gpsGeom);
+				String jSonComplete = "{\"gpsGeom\":"+dataJson+"}";
+				
+				dataJson = gson.toJson(MainActivity.pixelGeom);
+				jSonComplete += "{\"pixelGeom\":"+dataJson+"}";
+				
+				dataJson = gson.toJson(MainActivity.photo);
+				jSonComplete += "{\"photo\":"+dataJson+"}";
+
+				dataJson = gson.toJson(MainActivity.project);
+				jSonComplete += "{\"project\":"+dataJson+"}";
+				
+				dataJson = gson.toJson(MainActivity.composed);
+				jSonComplete += "{\"composed\":"+dataJson+"}";
+				
+				dataJson = gson.toJson(MainActivity.element);
+				jSonComplete += "{\"element\":"+dataJson+"}";
+
+				Toast.makeText(MainActivity.baseContext, jSonComplete, Toast.LENGTH_LONG).show();
+				
+				postData(jSonComplete);
 				success = true;
 			}
 			catch (Exception e)
 			{
 			}
-		}
+		
 		return success;
 	}
-
-	public long getProjectID(long photoID)
-	{
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_COMPOSED, new String[] {MySQLiteHelper.COLUMN_PROJECTID}, 
-				MySQLiteHelper.COLUMN_PHOTOID + " = \"" + photoID + "\"", null, null, null, null);
-		long projectID = cursor.getLong(0);
-		return projectID;
+	
+	
+	/**
+	 * Get the max id of each critical tables in external DB
+	 * @return Hashmap of all max id
+	 */
+	public HashMap<String, Integer> getMaxId() {
+		//TODO get all the id of each table in external DB
+		return maxId;
 	}
-	public long getGpsGeomID(long photoID)
-	{
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_PHOTO, new String[] {MySQLiteHelper.COLUMN_GPSGEOMID},
-				MySQLiteHelper.COLUMN_PHOTOID + " = \"" + photoID + "\"", null, null, null, null);
-		long gpsGeomID = cursor.getLong(0);
-		return gpsGeomID;
+	/*
+	public String saveProjectListToExt(ArrayList<Project> l1){
+		String data="";
+		for (Project p : l1){
+			data += p.saveToExt();
+		}
+		return data;
 	}
-	public List<Long> getElementIDs(long photoID)
-	{
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_ELEMENT, new String[] {MySQLiteHelper.COLUMN_ELEMENTID},
-				MySQLiteHelper.COLUMN_PHOTOID + " = \"" + photoID + "\"", null, null, null, null);
-		List<Long> ElementIDs = new ArrayList<Long>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast())
-		{
-			ElementIDs.add(cursor.getLong(0));
-			cursor.moveToNext();
+	
+	public String saveElementListToExt(ArrayList<Element> l1){
+		String data="";
+		for (Element p : l1){
+			data += p.saveToExt();
 		}
-		return ElementIDs;
+		return data;
 	}
-	public List<Long> getPixelGeomIDs(long photoID)
-	{
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_PIXELGEOM, new String [] {MySQLiteHelper.COLUMN_PIXELGEOMID},
-				MySQLiteHelper.COLUMN_PHOTOID + " = \"" + photoID + "\"", null, null, null, null);
-		List<Long> PixelGeomIDs = new ArrayList<Long>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast())
-		{
-			PixelGeomIDs.add(cursor.getLong(0));
-			cursor.moveToNext();
+	
+	public String saveGpsGeomListToExt(ArrayList<GpsGeom> l1){
+		String data="";
+		for (GpsGeom p : l1){
+			data += p.saveToExt();
 		}
-		return PixelGeomIDs;
+		return data;
 	}
-	public List<Long> getMaterialIDs(long photoID)
-	{
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_ELEMENT, new String[] {MySQLiteHelper.COLUMN_MATERIALID},
-				MySQLiteHelper.COLUMN_PHOTOID + " = \"" + photoID + "\"", null, null, null, null);
-		List<Long> MaterialIDs = new ArrayList<Long>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast())
-		{
-			MaterialIDs.add(cursor.getLong(0));
-			cursor.moveToNext();
+	
+	public String savePixelGeomListToExt(ArrayList<PixelGeom> l1){
+		String data="";
+		for (PixelGeom p : l1){
+			data += p.saveToExt();
 		}
-		return MaterialIDs;
+		return data;
 	}
-	public List<Long> getElementTypeIDs(long photoID)
-	{
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_ELEMENT, new String[] {MySQLiteHelper.COLUMN_ELEMENTTYPEID},
-				MySQLiteHelper.COLUMN_PHOTOID + " = \"" + photoID + "\"", null, null, null, null);
-		List<Long> ElementTypeIDs = new ArrayList<Long>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast())
-		{
-			ElementTypeIDs.add(cursor.getLong(0));
-			cursor.moveToNext();
+	
+	public String saveElementTypeListToExt(ArrayList<ElementType> l1){
+		String data="";
+		for (ElementType p : l1){
+			data += p.saveToExt();
 		}
-		return ElementTypeIDs;
+		return data;
 	}
-
-	public boolean getAllFromLocal(long photoID)
-	{
-		boolean success = false;
-		try
-		{
-			LocalDataSource temp = ((MainActivity)this.context).getDatasource();
-			this.SyncablePhoto = temp.getPhotoWithID(photoID);
-			this.SyncableProject = temp.getProjectWithId(getProjectID(photoID));
-			this.SyncableGpsGeom = temp.getGpsGeomWithID(getGpsGeomID(photoID));
-			for (long elementID : getElementIDs(photoID))
-			{
-				this.SyncableElements.add(temp.getElementWithID(elementID));
-			}
-			for (long pixelGeomID : getPixelGeomIDs(photoID))
-			{
-				this.SyncablePixelGeoms.add(temp.getPixelGeomWithID(pixelGeomID));
-			}
-			for (long materialID : getMaterialIDs(photoID))
-			{
-				this.SyncableMaterials.add(temp.getMaterialWithID(materialID));
-			}
-			for (long elementTypeID : getElementTypeIDs(photoID))
-			{
-				this.SyncableElementTypes.add(temp.getElementTypeWithID(elementTypeID));
-			}
-			success = true;
+	
+	public String saveMaterialListToExt(ArrayList<Material> l1){
+		String data="";
+		for (Material p : l1){
+			data += p.saveToExt();
 		}
-		catch (Exception e)
-		{
-		}
-		return success;
+		return data;
 	}
-
-	public boolean syncInfoGpsGeom(GpsGeom concernedGpsGeom)
-	{
-		Boolean success = false;
-		try
-		{
-			Gson gson = new Gson();
-			String jSonGpsGeom = gson.toJson(concernedGpsGeom);
-			postData(jSonGpsGeom);
-			success = true;
+	
+	public String saveComposedListToExt(ArrayList<Composed> l1){
+		String data="";
+		for (Composed p : l1){
+			data += p.saveToExt();
 		}
-		catch (Exception e)
-		{
-		}
-		return success;
+		return data;
 	}
-	public boolean syncInfoPhoto(Photo concernedPhoto)
-	{
-		Boolean success = false;
-		try
-		{
-			Gson gson = new Gson();
-			String jSonPhoto = gson.toJson(concernedPhoto);
-			postData(jSonPhoto);
-			success = true;
-		}
-		catch (Exception e)
-		{
-		}
-		return success;
-	}
-	public boolean syncInfoProject(Project concernedProject)
-	{
-		Boolean success = false;
-		try
-		{
-			Gson gson = new Gson();
-			String jSonProject = gson.toJson(concernedProject);
-			postData(jSonProject);
-			success = true;
-		}
-		catch (Exception e)
-		{
-		}
-		return success;
-	}
-	public boolean syncInfoElement(List<Element> concernedElements)
-	{
-		Boolean success = false;
-		try
-		{
-			Gson gson = new Gson();
-			String jSonElement;
-			for (Element concernedElement : concernedElements)
-			{
-				jSonElement= gson.toJson(concernedElement);
-				postData(jSonElement);
-			}
-			success = true;
-		}
-		catch (Exception e)
-		{
-		}
-		return success;
-	}
-	public boolean syncInfoPixelGeom(List<PixelGeom> concernedPixelGeoms)
-	{
-		Boolean success = false;
-		try
-		{
-			Gson gson = new Gson();
-			String jSonPixelGeom;
-			for (PixelGeom concernedPixelGeom : concernedPixelGeoms)
-			{
-				jSonPixelGeom = gson.toJson(concernedPixelGeom);
-				postData(jSonPixelGeom);
-			}
-			success = true;
-		}
-		catch (Exception e)
-		{
-		}
-		return success;
-	}
-	public boolean syncInfoMaterial(List<Material> concernedMaterials)
-	{
-		Boolean success = false;
-		try
-		{
-			Gson gson = new Gson();
-			String jSonMaterial;
-			for (Material concernedMaterial : concernedMaterials)
-			{
-				jSonMaterial = gson.toJson(concernedMaterial);
-				postData(jSonMaterial);
-			}
-			success = true;
-		}
-		catch (Exception e)
-		{
-		}
-		return success;
-	}
-	public boolean syncInfoElementType(List<ElementType> concernedElementTypes)
-	{
-		Boolean success = false;
-		try
-		{
-			Gson gson = new Gson();
-			String jSonElementType;
-			for (ElementType concernedElementType : concernedElementTypes)
-			{
-				jSonElementType = gson.toJson(concernedElementType);
-				postData(jSonElementType);
-			}
-			success = true;
-		}
-		catch (Exception e)
-		{
-		}
-		return success;
-	}
+	*/
 	public void postData(String param) {
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost("http://192.168.34.1/SQLite/");
+		HttpPost httppost = new HttpPost("http://192.168.177.1/registerDB.php");
 		try {
 			// create a list to store HTTP variables and their values
 			List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();

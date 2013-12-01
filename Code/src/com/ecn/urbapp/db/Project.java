@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.ecn.urbapp.activities.MainActivity;
+import com.google.gson.Gson;
 
 
 public class Project extends DataObject {
@@ -18,9 +19,6 @@ public class Project extends DataObject {
 	private long gpsGeom_id;
 	private String Ext_GpsGeomCoord;
 
-	
-	
-	
 	
 	//Getters
 	//TODO Adddescription for javadoc
@@ -43,10 +41,7 @@ public class Project extends DataObject {
 		return project_name;
 	}
 	
-	
-	
-	
-	
+
 	//Setters
 	//TODO Adddescription for javadoc
 	public void setExt_GpsGeomCoord(String ext_GpsGeomCoord) {
@@ -68,8 +63,7 @@ public class Project extends DataObject {
 		this.project_id = id;
 	}
 
-	
-	
+
 	//Override methods
 	//TODO Adddescription for javadoc
 	//will be used by the ArayAdapter in the ListView
@@ -118,6 +112,8 @@ public class Project extends DataObject {
 			datasource.getDatabase().insert(MySQLiteHelper.TABLE_PROJECT, null, values);
 		}
 	}	
+	
+	
 	/**
 	 * query to get the biggest photo_id from local db
 	 * 
