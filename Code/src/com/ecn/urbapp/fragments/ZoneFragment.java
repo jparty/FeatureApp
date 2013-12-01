@@ -459,15 +459,20 @@ public class ZoneFragment extends Fragment{
 
 		public void onClick(View v) {
 			//zones.remove(zoneCache);//delete original 
-	
-			try {
+
+			if(!zone.getPoints().isEmpty()){
+				try {
 				//MainActivity.zones.remove(zoneCache); //delete original
-				MainActivity.pixelGeom.remove(geomCache);
-				UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
+					MainActivity.pixelGeom.remove(geomCache);
+					UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
+					exitAction();
+				}catch(TopologyException e) {
+					TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
+					diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
+				}
+			}
+			else{
 				exitAction();
-			} catch(TopologyException e) {
-				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
-				diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
 			}
 	/*
 			long id=0;
@@ -495,11 +500,11 @@ public class ZoneFragment extends Fragment{
 		public void onClick(View v) {
 			if(zoneCache != null){//if user is coming from CreateZone there is no original to save
 				//MainActivity.zones.add(new Zone(zoneCache));//save original
-				PixelGeom pgeom = new PixelGeom();
+				/*PixelGeom pgeom = new PixelGeom();
 				pgeom.setPixelGeomId(MainActivity.pixelGeom.size());
 				pgeom.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zoneCache));
 				
-				MainActivity.pixelGeom.add(pgeom);
+				MainActivity.pixelGeom.add(pgeom);*/
 			}
             exitAction();
 		}
