@@ -56,8 +56,6 @@ public class ConfirmPhotoDialogFragment extends DialogFragment {
 		@Override
 		public void onClick(View v) {
 			if(!MainActivity.local){
-				MainActivity.zones=null;
-				
 				MainActivity.composed= new ArrayList<Composed>();
 				MainActivity.element= new ArrayList<Element>();
 				MainActivity.gpsGeom= new ArrayList<GpsGeom>();

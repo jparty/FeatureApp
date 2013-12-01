@@ -103,7 +103,7 @@ public class Project extends DataObject {
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				long old_id = this.getProjectId();
-				long new_id = this.getProjectId()+cursor.getLong(0);
+				long new_id = 1+cursor.getLong(0);
 				this.setProjectId(new_id);
 				this.trigger(old_id, new_id, MainActivity.composed);
 			}
@@ -130,8 +130,8 @@ public class Project extends DataObject {
 
 		if (list_composed!=null){
 			for (Composed c : list_composed){
-				if(c.getPhoto_id()==old_id){
-					c.setPhoto_id(new_id);
+				if(c.getProject_id()==old_id){
+					c.setProject_id(new_id);
 				}
 			}
 			

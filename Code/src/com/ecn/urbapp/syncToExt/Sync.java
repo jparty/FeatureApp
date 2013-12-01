@@ -13,19 +13,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.ecn.urbapp.activities.MainActivity;
-import com.ecn.urbapp.db.Composed;
-import com.ecn.urbapp.db.Element;
-import com.ecn.urbapp.db.ElementType;
-import com.ecn.urbapp.db.GpsGeom;
-import com.ecn.urbapp.db.Material;
-import com.ecn.urbapp.db.PixelGeom;
-import com.ecn.urbapp.db.Project;
+import com.google.gson.Gson;
 
 public class Sync
 {
@@ -152,9 +144,11 @@ public class Sync
 			// send the variable and value, in other words post, to the URL
 			httpclient.execute(httppost);
 		} catch (ClientProtocolException e) {
+			Log.e("DFHUPLOAD", "gne");
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+			Log.e("DFHUPLOAD", "boum");
 		} ;
 	}
 }

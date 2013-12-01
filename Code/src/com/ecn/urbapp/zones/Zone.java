@@ -140,11 +140,22 @@ public class Zone {
 	 * @return
 	 */
 	public boolean updatePoint(Point oldPoint, Point newPoint){
-		try{
-			points.setElementAt(newPoint,points.indexOf(oldPoint));
-			return true;
-		}catch(Exception e){
-			return false;
+		if(points.get(0).equals(oldPoint) || points.lastElement().equals(oldPoint)){
+			try{
+				points.setElementAt(newPoint,0);
+				points.setElementAt(newPoint,points.size()-1);
+				return true;
+			}catch(Exception e){
+				return false;
+			}
+		}
+		else{
+			try{
+				points.setElementAt(newPoint,points.indexOf(oldPoint));
+				return true;
+			}catch(Exception e){
+				return false;
+			}
 		}
 	}
 	
