@@ -31,6 +31,7 @@ import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.ecn.urbapp.zones.Zone;
 import com.vividsolutions.jts.geom.TopologyException;
+import com.vividsolutions.jts.io.ParseException;
 
 /**
  * @author	COHENDET Sébastien
@@ -245,11 +246,14 @@ public class ZoneFragment extends Fragment{
 		@Override
 		public void onClick(View v) {
 			try {
-				UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
+				UtilCharacteristicsZone.addInMainActivityZones((new Zone(zone)).getPolygon());
 				exitAction();
 			} catch(TopologyException e) {
 				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
 				diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 /*
             /** set of the database object **//*
@@ -462,13 +466,16 @@ public class ZoneFragment extends Fragment{
 
 			if(!zone.getPoints().isEmpty()){
 				try {
-				//MainActivity.zones.remove(zoneCache); //delete original
+					//MainActivity.zones.remove(zoneCache); //delete original
 					MainActivity.pixelGeom.remove(geomCache);
-					UtilCharacteristicsZone.addInMainActivityZones(new Zone(zone));
+					UtilCharacteristicsZone.addInMainActivityZones((new Zone(zone)).getPolygon());
 					exitAction();
-				}catch(TopologyException e) {
+				} catch(TopologyException e) {
 					TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
 					diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 			else{
