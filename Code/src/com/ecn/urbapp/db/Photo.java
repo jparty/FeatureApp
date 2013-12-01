@@ -1,5 +1,7 @@
 package com.ecn.urbapp.db;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.provider.SyncStateContract.Columns;
@@ -140,7 +142,10 @@ public class Photo extends DataObject  {
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXPHOTOID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
-				this.setPhoto_id(this.getPhoto_id()+cursor.getLong(0));
+				long old_id = this.getPhoto_id();
+				long new_id = this.getPhoto_id()+cursor.getLong(0);
+				this.setPhoto_id(new_id);
+				this.trigger(old_id, new_id, MainActivity.element, MainActivity.composed);
 			}
 			//TODO trigger
 			values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
@@ -162,4 +167,24 @@ public class Photo extends DataObject  {
 		;
 
 
+	public void trigger(long old_id, long new_id, ArrayList<Element> list_element, ArrayList<Composed> list_composed ){
+
+		if (list_element!=null){
+			for (Element e : list_element){
+				if(e.getPhoto_id()==old_id){
+					e.setPhoto_id(new_id);
+				}
+			}
+			
+		}
+		if (list_composed!=null){
+			for (Composed c : list_composed){
+				if(c.getPhoto_id()==old_id){
+					c.setPhoto_id(new_id);
+				}
+			}
+			
+		}
+		
+	}
 }
