@@ -87,18 +87,22 @@ public class DrawImageView extends Drawable {
 			// If the zone is not selected, only draw the lines
 
 			Zone zone = new Zone(ConvertGeom.pixelGeomToZone(MainActivity.pixelGeom.get(i)));
+
+			Element el=null;
+			for(Element e : MainActivity.element){
+				if(e.getPixelGeom_id()==MainActivity.pixelGeom.get(i).getPixelGeomId()){
+					el=e;
+					break;
+				}
+			}
 			
 			if (!MainActivity.pixelGeom.get(i).selected) {
-				Element el=null;
-				for(Element e : MainActivity.element){
-					if(e.getPixelGeom_id()==MainActivity.pixelGeom.get(i).getPixelGeomId()){
-						el=e;
-						break;
-					}
-				}
 				if(el!=null){
 					if (Integer.parseInt(el.getElement_color()) != 0) {
 						finishedPaint.setColor(Integer.parseInt(el.getElement_color()));
+					}
+					else{
+						finishedPaint.setColor(Color.RED);
 					}
 				}
 					// Add all the lines of the polygon
@@ -111,7 +115,6 @@ public class DrawImageView extends Drawable {
 								zone.points.get(j + 1).y,
 								finishedPaint);
 					}
-					finishedPaint.setColor(Color.RED);
 
 				// If the zone is selected, draw a filled polygon
 			} else {
@@ -134,13 +137,21 @@ public class DrawImageView extends Drawable {
 					}
 				}
 
-				if (zone.getColor() != 0) {
+				/*if (zone.getColor() != 0) {
 					fillPaint.setColor(zone.getColor());
+					fillPaint.setAlpha(50);
+				}*/
+				if (Integer.parseInt(el.getElement_color()) != 0) {
+					fillPaint.setColor(Integer.parseInt(el.getElement_color()));
+					fillPaint.setAlpha(50);
+				}
+				else{
+					fillPaint.setColor(Color.RED);
 					fillPaint.setAlpha(50);
 				}
 				// Draw the polygon
 				canvas.drawPath(polyPath, fillPaint);
-				fillPaint.setColor(Color.RED);
+				//fillPaint.setColor(Color.RED);
 				fillPaint.setAlpha(50);
 			}
 		}
