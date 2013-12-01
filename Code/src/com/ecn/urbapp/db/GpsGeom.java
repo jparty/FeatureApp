@@ -1,5 +1,7 @@
 package com.ecn.urbapp.db;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -81,11 +83,14 @@ public class GpsGeom extends DataObject{
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_GPSGEOM, values, MySQLiteHelper.COLUMN_GPSGEOMID,s );
 		}
 		else{
-			//TODO trigger
+			
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXGPSGEOMID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
-				this.setGpsGeomId(this.getGpsGeomsId()+cursor.getLong(0));
+				long old_id = this.getGpsGeomsId();
+				long new_id = this.getGpsGeomsId()+cursor.getLong(0);
+				this.setGpsGeomId(new_id);
+				this.trigger(old_id, new_id, MainActivity.photo, MainActivity.project, MainActivity.element);
 			}
 			values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
 			datasource.getDatabase().insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);	
@@ -102,4 +107,28 @@ public class GpsGeom extends DataObject{
 			+" ORDER BY "+ MySQLiteHelper.TABLE_GPSGEOM+"."+MySQLiteHelper.COLUMN_GPSGEOMID
 			+" DESC LIMIT 1 ;"
 		;
+	
+	
+	public void trigger(long old_id, long new_id, Photo photo, ArrayList<Project> list_projet, ArrayList<Element> list_element ){
+		if (photo.getGpsGeom_id() == old_id){
+			photo.setGpsGeom_id(new_id);
+		}
+		if (list_projet!=null){
+			for (Project p : list_projet){
+				if(p.getGpsGeom_id()==old_id){
+					p.setGpsGeom_id(new_id);
+				}
+			}
+			
+		}
+		if (list_element!=null){
+			for (Element e : list_element){
+				if(e.getGpsGeom_id()==old_id){
+					e.setGpsGeom_id(new_id);
+				}
+			}
+			
+		}
+		
+	}
 }

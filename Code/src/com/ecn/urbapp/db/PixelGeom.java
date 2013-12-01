@@ -1,5 +1,7 @@
 package com.ecn.urbapp.db;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -97,7 +99,11 @@ public class PixelGeom extends DataObject  {
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXPIXELGEOMID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
-				this.setPixelGeomId(this.getPixelGeomId()+cursor.getLong(0));
+				long old_id = this.getPixelGeomId();
+				long new_id = this.getPixelGeomId()+cursor.getLong(0);
+				this.setPixelGeomId(new_id);
+				this.trigger(old_id, new_id, MainActivity.element);
+				
 			}
 			values.put(MySQLiteHelper.COLUMN_PIXELGEOMID, this.pixelGeom_id);
 			datasource.getDatabase().insert(MySQLiteHelper.TABLE_PIXELGEOM, null, values);
@@ -115,5 +121,15 @@ public class PixelGeom extends DataObject  {
 			+" DESC LIMIT 1 ;"
 		;
 
-	
+	public void trigger(long old_id, long new_id,  ArrayList<Element> list_element){
+		if (list_element!=null){
+			for (Element e : list_element){
+				if(e.getPixelGeom_id()==old_id){
+					e.setPixelGeom_id(new_id);
+				}
+			}
+			
+		}
+		
+	}
 }
