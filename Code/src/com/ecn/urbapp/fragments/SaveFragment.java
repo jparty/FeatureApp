@@ -145,7 +145,6 @@ public class SaveFragment extends Fragment{
 		MainActivity.datasource.getDatabase().insert(MySQLiteHelper.TABLE_PHOTO, null, values);			
 	}
 	
-	
 	/**
 	 * Method that save the composed information to the local db
 	 * @param link is a Composed from public static ArrayList<Composed> that is instancied and has to be registred in local database
