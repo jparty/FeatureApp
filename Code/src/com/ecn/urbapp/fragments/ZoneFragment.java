@@ -47,8 +47,7 @@ import com.vividsolutions.jts.geom.TopologyException;
  */
 
 public class ZoneFragment extends Fragment{
-	private int TOUCH_RADIUS_TOLERANCE = 6;//only for catching points in edit mode
-	
+	private int TOUCH_RADIUS_TOLERANCE = 10;//only for catching points in edit mode
 	private Button create; 
 	private Button edit;
 	private Button delete;
@@ -150,6 +149,15 @@ public class ZoneFragment extends Fragment{
 				};
 		imageWidth = BitmapLoader.getWidth();
 		imageHeight = BitmapLoader.getHeight();
+		
+		float ratioW =((float)getActivity().getWindow().getDecorView().getWidth()/imageWidth);
+		float ratioH =((float)getActivity().getWindow().getDecorView().getHeight()/imageHeight);
+		float ratio = ratioW < ratioH ? ratioW : ratioH ;
+			
+		Log.d("Size","ratioH:"+ ratioH + ";ratioW:" + ratioW + ";ratio:" + ratio);
+		drawzoneview.setRatio(ratio);
+		TOUCH_RADIUS_TOLERANCE/=ratio;
+		
 		myImage.setImageDrawable(new LayerDrawable(drawables));	
 		
 		myImage.setOnTouchListener(deleteImageTouchListener);
@@ -273,10 +281,7 @@ public class ZoneFragment extends Fragment{
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-	    		if(matrix == null){//tried to create it at fragment's beginning but doesn't work at all
-	    			matrix = new Matrix();
-	    			myImage.getImageMatrix().invert(matrix);
-	    		}
+	    		getMatrix();
 				zone.addPoint(getTouchedPoint(event));
 				refreshCreate();//display new point, refresh buttons' availabilities					
 			}
@@ -306,10 +311,10 @@ public class ZoneFragment extends Fragment{
 	}
 	
 	public void getMatrix(){
-		if(matrix == null){//tried to create it at fragment's beginning but doesn't work at all
+		//if(matrix == null){//tried to create it at fragment's beginning but doesn't work at all
 			matrix = new Matrix();
 			myImage.getImageMatrix().invert(matrix);
-		}
+		//}//removed the if for a little, problems when reload
 	}
 	
     public void refreshCreate(){
@@ -427,7 +432,7 @@ public class ZoneFragment extends Fragment{
 							for(Point p : zone.getMiddles()){
 								float dx=Math.abs(p.x-touch.x);
 								float dy=Math.abs(p.y-touch.y);
-								if((dx*dx+dy*dy)<10*10){
+								if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){
 									selected.set(p.x,p.y);
 									//impossible to delete a middle point, but enable releasing
 									getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(true);

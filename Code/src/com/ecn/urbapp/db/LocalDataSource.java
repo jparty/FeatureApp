@@ -166,6 +166,20 @@ public class LocalDataSource {
 		;
 	
 	
+	
+
+	/**
+	 * query to get project information
+	 * 
+	 */
+	private static final String
+		GETALLGPSGEOM = 
+		"SELECT * FROM "
+		+ MySQLiteHelper.TABLE_GPSGEOM 
+		+";"
+		;
+	
+	
 	/**
 	 * query to get photo informations
 	 * 
@@ -226,7 +240,26 @@ public class LocalDataSource {
 		cursor.close();
 		return projectsList;
 	}
+
 	
+	/**
+	 * execution of the query
+	 * @return
+	 */
+	public List<GpsGeom> getAllGpsGeom(){
+		List<GpsGeom> gpsGeomList = new ArrayList<GpsGeom>();
+		
+		Cursor cursor = database.rawQuery(GETALLGPSGEOM,null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			GpsGeom p1 = cursorToGpsGeom(cursor);
+			gpsGeomList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return gpsGeomList;
+	}
 	
 	
 

@@ -7,8 +7,11 @@ http://developer.android.com/training/displaying-bitmaps/load-bitmap.html
 
 package com.ecn.urbapp.zones;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.DisplayMetrics;
+import android.util.Log;
 
 /**
  * This class is used to resized a photo before opening it because of the memory
@@ -46,6 +49,7 @@ public class BitmapLoader {
 			// requested height and width.
 			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
 		}
+		height/=inSampleSize; width/=inSampleSize;
 
 		return inSampleSize;
 	}
@@ -53,6 +57,13 @@ public class BitmapLoader {
 	//TODO Add description for javadoc
 	public static Bitmap decodeSampledBitmapFromFile(String file, int reqWidth,
 			int reqHeight) {
+		
+		/* To test on different screen size devices 
+		DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+		reqWidth = metrics.widthPixels;
+		reqHeight = metrics.heightPixels;
+		Log.d("Size","Ww:"+reqWidth+";Wh:"+reqHeight);*/
+		
 
 		// First decode with inJustDecodeBounds=true to check dimensions
 		final BitmapFactory.Options options = new BitmapFactory.Options();

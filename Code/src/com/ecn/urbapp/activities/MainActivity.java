@@ -153,9 +153,9 @@ public class MainActivity extends Activity {
 		
 		
 		//TODO delete this field
-		gpsGeomFixe.setGpsGeomId(1);
+		/*gpsGeomFixe.setGpsGeomId(1);
 		gpsGeomFixe.setGpsGeomCoord("48.853//2.35");//"POLYGON((48.853 2.35))"
-		gpsGeom.add(gpsGeomFixe);
+		gpsGeom.add(gpsGeomFixe);*/
 		
 		
 		fragments=new Vector<Fragment>();

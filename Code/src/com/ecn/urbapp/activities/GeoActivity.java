@@ -33,6 +33,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.GpsGeom;
+import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.MarkerPos;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -414,15 +417,28 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	* Listener for validation the selection (very simple version, just for the demonstration)
 	*/
     public void onClick(View v) {
-    	Intent i = new Intent(this, MainActivity.class);
     	try {
     		MainActivity.address = markers.get(markers.size()-1).getSnippet();
+    		ArrayList<LatLng> ll = new ArrayList<LatLng>();
+    		for(Marker m : markers){
+    			ll.add(m.getPosition());
+    		}
+    		GpsGeom gg = new GpsGeom();
+    		gg.setGpsGeomCoord(ConvertGeom.latLngToGpsGeom(ll));
+    		gg.setGpsGeomId(MainActivity.gpsGeom.size()+1);
+    		MainActivity.gpsGeom.add(gg);
+    		MainActivity.photo.setGpsGeom_id(gg.getGpsGeomsId());
+    		for(Project p : MainActivity.project){
+    			p.setGpsGeom_id(gg.getGpsGeomsId());
+    		}
     	}
     	catch (ArrayIndexOutOfBoundsException e) {
     		Log.e(getLocalClassName(), "Pas de points !");
     	}
-    	//i.putExtra("fragment", 2);
-		startActivity(i);
+
+    	/*Intent i = new Intent(this, MainActivity.class);
+		startActivity(i);*/
+    	finish();
     }
         
     /**
