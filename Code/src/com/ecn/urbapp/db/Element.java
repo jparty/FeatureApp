@@ -164,4 +164,6 @@ public class Element extends DataObject {
 			+" ORDER BY "+MySQLiteHelper.TABLE_ELEMENT+"."+MySQLiteHelper.COLUMN_ELEMENTID
 			+" DESC LIMIT 1 ;"
 		;
+	
+
 }
