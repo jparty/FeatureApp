@@ -143,7 +143,7 @@ public class Photo extends DataObject  {
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				long old_id = this.getPhoto_id();
-				long new_id = this.getPhoto_id()+cursor.getLong(0);
+				long new_id = 1+cursor.getLong(0);
 				this.setPhoto_id(new_id);
 				this.trigger(old_id, new_id, MainActivity.element, MainActivity.composed);
 			}

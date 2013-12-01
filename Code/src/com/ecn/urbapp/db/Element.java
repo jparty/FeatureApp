@@ -142,7 +142,7 @@ public class Element extends DataObject {
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXELEMENTID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
-				this.setElement_id(this.getElement_id()+cursor.getLong(0));
+				this.setElement_id(1+cursor.getLong(0));
 			}
 			values.put(MySQLiteHelper.COLUMN_ELEMENTID, this.element_id);
 			values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
