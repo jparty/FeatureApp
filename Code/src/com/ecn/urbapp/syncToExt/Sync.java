@@ -55,7 +55,7 @@ public class Sync
 	 * Get the max id of each critical tables in external DB
 	 * @return Hashmap of all max id
 	 */
-	public HashMap<String, Integer> getMaxId() {
+	public static HashMap<String, Integer> getMaxId() {
 		new BackTastMaxId().execute();
 		return maxId;
 	}
@@ -130,7 +130,7 @@ public class Sync
 			    List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
 			    // add an HTTP variable and value pair
 			    nameValuePairs.add(new BasicNameValuePair("myHttpData", param));
-			    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
 			    // send the variable and value, in other words post, to the URL
 			    HttpResponse response = httpclient.execute(httppost);
 			    
@@ -178,7 +178,7 @@ public class Sync
 	 * @author Sebastien
 	 *
 	 */
-	public class BackTastMaxId extends AsyncTask<Void, HashMap<String, Integer>, HashMap<String, Integer>> {
+	public static class BackTastMaxId extends AsyncTask<Void, HashMap<String, Integer>, HashMap<String, Integer>> {
 		
 		private Context mContext;
 		
@@ -263,12 +263,14 @@ public class Sync
 		/**
 		 * The things to execute after the backTask 
 		 */
-	    protected void onPostExecute(String result) {	
-	    	if (result.equals("OK")){
-	    		Toast.makeText(mContext, "Synchronisation avec la base : SUCCES", Toast.LENGTH_SHORT).show();
+	    protected void onPostExecute(HashMap<String, Integer> result) {	
+	    	if (!result.isEmpty()){
+	    		//TODO change the message so not to be in debug mode :)
+	    		Toast.makeText(mContext, result.toString(), Toast.LENGTH_SHORT).show();
+	    		maxId = result;
 	    	}
 	    	else {
-		        Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
+		        Toast.makeText(mContext, "Erreur dans la communication avec le serveur", Toast.LENGTH_SHORT).show();
 	    	}
 	    }
 	    

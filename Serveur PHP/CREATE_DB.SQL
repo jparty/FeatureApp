@@ -10,7 +10,8 @@ CREATE SEQUENCE gpsGeom_id_seq;
 CREATE TABLE GpsGeom
 (
 	gpsGeom_id INTEGER DEFAULT nextval('gpsGeom_id_seq') PRIMARY KEY,
-	gpsGeom_the_geom GEOMETRY
+	gpsGeom_the_geom GEOMETRY,
+	gpsGeom_address TEXT
 );
 
 CREATE SEQUENCE project_id_seq;
@@ -42,7 +43,7 @@ CREATE SEQUENCE pixelGeom_id_seq;
 CREATE TABLE PixelGeom
 (
 	pixelGeom_id INTEGER DEFAULT nextval('pixelGeom_id_seq') PRIMARY KEY,
-	pixeGeom_the_geom GEOMETRY
+	pixelGeom_the_geom GEOMETRY
 );
 
 CREATE SEQUENCE material_id_seq;
@@ -70,3 +71,4 @@ CREATE TABLE Element
 	elementType_id INTEGER references ElementType(elementType_id),
 	element_color VARCHAR(10)
 );
+
