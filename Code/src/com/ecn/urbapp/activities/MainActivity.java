@@ -80,8 +80,15 @@ public class MainActivity extends Activity {
 	//TODO add description for javadoc
 	private static Builder alertDialog;
 
-	//TODO add description for javadoc
+	/**
+	 * Link to ask google to create a specific Connexion code to chck if there is no portal between android and server
+	 */
     public static final String CONNECTIVITY_URL="http://clients3.google.com/generate_204";
+    
+    /**
+     * Server address
+     */
+    public static String serverURL="http://192.168.177.1/";
     
     /**
 	 * Attributs for the project information
