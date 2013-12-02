@@ -79,12 +79,14 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		    //need to verificate if the project is already defined or not
 		    if(MainActivity.projectSet){
 		    	//Obtaining teh last define project
-		    	if(MainActivity.project.size()>0){
+		    	if(!MainActivity.project.isEmpty()){
 			    	Project pro = MainActivity.project.get(MainActivity.project.size()-1);
 			    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
 				    pro.setProjectName(txt.getText().toString());
 				    txt = (EditText) getView().findViewById(R.id.info_edit_description);
 				    MainActivity.photo.setPhoto_description(txt.getText().toString());
+				    txt = (EditText) getView().findViewById(R.id.info_edit_author);
+				    MainActivity.photo.setPhoto_author(txt.getText().toString());
 		    	}
 		    }
 		    else{
@@ -93,17 +95,18 @@ public class InformationFragment extends Fragment implements OnClickListener{
 			    EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
 			    pro.setProjectName(txt.getText().toString());
 			    pro.setProjectId(MainActivity.project.size()+1);
-			    pro.setGpsGeom_id(1);//TODO DELETE
+			    
 			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
 			    MainActivity.photo.setPhoto_description(txt.getText().toString());
+			    txt = (EditText) getView().findViewById(R.id.info_edit_author);
+			    MainActivity.photo.setPhoto_author(txt.getText().toString());
+			    
 			    MainActivity.project.add(pro);
 			    MainActivity.projectSet=true;
 			    comp.setPhoto_id(MainActivity.photo.getPhoto_id());
 			    comp.setProject_id(pro.getProjectId());
 			    MainActivity.composed.add(comp);
 			    
-			    txt = (EditText) getView().findViewById(R.id.info_edit_author);
-			    MainActivity.photo.setPhoto_author(txt.getText().toString());
 		    }
 		}
 

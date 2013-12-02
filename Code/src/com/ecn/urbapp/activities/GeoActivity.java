@@ -33,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.utils.ConvertGeom;
@@ -431,6 +432,9 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     		for(Project p : MainActivity.project){
     			p.setGpsGeom_id(gg.getGpsGeomsId());
     		}
+            for(Element el: MainActivity.element){
+            	el.setGpsGeom_id(gg.getGpsGeomsId());
+            }
     	}
     	catch (ArrayIndexOutOfBoundsException e) {
     		Log.e(getLocalClassName(), "Pas de points !");
