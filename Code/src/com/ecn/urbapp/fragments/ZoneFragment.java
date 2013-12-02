@@ -162,10 +162,7 @@ public class ZoneFragment extends Fragment{
 		drawzoneview.setRatio(ratio);
 		TOUCH_RADIUS_TOLERANCE/=ratio;
 		
-		myImage.setImageDrawable(new LayerDrawable(drawables));	
-		
-		myImage.setOnTouchListener(deleteImageTouchListener);
-		
+		myImage.setImageDrawable(new LayerDrawable(drawables));			
 		return v;
 	}
 	
@@ -422,7 +419,7 @@ public class ZoneFragment extends Fragment{
 				}
 				else{
 					//If a zone is selected, and one of its points was, it's a point move
-					if(selected.x != 0 && selected.y != 0){
+					if(selected.x != 0 || selected.y != 0){
 						if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
 							zone.updateMiddle(selected, touch);	//If not it's a "middle" point, and it's upgraded to normal
 							//TODO transfer to zone
