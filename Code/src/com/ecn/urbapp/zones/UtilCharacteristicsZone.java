@@ -49,7 +49,6 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.ElementType;
-import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.utils.ConvertGeom;
@@ -78,9 +77,7 @@ public final class UtilCharacteristicsZone {
 
 	/**
 	 * Set the type of all the selected zones
-	 * 
-	 * @param zone
-	 *            the zone
+	 *
 	 * @param type
 	 *            the type to set
 	 */
@@ -96,9 +93,7 @@ public final class UtilCharacteristicsZone {
 
 	/**
 	 * Set the material of all the selected zones
-	 * 
-	 * @param zone
-	 *            the zone
+	 *
 	 * @param material
 	 *            the material to set
 	 */
@@ -115,9 +110,7 @@ public final class UtilCharacteristicsZone {
 
 	/**
 	 * Set the color of all the selected zones
-	 * 
-	 * @param zone
-	 *            the zone
+	 *
 	 * @param color
 	 *            the color to set
 	 */
@@ -216,12 +209,6 @@ public final class UtilCharacteristicsZone {
 				}
 			}
 		}
-		/*
-		for (int i = 0; i < MainActivity.zones.size(); i++) {
-			if (MainActivity.zones.get(i).selected) {
-				selectedZonesNumbers.add(MainActivity.zones.get(i));
-			}
-		}*/
 		return selectedElements;
 	}
 
