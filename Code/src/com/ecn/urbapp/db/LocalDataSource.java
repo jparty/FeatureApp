@@ -584,6 +584,7 @@ public class LocalDataSource {
 		ContentValues values = new ContentValues(); 
 		values.put(MySQLiteHelper.COLUMN_ELEMENTTYPENAME, str);
 		long insertId = database.insert(MySQLiteHelper.TABLE_ELEMENTTYPE, null, values);
+		values= new ContentValues();
 	}
 	
 	
@@ -632,6 +633,7 @@ public class LocalDataSource {
 		ContentValues values = new ContentValues(); 
 		values.put(MySQLiteHelper.COLUMN_MATERIALNAME, str);
 		long insertId = database.insert(MySQLiteHelper.TABLE_MATERIAL, null, values);
+		values = new ContentValues();
 	}
 	
 	

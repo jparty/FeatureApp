@@ -1,11 +1,12 @@
 <?php 
-
+ini_set('display_errors', 'On');
+error_reporting(E_ALL);
 include("DBConnect.php");
 
 if(isset($_POST["myHttpData"])) { //if there is data to import in the database
 	 $arr=$_POST["myHttpData"];
 	 $decarr = json_decode($arr,true); 
-	 
+
 	 $count = count($decarr);
 	 
 	 $values = array();
@@ -14,7 +15,6 @@ if(isset($_POST["myHttpData"])) { //if there is data to import in the database
 	 
 	 //we parse every table passed in the json
 	 for ($x=0;$x<$count;$x++){
-		
 		$newrec = $decarr[$x];
 		foreach($newrec as $tableName => $table) {
 		
@@ -25,23 +25,26 @@ if(isset($_POST["myHttpData"])) { //if there is data to import in the database
 			$allColomn="";
 			foreach($table as $colomnName => $colomn){
 				if (!is_array($colomn)){ //if it is not an array (so was not a listArray before (//photo))
-					if($colomnName != "registredInLocal"){
+					if($colomnName != "registredInLocal" && $colomnName != "selected"){
 						$nbValue++;
-						if($colomn =="")
+						if($colomn == "")
 							$colomn=" ";
+
 						$allColomnName .= $colomnName.', ';
 						
 						if(is_int($colomn))
 							$allColomn .= ''.$colomn.', ';
-						else
+						else{
+							$colomn=pg_escape_string($colomn);
 							$allColomn .= '\''.$colomn.'\', ';
+							}
 							
 						$setInfo .= $colomnName." = nv.".$colomnName.", ";
 					}
 				}
 				else {
 					foreach($colomn as $colomnName => $colomn){
-						if($colomnName != "registredInLocal"){
+						if($colomnName != "registredInLocal" && $colomnName != "selected"){
 							$nbValue++;
 							if($colomn =="")
 								$colomn=" ";
@@ -49,8 +52,10 @@ if(isset($_POST["myHttpData"])) { //if there is data to import in the database
 							
 						if(is_int($colomn))
 							$allColomn .= ''.$colomn.', ';
-						else
+						else{
+							$colomn=pg_escape_string($colomn);
 							$allColomn .= '\''.$colomn.'\', ';
+						}
 							
 							$setInfo .= $colomnName." = nv.".$colomnName.", ";
 
@@ -95,14 +100,18 @@ if(isset($_POST["myHttpData"])) { //if there is data to import in the database
 		}		
 	 }
 	
-	pg_query($conn,$sql);
+	$bool = pg_query($conn,$sql);
 	
 	 
 	 $fp = fopen('testSqlite.txt', 'w+');
 	
 	fwrite($fp, $sql);
 	fclose($fp);
-	echo "OK";
+	
+	if ($bool) //success of the request
+		echo "OK";
+	else
+		echo pg_last_error($conn);
 
 	
 }

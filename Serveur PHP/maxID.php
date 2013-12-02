@@ -13,13 +13,13 @@ $maxPhoto = pg_fetch_row($maxPhoto);
 
 $maxProject = pg_fetch_row($maxProject);
   $JSONArray['project'] = $maxProject['0'];
-  
+
 $maxGPS = pg_fetch_row($maxGPS);
   $JSONArray['gpsgeom'] = $maxPhoto['0'];
-  
+
 $maxPixel = pg_fetch_row($maxPixel);
   $JSONArray['pixelgeom'] = $maxPixel['0'];
-  
+
 $maxElement = pg_fetch_row($maxElement);
   $JSONArray['element'] = $maxElement['0'];
 

@@ -20,14 +20,14 @@ public class GpsGeom extends DataObject{
 	 * It's used only into the application.
 	 * It will not be registered in the database.
 	 */
-	private String address;
+	private String gpsGeom_address;
 
 	public void setAddress(String s){
-		address=s;
+		gpsGeom_address=s;
 	}
 	
 	public String getAddress(){
-		return address;
+		return gpsGeom_address;
 	}
 
 	
