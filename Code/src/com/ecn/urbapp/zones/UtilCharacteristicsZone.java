@@ -350,7 +350,8 @@ public final class UtilCharacteristicsZone {
 			if (polygonsToAdd.isEmpty()) {
 				PixelGeom pgeom = new PixelGeom();
 				pgeom.setPixelGeomId(MainActivity.pixelGeom.size() - 1);
-				pgeom.setPixelGeom_the_geom(geom.toText());
+				//pgeom.setPixelGeom_the_geom(geom.toText());
+				pgeom.setPixelGeom_the_geom(poly.convexHull().toString());
 				Element element = new Element();
 				element.setElement_id(MainActivity.element.size() + 1);
 				element.setPhoto_id(MainActivity.photo.getPhoto_id());

@@ -297,6 +297,7 @@ public class LocalDataSource {
 
 	
 	//TODO Adddescription for javadoc
+	//TODO unused in local way
 	public void getmaxPhotoId(){
 		long maxPhotoId = 0;
 		
@@ -305,7 +306,7 @@ public class LocalDataSource {
 		cursor.moveToFirst();
 		maxPhotoId=cursor.getLong(0);
 		cursor.close();
-		MainActivity.maxPhotoIdLocal=maxPhotoId;
+		//MainActivity.maxPhotoIdLocal=maxPhotoId;
 	}
 	
 	

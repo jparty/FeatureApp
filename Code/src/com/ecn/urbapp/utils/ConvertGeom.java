@@ -15,7 +15,7 @@ public class ConvertGeom{
 	public static Zone pixelGeomToZone(PixelGeom the_geom){
 		ArrayList<Point> list = new ArrayList<Point>();
 
-		String s = the_geom.getPixelGeom_the_geom().replace("POLYGON((", "");
+		String s = the_geom.getPixelGeom_the_geom().replace("POLYGON ((", "");
 		s = s.replace("))", "");
 		ArrayList<String> tab = new ArrayList<String>(Arrays.asList(s.split(", ")));
 		for(String str : tab){
@@ -30,7 +30,7 @@ public class ConvertGeom{
 	}
 	
 	public static String ZoneToPixelGeom(Zone zone){
-		String ret="POLYGON((";
+		String ret="POLYGON ((";
 		String s="";
 		
 		s="";
@@ -49,7 +49,7 @@ public class ConvertGeom{
 	public static ArrayList<LatLng> gpsGeomToLatLng(GpsGeom the_geom){
 		ArrayList<LatLng> list = new ArrayList<LatLng>();
 
-		String s = the_geom.getGpsGeomCord().replace("POLYGON((", "");
+		String s = the_geom.getGpsGeomCord().replace("POLYGON ((", "");
 		s = s.replace("))", "");
 		ArrayList<String> tab = new ArrayList<String>(Arrays.asList(s.split(", ")));
 		for(String str : tab){
@@ -59,7 +59,7 @@ public class ConvertGeom{
 	}
 	
 	public static String latLngToGpsGeom(ArrayList<LatLng> list){
-		String ret="POLYGON((";
+		String ret="POLYGON ((";
 		
 		String s="";
 		for(LatLng ll : list){

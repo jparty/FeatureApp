@@ -41,7 +41,6 @@ import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 import com.ecn.urbapp.utils.ConnexionCheck;
-import com.ecn.urbapp.zones.Zone;
 
 /**
  * @author	COHENDET Sébastien
@@ -86,24 +85,11 @@ public class MainActivity extends Activity {
 	 * Attributs for the project information
 	 */
 	//TODO add description for javadoc
-	public static String author = "";
-	//TODO add description for javadoc
-	public static String device = "";
-	//TODO add description for javadoc
-	public static String sproject = "";
-	//TODO add description for javadoc
-	public static String address = "";
-	//TODO add description for javadoc
-	public static ImageView myImage=null;
-
-	//TODO add description for javadoc
 	public static String pathImage=null;
 	//TODO add description for javadoc
 	public static String pathTampon=null;
 	//TODO add description for javadoc
 	public static File sphoto=null;
-	//TODO add description for javadoc
-	public static long maxPhotoIdLocal; 
 	//TODO add the set of this bool into each function loading a photo
 	public static boolean isPhoto=false;
 	//TODO add description for javadoc
@@ -127,10 +113,6 @@ public class MainActivity extends Activity {
 	public static Photo photo=null;
 	
 	
-	//TODO delete this field
-	public static GpsGeom gpsGeomFixe = new GpsGeom();
-	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -145,12 +127,6 @@ public class MainActivity extends Activity {
 		pixelGeom = new ArrayList<PixelGeom>();
 		project = new ArrayList<Project>();
 		photo = new Photo();
-		
-		
-		//TODO delete this field
-		/*gpsGeomFixe.setGpsGeomId(1);
-		gpsGeomFixe.setGpsGeomCoord("48.853//2.35");//"POLYGON((48.853 2.35))"
-		gpsGeom.add(gpsGeomFixe);*/
 		
 		
 		fragments=new Vector<Fragment>();
@@ -257,13 +233,7 @@ public class MainActivity extends Activity {
             	confirm();
             	//Setting the photo path from the pathImage
             	MainActivity.photo.setPhoto_url(pathImage.split("/")[pathImage.split("/").length-1]);
-            	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
-            	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
-            	FragmentManager fragmentManager = getFragmentManager();
-            	FragmentTransaction transaction = fragmentManager.beginTransaction();
-            	transaction.replace(android.R.id.content, fragments.get(1));
-                transaction.addToBackStack(null);
-                transaction.commit();
+            	MainActivity.photo.setPhoto_id(1);
                 getActionBar().setSelectedNavigationItem(1);
                 MainActivity.isPhoto=true;
             }
@@ -273,11 +243,6 @@ public class MainActivity extends Activity {
         	//TODO check that this is not a crash
             	MainActivity.local=true;
             	confirm();
-                            	FragmentManager fragmentManager = getFragmentManager();
-            	FragmentTransaction transaction = fragmentManager.beginTransaction();
-            	transaction.replace(android.R.id.content, fragments.get(2));
-                transaction.addToBackStack(null);
-                transaction.commit();
                 getActionBar().setSelectedNavigationItem(2);
                 MainActivity.isPhoto=true;
                 datasource.instanciateAllpixelGeom(); //load pixelGeom linked to the photo in the relative public static arrayList
@@ -290,13 +255,7 @@ public class MainActivity extends Activity {
             	//Setting the photo path
             	String url = getRealPathFromURI(baseContext, data.getData());
             	MainActivity.photo.setPhoto_url(url.split("/")[url.split("/").length-1]);
-            	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
-            	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
-            	FragmentManager fragmentManager = getFragmentManager();
-            	FragmentTransaction transaction = fragmentManager.beginTransaction();
-            	transaction.replace(android.R.id.content, fragments.get(1));
-                transaction.addToBackStack(null);
-                transaction.commit();
+            	MainActivity.photo.setPhoto_id(1);
                 getActionBar().setSelectedNavigationItem(1);
                 MainActivity.isPhoto=true;
             }
