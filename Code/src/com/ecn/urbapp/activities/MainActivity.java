@@ -41,7 +41,6 @@ import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 import com.ecn.urbapp.utils.ConnexionCheck;
-import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.zones.Zone;
 
 /**
@@ -62,20 +61,18 @@ import com.ecn.urbapp.zones.Zone;
 public class MainActivity extends Activity {
 
 	/**
-	 * bar represent the action bar of the application
+	 * Attribut represent the action bar of the application
 	 */
-	ActionBar bar;
-	public Zone zoneToDelete ;
+	private ActionBar bar;
 	
 	/**
-	 * attributs for the local database
+	 * Attribut representing the local database
 	 */
 	public static LocalDataSource datasource;
 
 	
 	/**
-
-	 * baseContext to get the static context of app anywhere (for file)
+	 * BaseContext to get the static context of app anywhere (for file)
 	 */
     public static Context baseContext;
 
@@ -302,6 +299,11 @@ public class MainActivity extends Activity {
                 transaction.commit();
                 getActionBar().setSelectedNavigationItem(1);
                 MainActivity.isPhoto=true;
+            }
+        }
+        if (requestCode == 10) {
+            if (resultCode == RESULT_OK) {
+                getActionBar().setSelectedNavigationItem(1);
             }
         }
     }

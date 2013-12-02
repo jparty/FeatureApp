@@ -418,7 +418,6 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	*/
     public void onClick(View v) {
     	try {
-    		MainActivity.address = markers.get(markers.size()-1).getSnippet();
     		ArrayList<LatLng> ll = new ArrayList<LatLng>();
     		for(Marker m : markers){
     			ll.add(m.getPosition());
@@ -426,6 +425,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     		GpsGeom gg = new GpsGeom();
     		gg.setGpsGeomCoord(ConvertGeom.latLngToGpsGeom(ll));
     		gg.setGpsGeomId(MainActivity.gpsGeom.size()+1);
+    		gg.setAddress(markers.get(markers.size()-1).getSnippet());
     		MainActivity.gpsGeom.add(gg);
     		MainActivity.photo.setGpsGeom_id(gg.getGpsGeomsId());
     		for(Project p : MainActivity.project){
@@ -435,9 +435,6 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     	catch (ArrayIndexOutOfBoundsException e) {
     		Log.e(getLocalClassName(), "Pas de points !");
     	}
-
-    	/*Intent i = new Intent(this, MainActivity.class);
-		startActivity(i);*/
     	finish();
     }
         

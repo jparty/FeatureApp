@@ -15,6 +15,20 @@ public class GpsGeom extends DataObject{
 	private long gpsGeom_id;
 	//TODO Adddescription for javadoc
 	private String gpsGeom_the_geom;
+	/**
+	 * Field containing the addressof the GpsGeom.
+	 * It's used only into the application.
+	 * It will not be registered in the database.
+	 */
+	private String address;
+
+	public void setAddress(String s){
+		address=s;
+	}
+	
+	public String getAddress(){
+		return address;
+	}
 
 	
 	

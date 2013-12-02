@@ -14,6 +14,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.GeoActivity;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Composed;
+import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Project;
 
 /**
@@ -54,7 +55,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		@Override
 		public void onClick(View v) {
 			Intent i = new Intent(this.getActivity(), GeoActivity.class);
-			startActivity(i);
+			startActivityForResult(i, 10);
 		}
 
 		/**
@@ -144,5 +145,15 @@ public class InformationFragment extends Fragment implements OnClickListener{
 			    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
 			    txt.setText("");
 		    }
+		    EditText txt = (EditText) getView().findViewById(R.id.info_edit_adress);
+	    	for(GpsGeom gg : MainActivity.gpsGeom){
+	    		if(gg.getGpsGeomsId()==MainActivity.photo.getGpsGeom_id()){
+				    txt.setText(gg.getAddress());
+				    break;
+	    		}
+	    		else{
+	    			txt.setText("");
+	    		}
+	    	}
 		}
 }
