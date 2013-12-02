@@ -45,5 +45,11 @@
         android:layout_height="wrap_content"
         android:text="@string/save_buttonSyncExt"
         android:layout_below="@+id/save_button_ync"/>
-
+        
+        <Button 
+        android:id="@+id/max_id"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="MaxId"
+        android:layout_below="@+id/save_button_ext"/>
 </RelativeLayout>

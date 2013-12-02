@@ -14,9 +14,13 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
@@ -52,7 +56,7 @@ public class Sync
 	 * @return Hashmap of all max id
 	 */
 	public HashMap<String, Integer> getMaxId() {
-		//TODO get all the id of each table in external DB
+		new BackTastMaxId().execute();
 		return maxId;
 	}
 
@@ -169,4 +173,105 @@ public class Sync
 
 	}
 
+	/**
+	 * The additional threat to get the Max id of each tables on server
+	 * @author Sebastien
+	 *
+	 */
+	public class BackTastMaxId extends AsyncTask<Void, HashMap<String, Integer>, HashMap<String, Integer>> {
+		
+		private Context mContext;
+		
+		/**
+		 * Constructor
+		 * @param json
+		 */
+		public BackTastMaxId(){
+			super();			
+			this.mContext = MainActivity.baseContext;
+		}
+
+		/**
+		 * Pre Execution orders
+		 */
+		protected void onPreExecute(){
+			
+			super.onPreExecute();
+			Toast.makeText(MainActivity.baseContext,  "Début du get Id", Toast.LENGTH_SHORT).show();
+		}
+
+		/**
+		 * Ask the server and transform them to HashMap
+		 */
+		protected HashMap<String, Integer> doInBackground(Void... params) { 
+			
+			String JSON = getData();
+			 try {
+			    	JSONObject jObj = new JSONObject(JSON); 
+			    	HashMap<String, Integer> maxID = new HashMap<String, Integer>();
+
+			    	maxID.put("Photo", jObj.getInt("photo"));
+			    	maxID.put("GpsGeom", jObj.getInt("gpsgeom"));
+			    	maxID.put("Element", jObj.getInt("element"));
+			    	maxID.put("PixelGeom", jObj.getInt("pixelgeom"));
+			    	maxID.put("Project", jObj.getInt("project"));
+			    	return maxID;
+			    	
+			        } catch (JSONException e) {
+			           Log.e("JSON Parser", "Error parsing data " + e.toString());
+			           return (HashMap<String, Integer>) null;
+			        }  
+		}
+	 
+
+		/**
+		 * The request method to server
+		 * @return the string of the server response
+		 */
+	    public String getData() {
+		    HttpClient httpclient = new DefaultHttpClient();
+		    // specify the URL you want to post to
+		    HttpPost httppost = new HttpPost(MainActivity.serverURL+"maxID.php");
+		    try {
+			    // send the variable and value, in other words post, to the URL
+			    HttpResponse response = httpclient.execute(httppost);
+			    
+			    StringBuilder sb = new StringBuilder();
+			    try {
+			    	BufferedReader reader = 
+			    			new BufferedReader(new InputStreamReader(response.getEntity().getContent()), 65728);
+			    	String line = null;
+
+			    	while ((line = reader.readLine()) != null) {
+			    		sb.append(line);
+			    	}
+			    }
+			    catch (IOException e) { e.printStackTrace(); }
+			    catch (Exception e) { e.printStackTrace(); }
+			    
+			    return sb.toString();
+				
+	        } catch (ClientProtocolException e) {
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        } ;
+	        return null;
+	    }
+
+		
+		/**
+		 * The things to execute after the backTask 
+		 */
+	    protected void onPostExecute(String result) {	
+	    	if (result.equals("OK")){
+	    		Toast.makeText(mContext, "Synchronisation avec la base : SUCCES", Toast.LENGTH_SHORT).show();
+	    	}
+	    	else {
+		        Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
+	    	}
+	    }
+	    
+
+	}
 }
