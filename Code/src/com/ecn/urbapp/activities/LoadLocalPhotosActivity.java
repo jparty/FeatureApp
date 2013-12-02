@@ -77,6 +77,11 @@ public class LoadLocalPhotosActivity extends Activity{
 	//TODO add description for javadoc
 	long project_id;
 
+	/**
+	 * Barycenter in string, from loadLocalPrject
+	 */
+	String project_barycenter;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_loadlocalphotos);
@@ -84,7 +89,7 @@ public class LoadLocalPhotosActivity extends Activity{
 		datasource.open();
 
 		/**
-		 * extras that countains the project_id
+		 * extras that contains the project_id
 		 */
 
 		project_id = getIntent().getExtras().getLong("SELECTED_PROJECT_ID");
@@ -92,7 +97,10 @@ public class LoadLocalPhotosActivity extends Activity{
 		map = ((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
 
-		displayedMap = new GeoActivity(true, GeoActivity.defaultPos, map);
+		project_barycenter = getIntent().getExtras().getString("PROJECT_COORD");
+		GpsGeom barycenter = new GpsGeom();
+		barycenter.setGpsGeomCoord(project_barycenter);
+		displayedMap = new GeoActivity(false, MathOperation.barycenter(ConvertGeom.gpsGeomToLatLng(barycenter)), map);
 
 		/**
 		 * Define the listeners for switch satellite/plan/hybrid

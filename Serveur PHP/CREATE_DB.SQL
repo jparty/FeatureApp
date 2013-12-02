@@ -27,6 +27,7 @@ CREATE TABLE Photo
 	photo_id INTEGER DEFAULT nextval('photo_id_seq') PRIMARY KEY,
 	photo_description TEXT,
 	photo_author VARCHAR(60),
+	photo_url TEXT,
 	gpsGeom_id INTEGER references GpsGeom(gpsGeom_id)
 );
 

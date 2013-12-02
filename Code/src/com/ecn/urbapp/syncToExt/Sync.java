@@ -15,18 +15,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
-import com.ecn.urbapp.db.LocalDataSource;
-import com.ecn.urbapp.db.Project;
 import com.google.gson.Gson;
 
 public class Sync
@@ -98,10 +91,10 @@ public class Sync
 		protected String doInBackground(Void... params) { 
 			Gson gson = new Gson();
 			String dataJson = gson.toJson(MainActivity.gpsGeom);
-			String jSonComplete = "[{\"gpsGeom\":"+dataJson+"},";
+			String jSonComplete = "[{\"gpsgeom\":"+dataJson+"},";
 
 			dataJson = gson.toJson(MainActivity.pixelGeom);
-			jSonComplete += "{\"pixelGeom\":"+dataJson+"},";
+			jSonComplete += "{\"pixelgeom\":"+dataJson+"},";
 
 			dataJson = gson.toJson(MainActivity.photo);
 			jSonComplete += "{\"photo\":"+dataJson+"},";
