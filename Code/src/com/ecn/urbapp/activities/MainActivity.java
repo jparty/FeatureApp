@@ -199,6 +199,31 @@ public class MainActivity extends Activity {
 		tabSave.setTabListener(new MyTabListener(save, this));
 		bar.addTab(tabSave);
 		fragments.add(save);
+		
+		//TODO coordinate with the remote database
+		datasource.open();
+		
+		datasource.createElementTypeInDB("Toit");
+		datasource.createElementTypeInDB("Façade");
+		datasource.createElementTypeInDB("Sol");
+		
+		datasource.getAllElementType();
+
+		datasource.createMaterialInDB("Acier");
+		datasource.createMaterialInDB("Ardoises");
+		datasource.createMaterialInDB("Bois");
+		datasource.createMaterialInDB("Béton");
+		datasource.createMaterialInDB("Cuivre");
+		datasource.createMaterialInDB("Enrobé");
+		datasource.createMaterialInDB("Goudron");
+		datasource.createMaterialInDB("Herbe");
+		datasource.createMaterialInDB("Terre");
+		datasource.createMaterialInDB("Tuiles");
+		datasource.createMaterialInDB("Verre");
+
+		datasource.getAllMaterial();
+		
+		datasource.close();
 	}
 
 	@Override
