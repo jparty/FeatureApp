@@ -23,6 +23,7 @@ import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
@@ -579,7 +580,14 @@ public class ZoneFragment extends Fragment{
 								break;
 							}
 						}
-						MainActivity.pixelGeom.remove(pgeom);
+						MainActivity.pixelGeom.remove((int)pgeom.getPixelGeomId()-1);
+						long id=0;
+						for(Element el : MainActivity.element){
+							if(el.getPixelGeom_id()==pgeom.getPixelGeomId()){
+								id=el.getElement_id();
+							}
+						}
+						MainActivity.element.remove((int)id-1);
 						
 						//MainActivity.zones.remove(zoneCache);						
 			            exitAction();

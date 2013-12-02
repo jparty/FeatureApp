@@ -35,19 +35,17 @@ knowledge of the CeCILL license and that you accept its terms.
 
 package com.ecn.urbapp.utils;
 
-import java.util.Vector;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
-import com.ecn.urbapp.zones.*;
+import com.ecn.urbapp.zones.Zone;
 
 /**
  * This class is used to draw the zones on the image

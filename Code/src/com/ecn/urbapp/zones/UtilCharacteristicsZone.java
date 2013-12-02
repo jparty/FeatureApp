@@ -49,10 +49,10 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.ElementType;
-import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.utils.ConvertGeom;
+import com.ecn.urbapp.utils.GetId;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -349,16 +349,16 @@ public final class UtilCharacteristicsZone {
 			}
 			if (polygonsToAdd.isEmpty()) {
 				PixelGeom pgeom = new PixelGeom();
-				pgeom.setPixelGeomId(MainActivity.pixelGeom.size()+1);
+				pgeom.setPixelGeomId(GetId.PixelGeom());
 				pgeom.setPixelGeom_the_geom(poly.convexHull().toString());
 				Element element = new Element();
-				element.setElement_id(MainActivity.element.size()+1);
+				element.setElement_id(GetId.Element());
 				element.setPhoto_id(MainActivity.photo.getPhoto_id());
 				element.setPixelGeom_id(pgeom.getPixelGeomId());
 				element.setElement_color("" + Color.RED);
 				element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
-				MainActivity.element.add(element);
-				MainActivity.pixelGeom.add(pgeom);
+				MainActivity.element.add((int)element.getElement_id(), element);
+				MainActivity.pixelGeom.add((int)pgeom.getPixelGeomId(),pgeom);
 			} else {
 				for (PixelGeom pgeom : pixelGeomToRemove) {
 					MainActivity.pixelGeom.remove(pgeom);
@@ -369,16 +369,16 @@ public final class UtilCharacteristicsZone {
 					}
 				} catch (TopologyException e) {
 					for (PixelGeom pgeom : pixelGeomToRemove) {
-						pgeom.setPixelGeomId(MainActivity.pixelGeom.size()+1);
-						MainActivity.pixelGeom.add(pgeom);
+						pgeom.setPixelGeomId(GetId.PixelGeom());
+						MainActivity.pixelGeom.add((int)pgeom.getPixelGeomId(), pgeom);
 						Element element = new Element();
-						element.setElement_id(MainActivity.element.size()+1);
+						element.setElement_id(GetId.Element());
 						element.setPhoto_id(MainActivity.photo.getPhoto_id());
 						element.setPixelGeom_id(pgeom.getPixelGeomId());
 						element.setElement_color("" + Color.RED);
 						element.setGpsGeom_id(MainActivity.photo
 								.getGpsGeom_id());
-						MainActivity.element.add(element);
+						MainActivity.element.add((int)element.getElement_id(), element);
 					}
 					throw e;
 				}

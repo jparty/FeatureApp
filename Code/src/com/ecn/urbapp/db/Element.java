@@ -3,8 +3,6 @@ package com.ecn.urbapp.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.ecn.urbapp.activities.MainActivity;
-
 public class Element extends DataObject {
 
 	

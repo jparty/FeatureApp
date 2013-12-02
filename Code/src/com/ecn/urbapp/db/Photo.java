@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.provider.SyncStateContract.Columns;
 
 import com.ecn.urbapp.activities.MainActivity;
 

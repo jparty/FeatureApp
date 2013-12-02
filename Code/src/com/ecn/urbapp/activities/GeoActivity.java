@@ -37,6 +37,7 @@ import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.utils.ConvertGeom;
+import com.ecn.urbapp.utils.GetId;
 import com.ecn.urbapp.utils.MarkerPos;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -438,9 +439,9 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     		}
     		GpsGeom gg = new GpsGeom();
     		gg.setGpsGeomCoord(ConvertGeom.latLngToGpsGeom(ll));
-    		gg.setGpsGeomId(MainActivity.gpsGeom.size()+1);
+    		gg.setGpsGeomId(GetId.GpsGeom());
     		gg.setAddress(markers.get(markers.size()-1).getSnippet());
-    		MainActivity.gpsGeom.add(gg);
+    		MainActivity.gpsGeom.add((int)gg.getGpsGeomsId(), gg);
     		MainActivity.photo.setGpsGeom_id(gg.getGpsGeomsId());
     		for(Project p : MainActivity.project){
     			p.setGpsGeom_id(gg.getGpsGeomsId());
