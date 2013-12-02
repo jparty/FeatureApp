@@ -581,10 +581,20 @@ public class LocalDataSource {
 	 * method that register a new type in the DB
 	 */
 	public void createElementTypeInDB(String str){
-		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_ELEMENTTYPENAME, str);
-		long insertId = database.insert(MySQLiteHelper.TABLE_ELEMENTTYPE, null, values);
-		values= new ContentValues();
+		boolean flag = true;
+		Cursor cursor = database.rawQuery(GETALLELEMENTTYPEID,null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			if(cursor.getString(1).equals(str)){
+				flag=false;
+			}
+			cursor.moveToNext();
+		}
+		if(flag){
+			ContentValues values = new ContentValues(); 
+			values.put(MySQLiteHelper.COLUMN_ELEMENTTYPENAME, str);
+			long insertId = database.insert(MySQLiteHelper.TABLE_ELEMENTTYPE, null, values);
+		}
 	}
 	
 	
@@ -630,10 +640,20 @@ public class LocalDataSource {
 	 * method that register a new type in the DB
 	 */
 	public void createMaterialInDB(String str){
-		ContentValues values = new ContentValues(); 
-		values.put(MySQLiteHelper.COLUMN_MATERIALNAME, str);
-		long insertId = database.insert(MySQLiteHelper.TABLE_MATERIAL, null, values);
-		values = new ContentValues();
+		boolean flag = true;
+		Cursor cursor = database.rawQuery(GETALLMATERIALID,null);
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			if(cursor.getString(1).equals(str)){
+				flag=false;
+			}
+			cursor.moveToNext();
+		}
+		if(flag){
+			ContentValues values = new ContentValues(); 
+			values.put(MySQLiteHelper.COLUMN_MATERIALNAME, str);
+			long insertId = database.insert(MySQLiteHelper.TABLE_MATERIAL, null, values);
+		}
 	}
 	
 	

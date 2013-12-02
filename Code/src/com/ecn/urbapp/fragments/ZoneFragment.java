@@ -20,6 +20,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
@@ -161,10 +162,7 @@ public class ZoneFragment extends Fragment{
 		drawzoneview.setRatio(ratio);
 		TOUCH_RADIUS_TOLERANCE/=ratio;
 		
-		myImage.setImageDrawable(new LayerDrawable(drawables));	
-		
-		myImage.setOnTouchListener(deleteImageTouchListener);
-		
+		myImage.setImageDrawable(new LayerDrawable(drawables));			
 		return v;
 	}
 	
@@ -236,6 +234,9 @@ public class ZoneFragment extends Fragment{
     		getView().findViewById(R.id.zone_create_button_back).setEnabled(false);
     		
     		myImage.setOnTouchListener(imageCreateTouchListener);
+    		
+    		CharSequence text = "Veuillez ajouter au minimum 3 points";
+			Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
         }
 	};
     private OnClickListener createBackListener = new View.OnClickListener() {
@@ -346,14 +347,17 @@ public class ZoneFragment extends Fragment{
 		myImage.invalidate();
 	}
     public void refreshEdit(){
+    	//The +1 correspond to the ending point of the polygon
 		Vector<Point> points = zone.getPoints();
-		if(points.size()<3){
+		if(points.size()<3+1){
 			getView().findViewById(R.id.zone_edit_button_validate).setEnabled(false);
+			CharSequence text = "Il n'y a plus assez de points ! Validation impossible.";
+			Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
 		}
 		else{
-			if(points.size()>2){
+			if(points.size()>2+1){
 				getView().findViewById(R.id.zone_edit_button_validate).setEnabled(true);
-				if(points.size()>3){
+				if(points.size()>3+1){
 					Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting());
 					if(!intersections.isEmpty()){
 						getView().findViewById(R.id.zone_edit_button_validate).setEnabled(false);
@@ -410,17 +414,12 @@ public class ZoneFragment extends Fragment{
 									geomCache = pg;
 								}
 							}
-/*=======
-							zoneCache = new Zone(test);
-							zone = new Zone(test);;
->>>>>>> dev_database*/
-							//zone.setZone(test);
 						}
 					}
 				}
 				else{
 					//If a zone is selected, and one of its points was, it's a point move
-					if(selected.x != 0 && selected.y != 0){
+					if(selected.x != 0 || selected.y != 0){
 						if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
 							zone.updateMiddle(selected, touch);	//If not it's a "middle" point, and it's upgraded to normal
 							//TODO transfer to zone
@@ -438,7 +437,9 @@ public class ZoneFragment extends Fragment{
 							if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
 								selected.set(p.x,p.y);
 								//enable point deleting or releasing
-								getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(true);
+								if(zone.getPoints().size() > 2+1){
+									getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(true);
+								}
 								getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(true);
 							}
 						}
@@ -455,7 +456,6 @@ public class ZoneFragment extends Fragment{
 						}
 					}							
 				}
-				//myImage.invalidate();//refresh points' displaying
 				refreshEdit();
 			}
 			return true;
@@ -522,11 +522,18 @@ public class ZoneFragment extends Fragment{
 	private OnClickListener editDeletePointListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			zone.deletePoint(selected);
+			if(selected.equals(zone.getPoints().lastElement())){
+				zone.deletePoint(zone.getPoints().get(0));
+				zone.deletePoint(zone.getPoints().lastElement());
+				zone.addPoint(zone.getPoints().get(0));
+			}
+			else{
+				zone.deletePoint(selected);
+			}
 			selected.set(0,0);//no selected point anymore
 			getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(false);
 			getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(false);
-			myImage.invalidate();//refresh image
+			refreshEdit();//refresh image
 		}
 	};
 	private OnClickListener editReleasePointListener = new View.OnClickListener() {			
@@ -535,7 +542,7 @@ public class ZoneFragment extends Fragment{
 			selected.set(0,0);
 			getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(false);
 			getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(false);
-			myImage.invalidate();
+			refreshEdit();
 		}
 	};
 	
@@ -589,7 +596,9 @@ public class ZoneFragment extends Fragment{
 								id=el.getElement_id();
 							}
 						}
-						MainActivity.element.remove((int)id-1);
+						if(id!=0){
+							MainActivity.element.remove((int)id-1);
+						}
 						
 						//MainActivity.zones.remove(zoneCache);						
 			            exitAction();
