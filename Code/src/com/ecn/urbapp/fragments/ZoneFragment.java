@@ -589,7 +589,9 @@ public class ZoneFragment extends Fragment{
 								id=el.getElement_id();
 							}
 						}
-						MainActivity.element.remove((int)id-1);
+						if(id!=0){
+							MainActivity.element.remove((int)id-1);
+						}
 						
 						//MainActivity.zones.remove(zoneCache);						
 			            exitAction();
