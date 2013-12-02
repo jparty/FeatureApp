@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	private Button loadLocal = null ;
 	private Button test = null ;
 	private Button testPhoto = null ;
-	private Button downloadImage;
+	private Button loadDistantProject;
 	private ImageDownloader imageDownloader = new ImageDownloader();
 	private ImageView image;
 	private Button uploadImageButton;
@@ -60,9 +60,6 @@ public class HomeFragment extends Fragment implements OnClickListener{
 			"http://axemdo.files.wordpress.com/2010/07/loutre1.jpg",
 			"http://www.spaycificzoo.com/wp-content/uploads/2011/11/loutre_naine1-300x232.jpg"
 	};
-	
-
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -88,10 +85,9 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		
 		Intent i = getActivity().getIntent();
 		
-		downloadImage = (Button) v.findViewById(R.id.home_loadDistantlProject);
-		downloadImage.setOnClickListener(getImage);
-		uploadImageButton = (Button) v.findViewById(R.id.home_savePicture);
-		uploadImageButton.setOnClickListener(uploadImage);
+		loadDistantProject = (Button) v.findViewById(R.id.home_loadDistantlProject);
+		loadDistantProject.setOnClickListener(getImage);
+
 		image = (ImageView) v.findViewById(R.id.home_image_loadDistantProject);
 
 		return v;
