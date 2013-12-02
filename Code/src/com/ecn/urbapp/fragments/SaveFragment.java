@@ -44,6 +44,7 @@ public class SaveFragment extends Fragment{
 
 	private Button saveToLocal = null;
 	private Button saveToExt = null;
+	private Button maxID = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,10 @@ public class SaveFragment extends Fragment{
 		
 		saveToExt = (Button)v.findViewById(R.id.save_button_ext);
 		saveToExt.setOnClickListener(OnClickSaveToExt);
+		
+		maxID = (Button)v.findViewById(R.id.max_id);
+		maxID.setOnClickListener(OnClickMaxID);
+		
 		
 		return v;
 	}
@@ -94,6 +99,16 @@ public class SaveFragment extends Fragment{
     		
     		Sync synchroExt = new Sync();
     		synchroExt.doSync();
+    		
+    		
+    	}
+    };
+    
+    private OnClickListener OnClickMaxID = new OnClickListener(){
+    	public void onClick(View view){
+    		
+    		Sync synchroExt = new Sync();
+    		synchroExt.getMaxId();
     		
     		
     	}

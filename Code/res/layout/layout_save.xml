@@ -50,5 +50,13 @@
         android:text="@string/save_buttonSyncExt"
         android:layout_below="@+id/save_button_ync"
     	android:layout_marginLeft="450dp"/>
+        
+        <Button 
+        android:id="@+id/max_id"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:text="MaxId"
+        android:layout_below="@+id/save_button_ext"
+    	android:layout_marginLeft="450dp"/>
 
 </RelativeLayout>
