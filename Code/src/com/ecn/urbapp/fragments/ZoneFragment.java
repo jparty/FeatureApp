@@ -248,7 +248,9 @@ public class ZoneFragment extends Fragment{
 		@Override
 		public void onClick(View v) {
 			try {
-				UtilCharacteristicsZone.addInMainActivityZones((new Zone(zone)).getPolygon());
+				PixelGeom pg = new PixelGeom();
+				pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
+				UtilCharacteristicsZone.addInMainActivityZones(pg, null);
 				exitAction();
 			} catch(TopologyException e) {
 				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
@@ -470,7 +472,9 @@ public class ZoneFragment extends Fragment{
 				try {
 					//MainActivity.zones.remove(zoneCache); //delete original
 					MainActivity.pixelGeom.remove(geomCache);
-					UtilCharacteristicsZone.addInMainActivityZones((new Zone(zone)).getPolygon());
+					PixelGeom pg = new PixelGeom();
+					pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
+					UtilCharacteristicsZone.addInMainActivityZones(pg, null);
 					exitAction();
 				} catch(TopologyException e) {
 					TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
