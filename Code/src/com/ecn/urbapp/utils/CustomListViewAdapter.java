@@ -57,9 +57,33 @@ public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
         /**
          * Load Pictures from local data
          */
-    	Bitmap myBitmap = BitmapFactory.decodeFile(rowItem.getImagePath());
-    	holder.imageView.setImageBitmap(myBitmap);
+    	Bitmap myShrinkedBitmap = ShrinkBitmap(rowItem.getImagePath(), 20, 20);
+    	holder.imageView.setImageBitmap(myShrinkedBitmap);
 	     
         return convertView;
     }
+    
+    Bitmap ShrinkBitmap(String file, int width, int height){
+    	   
+        BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
+           bmpFactoryOptions.inJustDecodeBounds = true;
+           Bitmap bitmap = BitmapFactory.decodeFile(file, bmpFactoryOptions);
+            
+           int heightRatio = (int)Math.ceil(bmpFactoryOptions.outHeight/(float)height);
+           int widthRatio = (int)Math.ceil(bmpFactoryOptions.outWidth/(float)width);
+            
+           if (heightRatio > 1 || widthRatio > 1)
+           {
+            if (heightRatio > widthRatio)
+            {
+             bmpFactoryOptions.inSampleSize = heightRatio;
+            } else {
+             bmpFactoryOptions.inSampleSize = widthRatio;
+            }
+           }
+            
+           bmpFactoryOptions.inJustDecodeBounds = false;
+           bitmap = BitmapFactory.decodeFile(file, bmpFactoryOptions);
+        return bitmap;
+       }
 }

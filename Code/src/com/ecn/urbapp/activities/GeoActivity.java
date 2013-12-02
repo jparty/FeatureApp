@@ -33,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.utils.ConvertGeom;
@@ -229,7 +230,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 					*/
                     break;
                 }
-
+                //TODO do the GPS centered !!
         }
      }
 
@@ -300,6 +301,20 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 
     		map.setOnMapClickListener(ajoutPoints);
     		map.setOnMarkerDragListener(markerDrag);
+    		for (GpsGeom gps:MainActivity.gpsGeom){
+    			
+    			for(LatLng point:ConvertGeom.gpsGeomToLatLng(gps)) {
+    				Marker marker = map.addMarker(new MarkerOptions()
+    				.position(point)
+    				.title("Adresse postale")
+    				.draggable(true));
+
+    				markers.add(marker);
+
+    				MarkerPos markerpos = new MarkerPos(marker, point);
+    				getAddress(markerpos);
+    			}
+    		}
     	}}
     
     /**
@@ -341,7 +356,6 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     		// Connect the client.
     		//TODO check the threat order
     		//CONNECTION TODO
-
     	}
 
     	//check
@@ -418,7 +432,6 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	*/
     public void onClick(View v) {
     	try {
-    		MainActivity.address = markers.get(markers.size()-1).getSnippet();
     		ArrayList<LatLng> ll = new ArrayList<LatLng>();
     		for(Marker m : markers){
     			ll.add(m.getPosition());
@@ -426,18 +439,19 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     		GpsGeom gg = new GpsGeom();
     		gg.setGpsGeomCoord(ConvertGeom.latLngToGpsGeom(ll));
     		gg.setGpsGeomId(MainActivity.gpsGeom.size()+1);
+    		gg.setAddress(markers.get(markers.size()-1).getSnippet());
     		MainActivity.gpsGeom.add(gg);
     		MainActivity.photo.setGpsGeom_id(gg.getGpsGeomsId());
     		for(Project p : MainActivity.project){
     			p.setGpsGeom_id(gg.getGpsGeomsId());
     		}
+            for(Element el: MainActivity.element){
+            	el.setGpsGeom_id(gg.getGpsGeomsId());
+            }
     	}
     	catch (ArrayIndexOutOfBoundsException e) {
     		Log.e(getLocalClassName(), "Pas de points !");
     	}
-
-    	/*Intent i = new Intent(this, MainActivity.class);
-		startActivity(i);*/
     	finish();
     }
         

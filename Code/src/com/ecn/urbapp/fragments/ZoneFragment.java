@@ -141,6 +141,8 @@ public class ZoneFragment extends Fragment{
 		MainActivity.sphoto=new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());	
 		
 		drawzoneview = new DrawZoneView(zone, selected) ;
+
+
 		Drawable[] drawables = {
 			new BitmapDrawable(
 				getResources(),
@@ -399,9 +401,9 @@ public class ZoneFragment extends Fragment{
 				if(zone.getPoints().isEmpty()){
 					for(Zone test : zones){
 						if(test.containPoint(touch)){
-//<<<<<<< HEAD
 							zoneCache = test;
 							zone.setZone(test);
+
 							for(PixelGeom pg : MainActivity.pixelGeom){
 								if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
 									geomCache = pg;
@@ -463,18 +465,23 @@ public class ZoneFragment extends Fragment{
 
 		public void onClick(View v) {
 			//zones.remove(zoneCache);//delete original 
-	
-			try {
-				//MainActivity.zones.remove(zoneCache); //delete original
-				MainActivity.pixelGeom.remove(geomCache);
-				UtilCharacteristicsZone.addInMainActivityZones((new Zone(zone)).getPolygon());
+
+			if(!zone.getPoints().isEmpty()){
+				try {
+					//MainActivity.zones.remove(zoneCache); //delete original
+					MainActivity.pixelGeom.remove(geomCache);
+					UtilCharacteristicsZone.addInMainActivityZones((new Zone(zone)).getPolygon());
+					exitAction();
+				} catch(TopologyException e) {
+					TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
+					diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else{
 				exitAction();
-			} catch(TopologyException e) {
-				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
-				diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 	/*
 			long id=0;
@@ -502,11 +509,11 @@ public class ZoneFragment extends Fragment{
 		public void onClick(View v) {
 			if(zoneCache != null){//if user is coming from CreateZone there is no original to save
 				//MainActivity.zones.add(new Zone(zoneCache));//save original
-				PixelGeom pgeom = new PixelGeom();
+				/*PixelGeom pgeom = new PixelGeom();
 				pgeom.setPixelGeomId(MainActivity.pixelGeom.size());
 				pgeom.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zoneCache));
 				
-				MainActivity.pixelGeom.add(pgeom);
+				MainActivity.pixelGeom.add(pgeom);*/
 			}
             exitAction();
 		}

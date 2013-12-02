@@ -65,7 +65,6 @@ public class MyTabListener implements TabListener{
         	if(url!=null){
         		MainActivity.photo.setPhoto_url(url.split("/")[url.split("/").length-1]);
         	}
-        	MainActivity.photo.setGpsGeom_id(1); //TODO delete
         }
         
         

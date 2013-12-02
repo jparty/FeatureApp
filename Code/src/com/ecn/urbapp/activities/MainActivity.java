@@ -9,8 +9,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,7 +19,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.Composed;
@@ -41,8 +38,6 @@ import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 import com.ecn.urbapp.utils.ConnexionCheck;
-import com.ecn.urbapp.utils.ConvertGeom;
-import com.ecn.urbapp.zones.Zone;
 
 /**
  * @author	COHENDET Sébastien
@@ -62,51 +57,47 @@ import com.ecn.urbapp.zones.Zone;
 public class MainActivity extends Activity {
 
 	/**
-	 * bar represent the action bar of the application
+	 * Attribut represent the action bar of the application
 	 */
-	ActionBar bar;
-	public Zone zoneToDelete ;
+	private ActionBar bar;
 	
 	/**
-	 * attributs for the local database
+	 * Attribut representing the local database
 	 */
 	public static LocalDataSource datasource;
 
 	
 	/**
-
+<<<<<<< HEAD
+	 * BaseContext to get the static context of app anywhere (for file)
+=======
 	 * baseContext to get the static context of app anywhere (for file)
+>>>>>>> a42e56ebe93340d34048e57919f4bcac38d9318a
 	 */
     public static Context baseContext;
 
 	//TODO add description for javadoc
 	private static Builder alertDialog;
 
-	//TODO add description for javadoc
+	/**
+	 * Link to ask google to create a specific Connexion code to chck if there is no portal between android and server
+	 */
     public static final String CONNECTIVITY_URL="http://clients3.google.com/generate_204";
+    
+    /**
+     * Server address
+     */
+    public static String serverURL="http://192.168.177.1/";
     
     /**
 	 * Attributs for the project information
 	 */
-	//TODO add description for javadoc
-	public static String author = "";
-	//TODO add description for javadoc
-	public static String device = "";
-	//TODO add description for javadoc
-	public static String sproject = "";
-	//TODO add description for javadoc
-	public static String address = "";
-	//TODO add description for javadoc
-	public static ImageView myImage=null;
-
 	//TODO add description for javadoc
 	public static String pathImage=null;
 	//TODO add description for javadoc
 	public static String pathTampon=null;
 	//TODO add description for javadoc
 	public static File sphoto=null;
-	//TODO add description for javadoc
-	public static long maxPhotoIdLocal; 
 	//TODO add the set of this bool into each function loading a photo
 	public static boolean isPhoto=false;
 	//TODO add description for javadoc
@@ -130,10 +121,6 @@ public class MainActivity extends Activity {
 	public static Photo photo=null;
 	
 	
-	//TODO delete this field
-	public static GpsGeom gpsGeomFixe = new GpsGeom();
-	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -148,12 +135,6 @@ public class MainActivity extends Activity {
 		pixelGeom = new ArrayList<PixelGeom>();
 		project = new ArrayList<Project>();
 		photo = new Photo();
-		
-		
-		//TODO delete this field
-		/*gpsGeomFixe.setGpsGeomId(1);
-		gpsGeomFixe.setGpsGeomCoord("48.853//2.35");//"POLYGON((48.853 2.35))"
-		gpsGeom.add(gpsGeomFixe);*/
 		
 		
 		fragments=new Vector<Fragment>();
@@ -260,13 +241,7 @@ public class MainActivity extends Activity {
             	confirm();
             	//Setting the photo path from the pathImage
             	MainActivity.photo.setPhoto_url(pathImage.split("/")[pathImage.split("/").length-1]);
-            	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
-            	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
-            	FragmentManager fragmentManager = getFragmentManager();
-            	FragmentTransaction transaction = fragmentManager.beginTransaction();
-            	transaction.replace(android.R.id.content, fragments.get(1));
-                transaction.addToBackStack(null);
-                transaction.commit();
+            	MainActivity.photo.setPhoto_id(1);
                 getActionBar().setSelectedNavigationItem(1);
                 MainActivity.isPhoto=true;
             }
@@ -276,11 +251,6 @@ public class MainActivity extends Activity {
         	//TODO check that this is not a crash
             	MainActivity.local=true;
             	confirm();
-                            	FragmentManager fragmentManager = getFragmentManager();
-            	FragmentTransaction transaction = fragmentManager.beginTransaction();
-            	transaction.replace(android.R.id.content, fragments.get(2));
-                transaction.addToBackStack(null);
-                transaction.commit();
                 getActionBar().setSelectedNavigationItem(2);
                 MainActivity.isPhoto=true;
                 datasource.instanciateAllpixelGeom(); //load pixelGeom linked to the photo in the relative public static arrayList
@@ -293,15 +263,14 @@ public class MainActivity extends Activity {
             	//Setting the photo path
             	String url = getRealPathFromURI(baseContext, data.getData());
             	MainActivity.photo.setPhoto_url(url.split("/")[url.split("/").length-1]);
-            	MainActivity.photo.setPhoto_id(MainActivity.maxPhotoIdLocal+1);
-            	MainActivity.photo.setGpsGeom_id(1);//TODO DELETE
-            	FragmentManager fragmentManager = getFragmentManager();
-            	FragmentTransaction transaction = fragmentManager.beginTransaction();
-            	transaction.replace(android.R.id.content, fragments.get(1));
-                transaction.addToBackStack(null);
-                transaction.commit();
+            	MainActivity.photo.setPhoto_id(1);
                 getActionBar().setSelectedNavigationItem(1);
                 MainActivity.isPhoto=true;
+            }
+        }
+        if (requestCode == 10) {
+            if (resultCode == RESULT_OK) {
+                getActionBar().setSelectedNavigationItem(1);
             }
         }
     }
@@ -335,7 +304,7 @@ public class MainActivity extends Activity {
 	 */
 	@Override
 	public void onBackPressed(){
-		
+
 		int i=0;
 		for(Fragment f : fragments){
 			if(f.isVisible()){
@@ -346,5 +315,6 @@ public class MainActivity extends Activity {
 		if(i>0){
 			getActionBar().selectTab(getActionBar().getTabAt(i-1));
 		}
+
 	}
 }

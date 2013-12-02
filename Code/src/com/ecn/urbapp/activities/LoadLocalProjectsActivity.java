@@ -1,5 +1,6 @@
 package com.ecn.urbapp.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,6 +37,11 @@ public class LoadLocalProjectsActivity extends Activity {
 	 * Contains all the projects attributes
 	 */
 	private List<Project> refreshedValues;
+	
+	/**
+	 * COntains all GPSInfo from all Project
+	 */
+	private List<GpsGeom> allGpsGeom;
 	
 	/**
 	 * Hashmap between unique id of markers and the relative project_id
@@ -101,6 +107,15 @@ public class LoadLocalProjectsActivity extends Activity {
                Toast.makeText(MainActivity.baseContext, refreshedValues.get(projectMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
    				Intent i = new Intent(getApplicationContext(), LoadLocalPhotosActivity.class);
    				i.putExtra("SELECTED_PROJECT_ID", refreshedValues.get(projectMarkers.get(marker.getId())).getProjectId());
+   				
+   				ArrayList<LatLng> coordProjet = new ArrayList<LatLng>();
+
+   					for(GpsGeom gg : allGpsGeom){
+   		        		if(refreshedValues.get(projectMarkers.get(marker.getId())).getGpsGeom_id()==gg.getGpsGeomsId()){
+   		        			coordProjet.addAll(ConvertGeom.gpsGeomToLatLng(gg));
+   		        		}
+   					}
+   				i.putExtra("PROJECT_COORD", ConvertGeom.latLngToGpsGeom(coordProjet));
    				startActivityForResult(i, 1);
    				
             }
@@ -144,7 +159,7 @@ public class LoadLocalProjectsActivity extends Activity {
     public void refreshList(){      
     	
     	refreshedValues = recupProject();
-    	List<GpsGeom> allGpsGeom = recupGpsGeom();
+    	allGpsGeom = recupGpsGeom();
     	
         ArrayAdapter<Project> adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_list_item_1, refreshedValues);
         listeProjects.setAdapter(adapter);
@@ -183,8 +198,7 @@ public class LoadLocalProjectsActivity extends Activity {
         			coordProjet =  MathOperation.barycenter(ConvertGeom.gpsGeomToLatLng(gg));
         		}
         	}
-			/*String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
-			LatLng coordProjet = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));*/
+
 			displayedMap = new GeoActivity(false, coordProjet, map);
     		Toast.makeText(getApplicationContext(), coordProjet.toString(), Toast.LENGTH_LONG).show();                  
 		}

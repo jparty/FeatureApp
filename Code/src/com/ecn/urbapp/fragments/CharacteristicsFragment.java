@@ -95,6 +95,7 @@ public class CharacteristicsFragment extends Fragment {
 
 
 		MainActivity.sphoto=new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());
+
 		DrawImageView view = new DrawImageView();
 	
 		Drawable[] drawables = {
