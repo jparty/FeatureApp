@@ -580,7 +580,9 @@ public class ZoneFragment extends Fragment{
 								break;
 							}
 						}
-						MainActivity.pixelGeom.remove((int)pgeom.getPixelGeomId()-1);
+						if(pgeom.getPixelGeomId()!=0){
+							MainActivity.pixelGeom.remove((int)pgeom.getPixelGeomId()-1);
+						}
 						long id=0;
 						for(Element el : MainActivity.element){
 							if(el.getPixelGeom_id()==pgeom.getPixelGeomId()){

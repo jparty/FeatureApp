@@ -357,8 +357,18 @@ public final class UtilCharacteristicsZone {
 				element.setPixelGeom_id(pgeom.getPixelGeomId());
 				element.setElement_color("" + Color.RED);
 				element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
-				MainActivity.element.add((int)element.getElement_id(), element);
-				MainActivity.pixelGeom.add((int)pgeom.getPixelGeomId(),pgeom);
+				if(MainActivity.element.size()>=element.getElement_id()){
+					MainActivity.element.add((int)element.getElement_id(), element);
+				}
+				else{
+					MainActivity.element.add(element);
+				}
+				if(MainActivity.pixelGeom.size()>=pgeom.getPixelGeomId()){
+					MainActivity.pixelGeom.add((int)pgeom.getPixelGeomId(),pgeom);
+				}
+				else{
+					MainActivity.pixelGeom.add(pgeom);
+				}
 			} else {
 				for (PixelGeom pgeom : pixelGeomToRemove) {
 					MainActivity.pixelGeom.remove(pgeom);
@@ -370,7 +380,12 @@ public final class UtilCharacteristicsZone {
 				} catch (TopologyException e) {
 					for (PixelGeom pgeom : pixelGeomToRemove) {
 						pgeom.setPixelGeomId(GetId.PixelGeom());
-						MainActivity.pixelGeom.add((int)pgeom.getPixelGeomId(), pgeom);
+						if(MainActivity.pixelGeom.size()>=pgeom.getPixelGeomId()){
+							MainActivity.pixelGeom.add((int)pgeom.getPixelGeomId(), pgeom);
+						}
+						else{
+							MainActivity.pixelGeom.add(pgeom);
+						}
 						Element element = new Element();
 						element.setElement_id(GetId.Element());
 						element.setPhoto_id(MainActivity.photo.getPhoto_id());

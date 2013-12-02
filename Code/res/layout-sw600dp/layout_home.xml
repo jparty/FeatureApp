@@ -23,13 +23,13 @@
         
         <RelativeLayout
             android:id="@+id/home_layout_newProject"
-            android:layout_width="170dp"
+            android:layout_width="400dp"
             android:layout_height="wrap_content">
                 
                 <ImageView
                 android:id="@+id/home_image_newProject"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="400dp"
                 android:layout_alignParentTop="true"
                 android:contentDescription="@string/image_newProject"
         		android:src="@drawable/image"/>
@@ -62,13 +62,13 @@
         
         <RelativeLayout
             android:id="@+id/home_layout_localProject"
-            android:layout_width="170dp"
+            android:layout_width="400dp"
             android:layout_height="wrap_content">
             
          <ImageView
          android:id="@+id/home_image_loadLocalProject"
          android:layout_width="wrap_content"
-         android:layout_height="50dp"
+         android:layout_height="400dp"
          android:layout_alignParentTop="true"
          android:contentDescription="@string/image_loadLocalProject"
          android:src="@drawable/image"/>
@@ -101,13 +101,13 @@
         
         <RelativeLayout
             android:id="@+id/home_layout_distantProject"
-            android:layout_width="170dp"
+            android:layout_width="400dp"
             android:layout_height="wrap_content">
          
                  <ImageView
                  android:id="@+id/home_image_loadDistantProject"
                  android:layout_width="wrap_content"
-         		 android:layout_height="50dp"
+                 android:layout_height="wrap_content"
                  android:layout_alignParentTop="true"
                  android:contentDescription="@string/image_loadDistantProject"/>
                 
