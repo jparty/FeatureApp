@@ -141,6 +141,8 @@ public class ZoneFragment extends Fragment{
 		MainActivity.sphoto=new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());	
 		
 		drawzoneview = new DrawZoneView(zone, selected) ;
+
+
 		Drawable[] drawables = {
 			new BitmapDrawable(
 				getResources(),
@@ -399,9 +401,9 @@ public class ZoneFragment extends Fragment{
 				if(zone.getPoints().isEmpty()){
 					for(Zone test : zones){
 						if(test.containPoint(touch)){
-//<<<<<<< HEAD
 							zoneCache = test;
 							zone.setZone(test);
+
 							for(PixelGeom pg : MainActivity.pixelGeom){
 								if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
 									geomCache = pg;

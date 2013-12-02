@@ -77,6 +77,11 @@ public class LoadLocalPhotosActivity extends Activity{
 	//TODO add description for javadoc
 	long project_id;
 
+	/**
+	 * Barycenter in string, from loadLocalPrject
+	 */
+	String project_barycenter;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_loadlocalphotos);
@@ -84,7 +89,7 @@ public class LoadLocalPhotosActivity extends Activity{
 		datasource.open();
 
 		/**
-		 * extras that countains the project_id
+		 * extras that contains the project_id
 		 */
 
 		project_id = getIntent().getExtras().getLong("SELECTED_PROJECT_ID");
@@ -92,7 +97,10 @@ public class LoadLocalPhotosActivity extends Activity{
 		map = ((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
 
-		displayedMap = new GeoActivity(true, GeoActivity.defaultPos, map);
+		project_barycenter = getIntent().getExtras().getString("PROJECT_COORD");
+		GpsGeom barycenter = new GpsGeom();
+		barycenter.setGpsGeomCoord(project_barycenter);
+		displayedMap = new GeoActivity(false, MathOperation.barycenter(ConvertGeom.gpsGeomToLatLng(barycenter)), map);
 
 		/**
 		 * Define the listeners for switch satellite/plan/hybrid
@@ -186,15 +194,6 @@ public class LoadLocalPhotosActivity extends Activity{
 		Integer i = Integer.valueOf(0);
 		for (Photo enCours:refreshedValues){
 			
-			//TODO Get the real GPSGeom from Photo table in local Database !!!
-			//Fake one ! for testing purpose
-			/*String[] coord = enCours.getExt_GpsGeomCoord().split("//");
-			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
-			LatLng coordPhoto1 = new LatLng(Double.parseDouble(coord[0])+0.2, Double.parseDouble(coord[1])+0.2);
-
-			ArrayList<LatLng> photoGPS = new ArrayList<LatLng>();
-			photoGPS.add(coordPhoto);
-			photoGPS.add(coordPhoto1);*/
 			//TODO request for GPSGeom
 			ArrayList<LatLng> photoGPS = null;
 			for(GpsGeom gg : allGpsGeom){
@@ -228,15 +227,6 @@ public class LoadLocalPhotosActivity extends Activity{
 		public void onItemClick(AdapterView<?> arg0, View v, int position,
 				long id) {
 
-			//TODO Get the real GPSGeom from Photo table in local Database !!!
-			//Fake one ! for testing purpose
-			/*String[] coord = refreshedValues.get(position).getExt_GpsGeomCoord().split("//");
-			LatLng coordPhoto = new LatLng(Double.parseDouble(coord[0]), Double.parseDouble(coord[1]));
-			LatLng coordPhoto1 = new LatLng(Double.parseDouble(coord[0])+0.2, Double.parseDouble(coord[1])+0.2);
-
-			ArrayList<LatLng> photoGPS = new ArrayList<LatLng>();
-			photoGPS.add(coordPhoto);
-			photoGPS.add(coordPhoto1);*/
 
 			List<com.ecn.urbapp.db.GpsGeom> allGpsGeom = recupGpsGeom();
 			ArrayList<LatLng> photoGPS = null;
@@ -245,8 +235,7 @@ public class LoadLocalPhotosActivity extends Activity{
 					photoGPS = ConvertGeom.gpsGeomToLatLng(gg);
 				}
 			}
-			//end of fake photoGPS values
-			
+
 			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
 			displayedMap = new GeoActivity(false, GPSCentered, map);
 			Toast.makeText(getApplicationContext(), refreshedValues.get(position).getPhoto_url(), Toast.LENGTH_LONG).show();                  

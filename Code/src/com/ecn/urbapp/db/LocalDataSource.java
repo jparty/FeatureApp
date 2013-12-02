@@ -41,14 +41,17 @@ public class LocalDataSource {
 	private String[] allColumnsElementType = {MySQLiteHelper.COLUMN_ELEMENTTYPEID, MySQLiteHelper.COLUMN_ELEMENTTYPENAME};
 	private String[] allColumnsComposed = {MySQLiteHelper.COLUMN_PROJECTID, MySQLiteHelper.COLUMN_PHOTOID};
 	private String[] allColumnsElement = {MySQLiteHelper.COLUMN_ELEMENTID, MySQLiteHelper.COLUMN_PHOTOID,MySQLiteHelper.COLUMN_MATERIALID, MySQLiteHelper.COLUMN_GPSGEOMID,MySQLiteHelper.COLUMN_PIXELGEOMID, MySQLiteHelper.COLUMN_ELEMENTTYPEID, MySQLiteHelper.COLUMN_ELEMENTCOLOR};
-		
+	
+	
 	//constructor
 	public LocalDataSource(Context context){
 		dbHelper = new MySQLiteHelper(context);
 	}
 
-	//TODO Adddescription for javadoc
-	//Open and close database
+	/**
+	 * Open and close database
+	 * @throws SQLException
+	 */
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 	}
@@ -278,6 +281,8 @@ public class LocalDataSource {
 	}
   
   // PHOTO METHODS
+	
+	
 
 	//TODO Adddescription for javadoc
 	public List<Photo> getAllPhotos(){
@@ -371,6 +376,14 @@ public class LocalDataSource {
 		
 	}
   
+	public Photo  getPhotoWithID(long id)
+	{
+		Cursor c = database.query(MySQLiteHelper.TABLE_PHOTO, allColumnsPhoto, MySQLiteHelper.COLUMN_PHOTOID + " = \"" + id +"\"", null, null, null, null);
+		c.moveToFirst();
+        Photo p1 = cursorToPhoto(c);
+        c.close();
+        return p1;
+	}
   
   // GPS GEOM METHODS
 
@@ -388,6 +401,15 @@ public class LocalDataSource {
 		args.put(MySQLiteHelper.COLUMN_GPSGEOMID, gps1.getGpsGeomsId());
 		int d = database.update(MySQLiteHelper.TABLE_PHOTO, args, MySQLiteHelper.COLUMN_PHOTOID +"=" + id, null);
 		return gps1;
+	}
+	
+	public GpsGeom getGpsGeomWithID(long id)
+	{
+		Cursor c = database.query(MySQLiteHelper.TABLE_GPSGEOM, allColumnsGpsGeom, MySQLiteHelper.COLUMN_GPSGEOMID + " = \"" + id +"\"", null, null, null, null);
+		c.moveToFirst();
+        GpsGeom g1 = cursorToGpsGeom(c);
+        c.close();
+        return g1;
 	}
 
 
@@ -468,7 +490,87 @@ public class LocalDataSource {
 	    link1.setPhoto_id(cursor.getLong(1));
 	    return link1;
 	}
+
+	// OTHER METHODS TO GET LOCAL ITEMS FROM ID. ADDED FOR USE IN THE SYNC CLASS
 	
+	public Element getElementWithID(long id)
+	{
+		Cursor c = database.query(MySQLiteHelper.TABLE_ELEMENT, allColumnsElement, 
+				MySQLiteHelper.COLUMN_ELEMENTID + " = \"" + id +"\"", null, null, null, null);
+		c.moveToFirst();
+        Element e = cursorToElement(c);
+        c.close();
+        return e;
+	}
+	
+	public Element cursorToElement(Cursor cursor)
+	{
+		Element e = new Element();
+		e.setElement_id(cursor.getLong(0));
+		e.setPhoto_id(cursor.getLong(1));
+		e.setMaterial_id(cursor.getLong(2));
+		e.setElementType_id(cursor.getLong(3));
+		e.setPixelGeom_id(cursor.getLong(4));
+		e.setGpsGeom_id(cursor.getLong(5));
+		e.setElement_color(cursor.getString(6));
+	    return e;
+	}
+	
+	public PixelGeom getPixelGeomWithID(long id)
+	{
+		Cursor c = database.query(MySQLiteHelper.TABLE_PIXELGEOM, allColumnsPixelGeom, 
+				MySQLiteHelper.COLUMN_PIXELGEOMID + " = \"" + id + "\"", null, null, null, null);
+		c.moveToFirst();
+		PixelGeom p = cursorToPixelGeom(c);
+		c.close();
+		return p;
+	}
+	
+	public PixelGeom cursorToPixelGeom(Cursor cursor)
+	{
+		PixelGeom p = new PixelGeom();
+		p.setPixelGeomId(cursor.getLong(0));
+		p.setPixelGeom_the_geom(cursor.getString(1));
+		return p;
+	}
+	
+	public Material getMaterialWithID(long id)
+	{
+		Cursor c = database.query(MySQLiteHelper.TABLE_MATERIAL, allColumnsMaterial,
+				MySQLiteHelper.COLUMN_MATERIALID + " = \"" + id + "\"", null, null, null, null);
+		c.moveToFirst();
+		Material m = cursorToMaterial(c);
+		c.close();
+		return m;
+	}
+	
+	public Material cursorToMaterial(Cursor cursor)
+	{
+		Material m = new Material();
+		m.setMaterial_id(cursor.getLong(0));
+		m.setMaterial_name(cursor.getString(1));
+		return m;
+	}
+	
+	public ElementType getElementTypeWithID(long id)
+	{
+		Cursor c = database.query(MySQLiteHelper.TABLE_ELEMENTTYPE, allColumnsElementType, 
+				MySQLiteHelper.COLUMN_ELEMENTTYPEID + " = \"" + id + "\"", null, null, null, null);
+		c.moveToFirst();
+		ElementType e = cursorToElementType(c);
+		c.close();
+		return e;
+	}
+	
+	public ElementType cursorToElementType(Cursor cursor)
+	{
+		ElementType e = new ElementType();
+		e.setElementType_id(cursor.getLong(0));
+		e.setElementType_name(cursor.getString(1));
+		return e;
+	}
+
+
 	
 	
 	//METHODS FOR ELMENTS TYPE
@@ -517,19 +619,7 @@ public class LocalDataSource {
 	
 	//TODO method that create the 3 elements in the db
 	
-	
-	/**
-	 * method that is used to create instance
-	 * @param cursor
-	 * @return
-	 */
-	private ElementType cursorToElementType(Cursor cursor) {
-	    ElementType type = new ElementType();
-	    type.setElementType_id(cursor.getLong(0));
-	    type.setElementType_name(cursor.getString(1));
-	    return type;
-	}
-	
+		
 	
 	//METHODS FOR MATERIALS
 	
@@ -577,18 +667,7 @@ public class LocalDataSource {
 	
 	//TODO method that create the 3 elements in the db
 	
-	
-	/**
-	 * method that is used to create instance
-	 * @param cursor
-	 * @return
-	 */
-	private Material cursorToMaterial(Cursor cursor) {
-	    Material type = new Material();
-	    type.setMaterial_id(cursor.getLong(0));
-	    type.setMaterial_name(cursor.getString(1));
-	    return type;
-	}
+
 	
 	
 	
@@ -632,17 +711,7 @@ public class LocalDataSource {
 		
 	}
 	
-	/**
-	 * convert the result from a query (cursor) to an object (PixelGeom)
-	 * @param cursor
-	 * @return
-	 */
-	private PixelGeom cursorToPixelGeom(Cursor cursor) {
-	    PixelGeom type = new PixelGeom();
-	    type.setPixelGeomId(cursor.getLong(0));
-	    type.setPixelGeom_the_geom(cursor.getString(1));
-	    return type;
-	}
+
 	
 	
 	/**

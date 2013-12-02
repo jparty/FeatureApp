@@ -2,26 +2,30 @@ package com.ecn.urbapp.fragments;
 
 import java.util.ArrayList;
 
-import com.ecn.urbapp.R;
-import com.ecn.urbapp.db.*;
-import com.ecn.urbapp.activities.MainActivity;
-
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-
+import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Composed;
+import com.ecn.urbapp.db.Element;
+import com.ecn.urbapp.db.ElementType;
+import com.ecn.urbapp.db.GpsGeom;
+import com.ecn.urbapp.db.Material;
+import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.syncToExt.Sync;
 
 
 /**
- * @author	COHENDET S�bastien
+ * @author	COHENDET Sebastien
  * 			DAVID Nicolas
  * 			GUILBART Gabriel
  * 			PALOMINOS Sylvain
@@ -39,6 +43,7 @@ public class SaveFragment extends Fragment{
 	
 
 	private Button saveToLocal = null;
+	private Button saveToExt = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,8 +56,11 @@ public class SaveFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_save, null);
 		
-		saveToLocal=(Button)v.findViewById(R.id.save_button_ync);
+		saveToLocal = (Button)v.findViewById(R.id.save_button_ync);
 		saveToLocal.setOnClickListener(OnClickSaveToLocal);
+		
+		saveToExt = (Button)v.findViewById(R.id.save_button_ext);
+		saveToExt.setOnClickListener(OnClickSaveToExt);
 		
 		return v;
 	}
@@ -78,7 +86,17 @@ public class SaveFragment extends Fragment{
     			toast.show();
     		}
     		
-    	};
+    	}
+    };
+    	
+    private OnClickListener OnClickSaveToExt = new OnClickListener(){
+    	public void onClick(View view){
+    		
+    		Sync synchroExt = new Sync();
+    		synchroExt.doSync();
+    		
+    		
+    	}
     };
 	
 	//TODO pour la photo il faut appeler direct la liste car on n'a pas de list de photo vu qu'ion bosse avecu ne seule.

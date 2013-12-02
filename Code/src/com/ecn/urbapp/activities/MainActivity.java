@@ -9,8 +9,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,7 +19,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.Composed;
@@ -71,15 +68,26 @@ public class MainActivity extends Activity {
 
 	
 	/**
+<<<<<<< HEAD
 	 * BaseContext to get the static context of app anywhere (for file)
+=======
+	 * baseContext to get the static context of app anywhere (for file)
+>>>>>>> a42e56ebe93340d34048e57919f4bcac38d9318a
 	 */
     public static Context baseContext;
 
 	//TODO add description for javadoc
 	private static Builder alertDialog;
 
-	//TODO add description for javadoc
+	/**
+	 * Link to ask google to create a specific Connexion code to chck if there is no portal between android and server
+	 */
     public static final String CONNECTIVITY_URL="http://clients3.google.com/generate_204";
+    
+    /**
+     * Server address
+     */
+    public static String serverURL="http://192.168.177.1/";
     
     /**
 	 * Attributs for the project information
@@ -296,7 +304,7 @@ public class MainActivity extends Activity {
 	 */
 	@Override
 	public void onBackPressed(){
-		
+
 		int i=0;
 		for(Fragment f : fragments){
 			if(f.isVisible()){
@@ -307,5 +315,6 @@ public class MainActivity extends Activity {
 		if(i>0){
 			getActionBar().selectTab(getActionBar().getTabAt(i-1));
 		}
+
 	}
 }
