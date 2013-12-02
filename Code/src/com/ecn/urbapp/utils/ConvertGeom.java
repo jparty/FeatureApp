@@ -53,6 +53,7 @@ public class ConvertGeom{
 		s = s.replace("))", "");
 		ArrayList<String> tab = new ArrayList<String>(Arrays.asList(s.split(", ")));
 		for(String str : tab){
+			//TODO debug
 			list.add(new LatLng(Double.parseDouble(str.split(" ")[0]), Double.parseDouble(str.split(" ")[1])));
 		}
 		return list;
