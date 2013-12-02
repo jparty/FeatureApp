@@ -55,7 +55,7 @@ public class Sync
 	 * Get the max id of each critical tables in external DB
 	 * @return Hashmap of all max id
 	 */
-	public HashMap<String, Integer> getMaxId() {
+	public static HashMap<String, Integer> getMaxId() {
 		new BackTastMaxId().execute();
 		return maxId;
 	}
@@ -178,7 +178,7 @@ public class Sync
 	 * @author Sebastien
 	 *
 	 */
-	public class BackTastMaxId extends AsyncTask<Void, HashMap<String, Integer>, HashMap<String, Integer>> {
+	public static class BackTastMaxId extends AsyncTask<Void, HashMap<String, Integer>, HashMap<String, Integer>> {
 		
 		private Context mContext;
 		

@@ -104,12 +104,13 @@ public class SaveFragment extends Fragment{
     	}
     };
     
+    /**
+     * Debug method to show the maxID is working
+     */
     private OnClickListener OnClickMaxID = new OnClickListener(){
     	public void onClick(View view){
     		
-    		Sync synchroExt = new Sync();
-    		synchroExt.getMaxId();
-    		
+    		Sync.getMaxId();
     		
     	}
     };
