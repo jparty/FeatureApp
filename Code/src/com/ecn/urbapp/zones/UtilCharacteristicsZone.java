@@ -291,7 +291,6 @@ public final class UtilCharacteristicsZone {
 
 	public static void addInMainActivityZones(Polygon poly)
 			throws TopologyException, ParseException {
-		if (poly != null) {
 			List<PixelGeom> pixelGeomToRemove = new ArrayList<PixelGeom>();
 			List<Polygon> polygonsToAdd = new ArrayList<Polygon>();
 			Geometry geom = null;
@@ -321,8 +320,8 @@ public final class UtilCharacteristicsZone {
 			for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
 				if (poly.within(
 						ConvertGeom.pixelGeomToZone(oldPixelGeom).getPolygon())) {
-					geom = wktr.read(oldPixelGeom.getPixelGeom_the_geom());
-					Polygon polyGeom = createHole((Polygon) geom, poly);
+					Polygon polyGeom = (Polygon) wktr.read(oldPixelGeom.getPixelGeom_the_geom());
+					polyGeom = createHole(polyGeom, poly);
 					pixelGeomToRemove.add(oldPixelGeom);
 					polygonsToAdd.add(polyGeom);
 					polygonsToAdd.add(poly);
@@ -349,19 +348,20 @@ public final class UtilCharacteristicsZone {
 			}
 			if (polygonsToAdd.isEmpty()) {
 				PixelGeom pgeom = new PixelGeom();
-				pgeom.setPixelGeomId(MainActivity.pixelGeom.size() - 1);
 				pgeom.setPixelGeom_the_geom(geom.toText());
-				Element element = new Element();
-				element.setElement_id(MainActivity.element.size() + 1);
-				element.setPhoto_id(MainActivity.photo.getPhoto_id());
-				element.setPixelGeom_id(pgeom.getPixelGeomId());
-				element.setElement_color("" + Color.RED);
-				element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
-				MainActivity.element.add(element);
-				MainActivity.pixelGeom.add(pgeom);
+				addPixelGeom(pgeom, null);
 			} else {
+				Map<PixelGeom, Element> save = new HashMap<PixelGeom, Element>();
 				for (PixelGeom pgeom : pixelGeomToRemove) {
+					Element elt = null;
+					for (Element element : MainActivity.element) {
+						if (element.getPixelGeom_id() == pgeom.getPixelGeomId()) {
+							elt = element;
+						}
+					}
+					save.put(pgeom, elt);
 					MainActivity.pixelGeom.remove(pgeom);
+					MainActivity.element.remove(elt);
 				}
 				try {
 					for (Polygon polygon : polygonsToAdd) {
@@ -369,21 +369,29 @@ public final class UtilCharacteristicsZone {
 					}
 				} catch (TopologyException e) {
 					for (PixelGeom pgeom : pixelGeomToRemove) {
-						pgeom.setPixelGeomId(MainActivity.pixelGeom.size() + 1);
-						MainActivity.pixelGeom.add(pgeom);
-						Element element = new Element();
-						element.setElement_id(MainActivity.element.size() + 1);
-						element.setPhoto_id(MainActivity.photo.getPhoto_id());
-						element.setPixelGeom_id(pgeom.getPixelGeomId());
-						element.setElement_color("" + Color.RED);
-						element.setGpsGeom_id(MainActivity.photo
-								.getGpsGeom_id());
-						MainActivity.element.add(element);
+						addPixelGeom(pgeom, save.get(pgeom));
 					}
 					throw e;
 				}
 			}
+	}
+	
+	private static void addPixelGeom(PixelGeom pgeom, Element elt) {
+		pgeom.setPixelGeomId(MainActivity.pixelGeom.size() - 1);
+		Element element = new Element();
+		element.setElement_id(MainActivity.element.size() + 1);
+		element.setPhoto_id(MainActivity.photo.getPhoto_id());
+		element.setPixelGeom_id(pgeom.getPixelGeomId());
+		element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
+		if (elt == null) {
+			element.setElement_color("" + Color.RED);
+		} else {
+			element.setElement_color(elt.getElement_color());
+			element.setElementType_id(elt.getElementType_id());
+			element.setMaterial_id(elt.getMaterial_id());
 		}
+		MainActivity.element.add(element);
+		MainActivity.pixelGeom.add(pgeom);
 	}
 
 	private static List<Polygon> getPolygonsFromGeom(Geometry geom) {
