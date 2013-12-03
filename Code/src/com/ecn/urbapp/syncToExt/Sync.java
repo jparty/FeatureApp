@@ -1,8 +1,13 @@
 package com.ecn.urbapp.syncToExt;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,19 +19,20 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
 import com.google.gson.Gson;
 
-public class Sync
+public class Sync extends Activity
 {
 	public static HashMap<String, Integer> maxId;
 
@@ -40,7 +46,9 @@ public class Sync
 		
 			try
 			{
+				
 				new BackTaskExportToExt().execute();
+				
 				success = true;
 			}
 			catch (Exception e)
@@ -112,6 +120,13 @@ public class Sync
 			dataJson = gson.toJson(MainActivity.element);
 			jSonComplete += "{\"element\":"+dataJson+"}]";
 
+			/**
+			 * File upload request
+			 */
+			File mImage = new File(Environment.getExternalStorageDirectory(), "featureapp/"+MainActivity.photo.getPhoto_url());
+			
+			//TODO make the upload only when necessary !
+			doFileUpload(mImage);
 			return postData(jSonComplete);
 		}
 	 
@@ -157,6 +172,106 @@ public class Sync
 	        return null;
 	    }
 
+	    private boolean doFileUpload(File file) {
+			HttpURLConnection connection = null;
+			DataOutputStream outputStream = null;
+
+			String pathToOurFile = file.getPath();
+			String urlServer = MainActivity.serverURL+"uploadImage.php";
+			String lineEnd = "\r\n";
+			String twoHyphens = "--";
+			String boundary =  "*****";
+
+			// log path to our file
+			Log.d("DFHUPLOAD", pathToOurFile);
+
+			int bytesRead, bytesAvailable, bufferSize;
+			byte[] buffer;
+			int maxBufferSize = 1*1024*1024;
+			int sentBytes = 0;
+			long fileSize = file.length();
+
+			// log filesize
+			String files= String.valueOf(fileSize);
+			String buffers= String.valueOf(maxBufferSize);
+			Log.d("DFHUPLOAD",files);
+			Log.d("DFHUPLOAD",buffers);
+
+			try
+			{
+				FileInputStream fileInputStream = new FileInputStream(new File(pathToOurFile) );
+
+				URL url = new URL(urlServer);
+				connection = (HttpURLConnection) url.openConnection();
+
+				// Allow Inputs & Outputs
+				connection.setDoInput(true);
+				connection.setDoOutput(true);
+				connection.setUseCaches(false);
+
+				// Enable POST method
+				connection.setRequestMethod("POST");
+
+				connection.setRequestProperty("Connection", "Keep-Alive");
+				connection.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+
+				outputStream = new DataOutputStream( connection.getOutputStream() );
+				outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+				outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + pathToOurFile +"\"" + lineEnd);
+				outputStream.writeBytes(lineEnd);
+
+				bytesAvailable = fileInputStream.available();
+				bufferSize = Math.min(bytesAvailable, maxBufferSize);
+				buffer = new byte[bufferSize];
+
+				// Read file
+				bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+				while (bytesRead > 0)
+				{
+					outputStream.write(buffer, 0, bufferSize);
+					bytesAvailable = fileInputStream.available();
+					bufferSize = Math.min(bytesAvailable, maxBufferSize);
+					bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+					sentBytes += bufferSize;
+					//for progress bar publishProgress((int)(sentBytes * 100 / fileSize));
+
+					bytesAvailable = fileInputStream.available();
+					bufferSize = Math.min(bytesAvailable, maxBufferSize);
+					bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+				}
+
+				outputStream.writeBytes(lineEnd);
+				outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+				// Responses from the server (code and message)
+				connection.getResponseCode();
+
+				connection.getResponseMessage();
+
+
+				fileInputStream.close();
+				outputStream.flush();
+				outputStream.close();
+				try {
+					int responseCode = connection.getResponseCode();
+					return responseCode == 200;
+				} catch (IOException ioex) {
+					Log.e("DFHUPLOAD", "Upload file failed: " + ioex.getMessage(), ioex);
+					return false;
+				} catch (Exception e) {
+					Log.e("DFHUPLOAD", "Upload file failed: " + e.getMessage(), e);
+					return false;
+				}
+			}
+			catch (Exception ex)
+			{
+				String msg= ex.getMessage();
+				Log.d("DFHUPLOAD", msg);
+			}
+			return true;
+		}
 		
 		/**
 		 * The things to execute after the backTask 
