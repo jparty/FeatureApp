@@ -1,5 +1,7 @@
 package com.ecn.urbapp.db;
 
+import com.ecn.urbapp.syncToExt.Sync;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -144,7 +146,8 @@ public class Element extends DataObject {
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXELEMENTID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
-				this.setElement_id(1+cursor.getLong(0));
+				//this.setElement_id(1+cursor.getLong(0));
+				this.setElement_id(this.element_id+Sync.getMaxId().get("Photo"));
 			}
 			values.put(MySQLiteHelper.COLUMN_ELEMENTID, this.element_id);
 			values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);

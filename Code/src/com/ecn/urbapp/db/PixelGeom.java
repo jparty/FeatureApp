@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.syncToExt.Sync;
 
 public class PixelGeom extends DataObject  {
 
@@ -103,7 +104,8 @@ public class PixelGeom extends DataObject  {
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				long old_id = this.getPixelGeomId();
-				long new_id = 1+cursor.getLong(0);
+				//long new_id = 1+cursor.getLong(0);
+				long new_id = this.pixelGeom_id+Sync.getMaxId().get("PixelGeom");
 				this.setPixelGeomId(new_id);
 				this.trigger(old_id, new_id, MainActivity.element);
 				

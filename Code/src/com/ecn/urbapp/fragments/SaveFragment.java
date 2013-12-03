@@ -88,6 +88,8 @@ public class SaveFragment extends Fragment{
     			int duration = Toast.LENGTH_SHORT;
     			Toast toast = Toast.makeText(context, text, duration);
     			toast.show();
+        		Sync synchroExt = new Sync();
+        		synchroExt.doSync();
     		}
     		else{
     			Context context = MainActivity.baseContext;
@@ -103,8 +105,6 @@ public class SaveFragment extends Fragment{
     private OnClickListener OnClickSaveToExt = new OnClickListener(){
     	public void onClick(View view){
     		
-    		Sync synchroExt = new Sync();
-    		synchroExt.doSync();
     		
     		
     	}
