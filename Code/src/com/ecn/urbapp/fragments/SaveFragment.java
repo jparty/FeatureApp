@@ -82,6 +82,12 @@ public class SaveFragment extends Fragment{
         		saveComposedListToLocal(MainActivity.composed);
         		saveElementListToLocal(MainActivity.element); 		 		
         		MainActivity.datasource.close();
+        		
+    			Context context = MainActivity.baseContext;
+    			CharSequence text = "Sauvegarde ...";
+    			int duration = Toast.LENGTH_SHORT;
+    			Toast toast = Toast.makeText(context, text, duration);
+    			toast.show();
     		}
     		else{
     			Context context = MainActivity.baseContext;
