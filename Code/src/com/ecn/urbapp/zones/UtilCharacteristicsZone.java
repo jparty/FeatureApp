@@ -375,9 +375,9 @@ public final class UtilCharacteristicsZone {
 	}
 	
 	private static void addPixelGeom(PixelGeom pgeom, Element elt) {
-		pgeom.setPixelGeomId(MainActivity.pixelGeom.size() + 1);
+		pgeom.setPixelGeomId(GetId.PixelGeom());
 		Element element = new Element();
-		element.setElement_id(MainActivity.element.size() + 1);
+		element.setElement_id(GetId.Element());
 		element.setPhoto_id(MainActivity.photo.getPhoto_id());
 		element.setPixelGeom_id(pgeom.getPixelGeomId());
 		element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());

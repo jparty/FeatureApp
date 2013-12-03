@@ -592,7 +592,15 @@ public class ZoneFragment extends Fragment{
 							}
 						}
 						if(pgeom.getPixelGeomId()!=0){
-							MainActivity.pixelGeom.remove((int)pgeom.getPixelGeomId()-1);
+							int i=-1;
+							for(i=0; i<MainActivity.pixelGeom.size(); i++){
+								if(MainActivity.pixelGeom.get(i).getPixelGeomId()==pgeom.getPixelGeomId()){
+									break;
+								}
+							}
+							if(i>-1){
+								MainActivity.pixelGeom.remove(i);
+							}
 						}
 						long id=0;
 						for(Element el : MainActivity.element){
@@ -601,10 +609,16 @@ public class ZoneFragment extends Fragment{
 							}
 						}
 						if(id!=0){
-							MainActivity.element.remove((int)id-1);
-						}
-						
-						//MainActivity.zones.remove(zoneCache);						
+							int i=-1;
+							for(i=0; i<MainActivity.element.size(); i++){
+								if(MainActivity.element.get(i).getElement_id()==id){
+									break;
+								}
+							}
+							if(i>-1){
+								MainActivity.element.remove(i);
+							}
+						}				
 			            exitAction();
 					}
 				}
