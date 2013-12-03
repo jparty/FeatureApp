@@ -115,9 +115,7 @@ public class SaveFragment extends Fragment{
      */
     private OnClickListener OnClickMaxID = new OnClickListener(){
     	public void onClick(View view){
-    		
     		Sync.getMaxId();
-    		
     	}
     };
 	
