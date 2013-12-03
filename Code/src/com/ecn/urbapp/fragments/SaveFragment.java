@@ -105,7 +105,8 @@ public class SaveFragment extends Fragment{
     private OnClickListener OnClickSaveToExt = new OnClickListener(){
     	public void onClick(View view){
     		
-    		
+    		Sync synchroExt = new Sync();
+    		synchroExt.doSync();
     		
     	}
     };

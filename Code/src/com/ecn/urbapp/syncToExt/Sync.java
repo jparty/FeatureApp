@@ -30,6 +30,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Photo;
 import com.google.gson.Gson;
 
 public class Sync
@@ -114,7 +115,9 @@ public class Sync
 			dataJson = gson.toJson(MainActivity.pixelGeom);
 			jSonComplete += "{\"pixelgeom\":"+dataJson+"},";
 
-			dataJson = gson.toJson(MainActivity.photo);
+			ArrayList<Photo> photos = new ArrayList<Photo>();
+			photos.add(MainActivity.photo);
+			dataJson = gson.toJson(photos);
 			jSonComplete += "{\"photo\":"+dataJson+"},";
 
 			dataJson = gson.toJson(MainActivity.project);
@@ -176,6 +179,7 @@ public class Sync
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        } ;
+	        //TODO catch the nulpointer case
 	        return null;
 	    }
 
@@ -377,7 +381,7 @@ public class Sync
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        } ;
-	        return null;
+	        return "error";
 	    }
 
 		
