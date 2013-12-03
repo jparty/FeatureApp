@@ -18,6 +18,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
+    <ImageView 
+        android:id="@+id/save_image_status"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/image"
+        android:contentDescription="@string/image_save"/>
     
     <TextView 
         android:id="@+id/save_text_status"

@@ -18,6 +18,7 @@
     <string name="loadLocalProject">Charger un projet local</string>
     <string name="image_loadDistantProject">Image : chargement d\'un projet distant</string>
     <string name="loadDistantlProject">Charger un projet distant</string>
+    <string name="image_save">Image : sauvegarde</string>
     
     <string name="fragmentName">Name</string>
     <string name="param">Paramètres</string>
