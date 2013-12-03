@@ -22,16 +22,6 @@ public class GpsGeom extends DataObject{
 	 */
 	private String gpsGeom_address;
 
-	public void setAddress(String s){
-		gpsGeom_address=s;
-	}
-	
-	public String getAddress(){
-		return gpsGeom_address;
-	}
-
-	
-	
 	
 	//Getters
 	//TODO Adddescription for javadoc
@@ -43,10 +33,10 @@ public class GpsGeom extends DataObject{
 	public String getGpsGeomCord() {
 		return gpsGeom_the_geom;
 	}
-
 	
-	
-	
+	public String getAddress(){
+		return gpsGeom_address;
+	}	
 	
 	//Setters
 	//TODO Adddescription for javadoc
@@ -60,8 +50,11 @@ public class GpsGeom extends DataObject{
 	}
 
 	
+	public void setAddress(String s){
+		gpsGeom_address=s;
+	}
 	
-	
+
 	
 	
 	//Ovveride methods

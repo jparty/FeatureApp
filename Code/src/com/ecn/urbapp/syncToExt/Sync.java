@@ -112,6 +112,14 @@ public class Sync
 			dataJson = gson.toJson(MainActivity.element);
 			jSonComplete += "{\"element\":"+dataJson+"}]";
 
+			/**
+			 * File upload request
+			 */
+			File mImage = new File(Environment.getExternalStorageDirectory(), "featureapp/"+MainActivity.photo.getPhoto_url());
+			
+			//TODO make the upload only when necessary !
+			doFileUpload(mImage);
+
 			return postData(jSonComplete);
 		}
 	 
