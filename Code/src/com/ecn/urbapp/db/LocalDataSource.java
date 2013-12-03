@@ -725,6 +725,7 @@ public class LocalDataSource {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast()){
 			PixelGeom p1 = cursorToPixelGeom(cursor);
+			p1.setRegistredInLocal(true);
 			pixelGeomList.add(p1);
 			cursor.moveToNext();
 		}
@@ -757,6 +758,7 @@ public class LocalDataSource {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast()){
 			Element p1 = cursorToElement(cursor);
+			p1.setRegistredInLocal(true);
 			elementList.add(p1);
 			cursor.moveToNext();
 		}
@@ -792,6 +794,7 @@ public class LocalDataSource {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast()){
 			GpsGeom p1 = cursorToGpsGeom(cursor);
+			p1.setRegistredInLocal(true);
 			gpsGeomList.add(p1);
 			cursor.moveToNext();
 		}
@@ -828,6 +831,7 @@ public class LocalDataSource {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast()){
 			Project p1 = cursorToProject(cursor);
+			p1.setRegistredInLocal(true);
 			projectList.add(p1);
 			cursor.moveToNext();
 		}
