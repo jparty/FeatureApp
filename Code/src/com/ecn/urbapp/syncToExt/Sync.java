@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -22,7 +23,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -30,11 +30,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Photo;
 import com.google.gson.Gson;
 
-public class Sync extends Activity
+public class Sync
 {
-	public static HashMap<String, Integer> maxId;
+	public static HashMap<String, Integer> maxId = new HashMap<String, Integer>();
 
 	/**
 	 * Launch the sync to external DB
@@ -46,9 +47,7 @@ public class Sync extends Activity
 		
 			try
 			{
-				
 				new BackTaskExportToExt().execute();
-				
 				success = true;
 			}
 			catch (Exception e)
@@ -64,7 +63,15 @@ public class Sync extends Activity
 	 * @return Hashmap of all max id
 	 */
 	public static HashMap<String, Integer> getMaxId() {
-		new BackTastMaxId().execute();
+		try {
+			maxId = new BackTastMaxId().execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return maxId;
 	}
 
@@ -108,7 +115,9 @@ public class Sync extends Activity
 			dataJson = gson.toJson(MainActivity.pixelGeom);
 			jSonComplete += "{\"pixelgeom\":"+dataJson+"},";
 
-			dataJson = gson.toJson(MainActivity.photo);
+			ArrayList<Photo> photos = new ArrayList<Photo>();
+			photos.add(MainActivity.photo);
+			dataJson = gson.toJson(photos);
 			jSonComplete += "{\"photo\":"+dataJson+"},";
 
 			dataJson = gson.toJson(MainActivity.project);
@@ -127,6 +136,7 @@ public class Sync extends Activity
 			
 			//TODO make the upload only when necessary !
 			doFileUpload(mImage);
+
 			return postData(jSonComplete);
 		}
 	 
@@ -169,110 +179,110 @@ public class Sync extends Activity
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        } ;
+	        //TODO catch the nulpointer case
 	        return null;
 	    }
 
 	    private boolean doFileUpload(File file) {
-			HttpURLConnection connection = null;
-			DataOutputStream outputStream = null;
+            HttpURLConnection connection = null;
+            DataOutputStream outputStream = null;
 
-			String pathToOurFile = file.getPath();
-			String urlServer = MainActivity.serverURL+"uploadImage.php";
-			String lineEnd = "\r\n";
-			String twoHyphens = "--";
-			String boundary =  "*****";
+            String pathToOurFile = file.getPath();
+            String urlServer = MainActivity.serverURL+"uploadImage.php";
+            String lineEnd = "\r\n";
+            String twoHyphens = "--";
+            String boundary = "*****";
 
-			// log path to our file
-			Log.d("DFHUPLOAD", pathToOurFile);
+            // log path to our file
+            Log.d("DFHUPLOAD", pathToOurFile);
 
-			int bytesRead, bytesAvailable, bufferSize;
-			byte[] buffer;
-			int maxBufferSize = 1*1024*1024;
-			int sentBytes = 0;
-			long fileSize = file.length();
+            int bytesRead, bytesAvailable, bufferSize;
+            byte[] buffer;
+            int maxBufferSize = 1*1024*1024;
+            int sentBytes = 0;
+            long fileSize = file.length();
 
-			// log filesize
-			String files= String.valueOf(fileSize);
-			String buffers= String.valueOf(maxBufferSize);
-			Log.d("DFHUPLOAD",files);
-			Log.d("DFHUPLOAD",buffers);
+            // log filesize
+            String files= String.valueOf(fileSize);
+            String buffers= String.valueOf(maxBufferSize);
+            Log.d("DFHUPLOAD",files);
+            Log.d("DFHUPLOAD",buffers);
 
-			try
-			{
-				FileInputStream fileInputStream = new FileInputStream(new File(pathToOurFile) );
+            try
+            {
+                    FileInputStream fileInputStream = new FileInputStream(new File(pathToOurFile) );
 
-				URL url = new URL(urlServer);
-				connection = (HttpURLConnection) url.openConnection();
+                    URL url = new URL(urlServer);
+                    connection = (HttpURLConnection) url.openConnection();
 
-				// Allow Inputs & Outputs
-				connection.setDoInput(true);
-				connection.setDoOutput(true);
-				connection.setUseCaches(false);
+                    // Allow Inputs & Outputs
+                    connection.setDoInput(true);
+                    connection.setDoOutput(true);
+                    connection.setUseCaches(false);
 
-				// Enable POST method
-				connection.setRequestMethod("POST");
+                    // Enable POST method
+                    connection.setRequestMethod("POST");
 
-				connection.setRequestProperty("Connection", "Keep-Alive");
-				connection.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+                    connection.setRequestProperty("Connection", "Keep-Alive");
+                    connection.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
 
-				outputStream = new DataOutputStream( connection.getOutputStream() );
-				outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-				outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + pathToOurFile +"\"" + lineEnd);
-				outputStream.writeBytes(lineEnd);
+                    outputStream = new DataOutputStream( connection.getOutputStream() );
+                    outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+                    outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + pathToOurFile +"\"" + lineEnd);
+                    outputStream.writeBytes(lineEnd);
 
-				bytesAvailable = fileInputStream.available();
-				bufferSize = Math.min(bytesAvailable, maxBufferSize);
-				buffer = new byte[bufferSize];
+                    bytesAvailable = fileInputStream.available();
+                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    buffer = new byte[bufferSize];
 
-				// Read file
-				bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                    // Read file
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
-				while (bytesRead > 0)
-				{
-					outputStream.write(buffer, 0, bufferSize);
-					bytesAvailable = fileInputStream.available();
-					bufferSize = Math.min(bytesAvailable, maxBufferSize);
-					bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                    while (bytesRead > 0)
+                    {
+                            outputStream.write(buffer, 0, bufferSize);
+                            bytesAvailable = fileInputStream.available();
+                            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
-					sentBytes += bufferSize;
-					//for progress bar publishProgress((int)(sentBytes * 100 / fileSize));
+                            sentBytes += bufferSize;
+                            //for progress bar publishProgress((int)(sentBytes * 100 / fileSize));
 
-					bytesAvailable = fileInputStream.available();
-					bufferSize = Math.min(bytesAvailable, maxBufferSize);
-					bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-				}
+                            bytesAvailable = fileInputStream.available();
+                            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                    }
 
-				outputStream.writeBytes(lineEnd);
-				outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                    outputStream.writeBytes(lineEnd);
+                    outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
-				// Responses from the server (code and message)
-				connection.getResponseCode();
+                    // Responses from the server (code and message)
+                    connection.getResponseCode();
 
-				connection.getResponseMessage();
+                    connection.getResponseMessage();
 
 
-				fileInputStream.close();
-				outputStream.flush();
-				outputStream.close();
-				try {
-					int responseCode = connection.getResponseCode();
-					return responseCode == 200;
-				} catch (IOException ioex) {
-					Log.e("DFHUPLOAD", "Upload file failed: " + ioex.getMessage(), ioex);
-					return false;
-				} catch (Exception e) {
-					Log.e("DFHUPLOAD", "Upload file failed: " + e.getMessage(), e);
-					return false;
-				}
-			}
-			catch (Exception ex)
-			{
-				String msg= ex.getMessage();
-				Log.d("DFHUPLOAD", msg);
-			}
-			return true;
-		}
-		
+                    fileInputStream.close();
+                    outputStream.flush();
+                    outputStream.close();
+                    try {
+                            int responseCode = connection.getResponseCode();
+                            return responseCode == 200;
+                    } catch (IOException ioex) {
+                            Log.e("DFHUPLOAD", "Upload file failed: " + ioex.getMessage(), ioex);
+                            return false;
+                    } catch (Exception e) {
+                            Log.e("DFHUPLOAD", "Upload file failed: " + e.getMessage(), e);
+                            return false;
+                    }
+            }
+            catch (Exception ex)
+            {
+                    String msg= ex.getMessage();
+                    Log.d("DFHUPLOAD", msg);
+            }
+            return true;
+    }
 		/**
 		 * The things to execute after the backTask 
 		 */
@@ -371,7 +381,7 @@ public class Sync extends Activity
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        } ;
-	        return null;
+	        return "error";
 	    }
 
 		
@@ -382,7 +392,6 @@ public class Sync extends Activity
 	    	if (!result.isEmpty()){
 	    		//TODO change the message so not to be in debug mode :)
 	    		Toast.makeText(mContext, result.toString(), Toast.LENGTH_SHORT).show();
-	    		maxId = result;
 	    	}
 	    	else {
 		        Toast.makeText(mContext, "Erreur dans la communication avec le serveur", Toast.LENGTH_SHORT).show();

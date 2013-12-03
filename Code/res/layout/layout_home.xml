@@ -50,6 +50,7 @@
                 android:layout_alignParentLeft="true"
                 android:text="@string/loadPicture"/>
             
+
             
         </RelativeLayout>
         

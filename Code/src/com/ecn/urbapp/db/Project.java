@@ -21,10 +21,6 @@ public class Project extends DataObject {
 
 	
 	//Getters
-	//TODO Adddescription for javadoc
-	public String getExt_GpsGeomCoord() {
-		return Ext_GpsGeomCoord;
-	}
 	
 	//TODO Adddescription for javadoc
 	public long getGpsGeom_id() {
@@ -41,6 +37,10 @@ public class Project extends DataObject {
 		return project_name;
 	}
 	
+	//TODO Adddescription for javadoc
+	public String getExt_GpsGeomCoord() {
+		return Ext_GpsGeomCoord;
+	}
 
 	//Setters
 	//TODO Adddescription for javadoc

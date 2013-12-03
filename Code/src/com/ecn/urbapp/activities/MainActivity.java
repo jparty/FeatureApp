@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
     /**
      * Server address
      */
-    public static String serverURL="http://192.168.1.1";
+    public static String serverURL="http://192.168.1.1/";
     
     /**
 	 * Attributs for the project information

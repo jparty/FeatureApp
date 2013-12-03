@@ -29,22 +29,9 @@ public class Photo extends DataObject  {
 	
 	//Getters
 	//TODO Adddescription for javadoc
-	public long getGpsGeom_id() {
-		return gpsGeom_id;
-	}
-
-	//TODO Adddescription for javadoc
-	public void setGpsGeom_id(long gpsGeom_id) {
-		this.gpsGeom_id = gpsGeom_id;
-	}
-
-	//TODO Adddescription for javadoc
 	private String Ext_GpsGeomCoord;
 
-	//TODO Adddescription for javadoc
-	public String getExt_GpsGeomCoord() {
-		return Ext_GpsGeomCoord;
-	}
+	
 
 	//TODO Adddescription for javadoc
 	public long getPhoto_id() {
@@ -60,12 +47,26 @@ public class Photo extends DataObject  {
 	public String getPhoto_author() {
 		return photo_author;
 	}
+	public String getPhoto_url() {
+		return photo_url;
+	}
+
+	
+	//TODO Adddescription for javadoc
+		public long getGpsGeom_id() {
+			return gpsGeom_id;
+		}
+
+		//TODO Adddescription for javadoc
+		public void setGpsGeom_id(long gpsGeom_id) {
+			this.gpsGeom_id = gpsGeom_id;
+		}
 	
 	
-	
-	
-	
-	
+		//TODO Adddescription for javadoc
+		public String getExt_GpsGeomCoord() {
+			return Ext_GpsGeomCoord;
+		}
 	
 	//Setters
 	//TODO Adddescription for javadoc
@@ -73,10 +74,7 @@ public class Photo extends DataObject  {
 		Ext_GpsGeomCoord = ext_GpsGeomCoord;
 	}
 
-	public String getPhoto_url() {
-		return photo_url;
-	}
-
+	
 	//TODO Adddescription for javadoc
 	public void setPhoto_url(String photo_url) {
 		this.photo_url = photo_url;
