@@ -57,8 +57,6 @@ public class CharacteristicsFragment extends Fragment {
 
 	/** Button to show a summary of the characteristics of the selected zones */
 	private Button recap = null;
-	
-	private Vector<Zone> zones = null;
 
 	/**
 	 * Returns the Image used in this project.
@@ -80,18 +78,6 @@ public class CharacteristicsFragment extends Fragment {
 		define = (Button) v.findViewById(R.id.definition_button_define);
 		delete = (Button) v.findViewById(R.id.definition_button_delete);
 		recap = (Button) v.findViewById(R.id.definition_button_recap);
-		
-		zones = new Vector<Zone>();
-		
-		for(PixelGeom pg : MainActivity.pixelGeom){
-			zones.add(ConvertGeom.pixelGeomToZone(pg));
-		}
-
-		for (Zone zone : zones) {
-			if (!zone.getPoints().get(0).equals(zone.getPoints().get(zone.getPoints().size() - 1))) {
-				zone.addPoint(zone.getPoints().get(0));
-			}
-		}
 
 
 		MainActivity.sphoto=new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());
