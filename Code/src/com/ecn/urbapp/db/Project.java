@@ -92,9 +92,13 @@ public class Project extends DataObject {
 		
 			
 		if(this.registredInLocal){
-			String[] s=new String[1];
+			/*String[] s=new String[1];
 			s[0]= ""+this.project_id;
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_PROJECT, values, MySQLiteHelper.COLUMN_PROJECTID,s );
+			*/
+
+			String str = "project_id "+"="+this.project_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_PROJECT, values, str, null);
 		}
 		else{
 			//TODO trigger

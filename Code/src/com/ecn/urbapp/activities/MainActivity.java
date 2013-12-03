@@ -280,7 +280,12 @@ public class MainActivity extends Activity {
             	confirm();
                 getActionBar().setSelectedNavigationItem(2);
                 MainActivity.isPhoto=true;
+                datasource.instanciateAllElement();
+                datasource.instanciateAllGpsGeom();
+                datasource.instanciateAllProject();
                 datasource.instanciateAllpixelGeom(); //load pixelGeom linked to the photo in the relative public static arrayList
+                MainActivity.projectSet=true;
+                MainActivity.photo.setRegistredInLocal(true);
                 Log.w("papa","p");
             }
         }

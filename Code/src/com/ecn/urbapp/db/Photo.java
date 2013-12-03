@@ -131,9 +131,13 @@ public class Photo extends DataObject  {
 		
 		
 		if(this.registredInLocal){
-			String[] s=new String[1];
+			/*String[] s=new String[1];
 			s[0]= ""+this.photo_id;
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_PHOTO, values, MySQLiteHelper.COLUMN_PHOTOID,s );
+			*/
+
+			String str = "photo_id "+"="+this.photo_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_PHOTO, values, str, null);
 		}
 		else{
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXPHOTOID, null);

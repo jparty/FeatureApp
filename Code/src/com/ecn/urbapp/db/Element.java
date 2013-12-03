@@ -131,9 +131,13 @@ public class Element extends DataObject {
 		values.put(MySQLiteHelper.COLUMN_ELEMENTCOLOR, this.element_color);
 		
 		if(this.registredInLocal){
-			String[] s=new String[1];
+			/*String[] s=new String[1];
 			s[0]= ""+this.element_id;
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_ELEMENT, values, MySQLiteHelper.COLUMN_ELEMENTID,s );
+*/
+			
+			String str = "element_id "+"="+this.element_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_ELEMENT, values, str, null);
 		}
 		else{
 			//TODO trigger

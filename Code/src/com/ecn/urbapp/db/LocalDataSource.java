@@ -725,11 +725,118 @@ public class LocalDataSource {
 		cursor.moveToFirst();
 		while(!cursor.isAfterLast()){
 			PixelGeom p1 = cursorToPixelGeom(cursor);
+			p1.setRegistredInLocal(true);
 			pixelGeomList.add(p1);
 			cursor.moveToNext();
 		}
 		cursor.close();
 		MainActivity.pixelGeom= pixelGeomList;		
+		
+	}
+	
+	/**
+	 * SQL query that select every pixelgeom link to the registred photo
+	 */
+	private static final String
+	GETALLELEMENTFROMAPHOTO = 
+		"SELECT "
+		+ "* "
+		+" FROM "
+		+ MySQLiteHelper.TABLE_ELEMENT
+		+" WHERE " + MySQLiteHelper.TABLE_ELEMENT + "." + MySQLiteHelper.COLUMN_PHOTOID+" = " 
+		//need to complete with PHOTO_ID and ";"
+	;
+
+	/**
+	 * register values from the above query in the static public field pixelGeom (instance of arrayList) from MainActivity
+	 */
+	public void instanciateAllElement(){
+		ArrayList<Element> elementList = new ArrayList<Element>();
+		
+		Cursor cursor = database.rawQuery(GETALLELEMENTFROMAPHOTO + MainActivity.photo.getPhoto_id() +" ;",null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			Element p1 = cursorToElement(cursor);
+			p1.setRegistredInLocal(true);
+			elementList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		MainActivity.element= elementList;		
+		
+	}
+	
+	/**
+	 * SQL query that select every pixelgeom link to the registred photo
+	 */
+	private static final String
+	GETALLGPSGEOMFROMAPHOTO = 
+		"SELECT "
+		+ MySQLiteHelper.TABLE_GPSGEOM+"."+MySQLiteHelper.COLUMN_GPSGEOMID+", "
+		+ MySQLiteHelper.TABLE_GPSGEOM+"."+MySQLiteHelper.COLUMN_GPSGEOMCOORD
+		+" FROM "
+		+ MySQLiteHelper.TABLE_GPSGEOM
+		+" INNER JOIN " + MySQLiteHelper.TABLE_PHOTO 
+		+" ON " + MySQLiteHelper.TABLE_GPSGEOM + "." + MySQLiteHelper.COLUMN_GPSGEOMID +" = " + MySQLiteHelper.TABLE_PHOTO + "." + MySQLiteHelper.COLUMN_GPSGEOMID
+		+" WHERE " + MySQLiteHelper.TABLE_PHOTO + "." + MySQLiteHelper.COLUMN_PHOTOID+" = " 
+		//need to complete with PHOTO_ID and ";"
+	;
+
+	/**
+	 * register values from the above query in the static public field pixelGeom (instance of arrayList) from MainActivity
+	 */
+	public void instanciateAllGpsGeom(){
+		ArrayList<GpsGeom> gpsGeomList = new ArrayList<GpsGeom>();
+		
+		Cursor cursor = database.rawQuery(GETALLGPSGEOMFROMAPHOTO + MainActivity.photo.getPhoto_id() +" ;",null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			GpsGeom p1 = cursorToGpsGeom(cursor);
+			p1.setRegistredInLocal(true);
+			gpsGeomList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		MainActivity.gpsGeom= gpsGeomList;		
+		
+	}
+	
+	/**
+	 * SQL query that select every pixelgeom link to the registred photo
+	 */
+	private static final String
+	GETALLPROJECTFROMAPHOTO = 
+		"SELECT "
+		+ MySQLiteHelper.TABLE_PROJECT+"."+MySQLiteHelper.COLUMN_PROJECTID+", "
+		+ MySQLiteHelper.TABLE_PROJECT+"."+MySQLiteHelper.COLUMN_GPSGEOMID+", "
+		+ MySQLiteHelper.TABLE_PROJECT+"."+MySQLiteHelper.COLUMN_PROJECTNAME
+		+" FROM "
+		+ MySQLiteHelper.TABLE_PROJECT
+		+" INNER JOIN " + MySQLiteHelper.TABLE_COMPOSED 
+		+" ON " + MySQLiteHelper.TABLE_PROJECT + "." + MySQLiteHelper.COLUMN_PROJECTID +" = " + MySQLiteHelper.TABLE_COMPOSED + "." + MySQLiteHelper.COLUMN_PROJECTID
+		+" WHERE " + MySQLiteHelper.TABLE_COMPOSED + "." + MySQLiteHelper.COLUMN_PHOTOID+" = " 
+		//need to complete with PHOTO_ID and ";"
+	;
+
+	/**
+	 * register values from the above query in the static public field pixelGeom (instance of arrayList) from MainActivity
+	 */
+	public void instanciateAllProject(){
+		ArrayList<Project> projectList = new ArrayList<Project>();
+		
+		Cursor cursor = database.rawQuery(GETALLPROJECTFROMAPHOTO + MainActivity.photo.getPhoto_id() +" ;",null);
+		
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()){
+			Project p1 = cursorToProject(cursor);
+			p1.setRegistredInLocal(true);
+			projectList.add(p1);
+			cursor.moveToNext();
+		}
+		cursor.close();
+		MainActivity.project= projectList;		
 		
 	}
 	

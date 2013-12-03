@@ -85,9 +85,12 @@ public class GpsGeom extends DataObject{
 		values.put(MySQLiteHelper.COLUMN_GPSGEOMCOORD, this.gpsGeom_the_geom);
 		
 		if(this.registredInLocal){
-			String[] s=new String[1];
-			s[0]= ""+this.gpsGeom_id;
-			datasource.getDatabase().update(MySQLiteHelper.TABLE_GPSGEOM, values, MySQLiteHelper.COLUMN_GPSGEOMID,s );
+			//String[] s=new String[1];
+			//s[0]= ""+this.gpsGeom_id;
+			
+			String str = "gpsGeom_id "+"="+this.gpsGeom_id;
+			//datasource.getDatabase().update(MySQLiteHelper.TABLE_GPSGEOM, values, MySQLiteHelper.COLUMN_GPSGEOMID,s );
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_GPSGEOM, values, str, null);
 		}
 		else{
 			

@@ -90,9 +90,12 @@ public class PixelGeom extends DataObject  {
 		values.put(MySQLiteHelper.COLUMN_PIXELGEOMCOORD, this.pixelGeom_the_geom);
 		
 		if(this.registredInLocal){
-			String[] s=new String[1];
+			/*String[] s=new String[1];
 			s[0]= ""+this.pixelGeom_id;
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_PIXELGEOM, values, MySQLiteHelper.COLUMN_PIXELGEOMID,s );
+*/
+			String str = "pixelGeom_id "+"="+this.pixelGeom_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_PIXELGEOM, values, str, null);
 		}
 		else{
 			//TODO trigger
