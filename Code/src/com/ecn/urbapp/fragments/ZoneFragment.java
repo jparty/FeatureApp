@@ -110,7 +110,7 @@ public class ZoneFragment extends Fragment{
 		create_back.setOnClickListener(createBackListener);
 		create_cancel.setOnClickListener(createCancelListener);
 		create_validate.setOnClickListener(createValidateListener);
-		create_edit.setOnClickListener(editListener);//TODO change listener !
+		create_edit.setOnClickListener(editListener);
 
 		delete_cancel = (Button) v.findViewById(R.id.zone_delete_button_cancel);
 		delete_help = (Button) v.findViewById(R.id.zone_delete_button_help);

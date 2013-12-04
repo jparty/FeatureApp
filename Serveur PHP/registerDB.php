@@ -11,7 +11,8 @@ if(isset($_POST["myHttpData"])) { //if there is data to import in the database
 	 
 	 $values = array();
 	 $update_values = array();
-	 $sql='';
+	 $sql='BEGIN;
+	 ';
 	 
 	 //we parse every table passed in the json
 	 for ($x=0;$x<$count;$x++){
@@ -80,7 +81,7 @@ if(isset($_POST["myHttpData"])) { //if there is data to import in the database
 			}
 		}		
 	 }
-	
+	$sql .="COMMIT;";
 	$bool = pg_query($conn,$sql);
 	
 	 
@@ -97,21 +98,9 @@ if(isset($_POST["myHttpData"])) { //if there is data to import in the database
 	
 }
 else {
-	$retour = pg_query($conn,"SELECT * FROM Comments");
-
-	$resultats=array('comments' => array()); 
-	
-	While($ligne = pg_fetch_assoc($retour)) { 
-		foreach($ligne as $cle => $valeur){ 
-			$tableau[$cle] = $valeur; 
-		}
-		$resultats['comments'][]=$tableau; 
-	}
-	
-	$resultatsJSON = json_encode($resultats);
-
-	print($resultatsJSON); pg_close($conn); 
+	echo 'Post manquant';
 }
+pg_close($conn);
 ?>
 
 

@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Photo;
+import com.ecn.urbapp.db.Project;
 import com.google.gson.Gson;
 
 public class Sync
@@ -38,10 +39,10 @@ public class Sync
 	public static HashMap<String, Integer> maxId = new HashMap<String, Integer>();
 
 	/**
-	 * Launch the sync to external DB
+	 * Launch the sync to external DB (export mode)
 	 * @return Boolean if success of not
 	 */
-	public Boolean doSync()
+	public Boolean doSyncToExt()
 	{
 		Boolean success = false;
 		
@@ -57,6 +58,23 @@ public class Sync
 		return success;
 	}
 	
+	/**
+	 * 
+	 * @return Boolean if success of not
+	 */
+	public Boolean getProjectsFromExt()
+	{
+		Boolean success = false;
+			try
+			{
+				success = true;
+			}
+			catch (Exception e)
+			{
+			}
+		
+		return success;
+	}
 	
 	/**
 	 * Get the max id of each critical tables in external DB
@@ -397,7 +415,5 @@ public class Sync
 		        Toast.makeText(mContext, "Erreur dans la communication avec le serveur", Toast.LENGTH_SHORT).show();
 	    	}
 	    }
-	    
-
 	}
 }
