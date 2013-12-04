@@ -139,6 +139,16 @@ public class MainActivity extends Activity {
 		photo = new Photo();
 		
 		
+		//Instanciation of the elements  for the database
+		composed = new ArrayList<Composed>();
+		element = new ArrayList<Element>();
+		elementType = new ArrayList<ElementType>();
+		gpsGeom = new ArrayList<GpsGeom>();
+		material = new ArrayList<Material>();
+		pixelGeom = new ArrayList<PixelGeom>();
+		project = new ArrayList<Project>();
+		photo = new Photo();
+		
 		fragments=new Vector<Fragment>();
 		
 		//Setting the Context of app
