@@ -1,6 +1,7 @@
 package com.ecn.urbapp.fragments;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import android.app.Fragment;
@@ -20,7 +21,6 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
@@ -32,6 +32,7 @@ import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.ecn.urbapp.zones.Zone;
+
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -59,7 +60,7 @@ public class ZoneFragment extends Fragment{
 	private Button create_help;
 	private Button create_cancel;
 	private Button create_validate;
-	private Button create_edit;	
+	//private Button create_edit;	
 
 	private Button delete_cancel;
 	private Button delete_help;
@@ -98,18 +99,21 @@ public class ZoneFragment extends Fragment{
 		create_help = (Button) v.findViewById(R.id.zone_create_button_help);
 		create_cancel = (Button) v.findViewById(R.id.zone_create_button_cancel);
 		create_validate = (Button) v.findViewById(R.id.zone_create_button_validate);
-		create_edit = (Button) v.findViewById(R.id.zone_create_button_edit);
+		//TODO DONT DELETE THAT §§§§§
+		//create_edit = (Button) v.findViewById(R.id.zone_create_button_edit);
 		
 		create_back.setVisibility(View.GONE);
 		create_help.setVisibility(View.GONE);
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
-		create_edit.setVisibility(View.GONE);
+		//TODO DONT DELETE THAT §§§§§
+		//create_edit.setVisibility(View.GONE);
 
 		create_back.setOnClickListener(createBackListener);
 		create_cancel.setOnClickListener(createCancelListener);
 		create_validate.setOnClickListener(createValidateListener);
-		create_edit.setOnClickListener(editListener);//TODO change listener !
+		//TODO DONT DELETE THAT §§§§§
+		//create_edit.setOnClickListener(editListener);//TODO change listener !
 
 		delete_cancel = (Button) v.findViewById(R.id.zone_delete_button_cancel);
 		delete_help = (Button) v.findViewById(R.id.zone_delete_button_help);
@@ -162,7 +166,10 @@ public class ZoneFragment extends Fragment{
 		drawzoneview.setRatio(ratio);
 		TOUCH_RADIUS_TOLERANCE/=ratio;
 		
-		myImage.setImageDrawable(new LayerDrawable(drawables));			
+		myImage.setImageDrawable(new LayerDrawable(drawables));	
+		
+		myImage.setOnTouchListener(deleteImageTouchListener);
+		
 		return v;
 	}
 	
@@ -177,7 +184,9 @@ public class ZoneFragment extends Fragment{
 		create_help.setVisibility(View.GONE);
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
-		create_edit.setVisibility(View.GONE);
+
+		//TODO DONT DELETE THAT §§§§§
+		//create_edit.setVisibility(View.GONE);
 	}
 	
 	private void exitAction(){
@@ -191,7 +200,9 @@ public class ZoneFragment extends Fragment{
 		create_help.setVisibility(View.GONE);
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
-		create_edit.setVisibility(View.GONE);
+
+		//TODO DONT DELETE THAT §§§§§
+		//create_edit.setVisibility(View.GONE);
 		
 		edit_cancel.setVisibility(View.GONE);
 		edit_validate.setVisibility(View.GONE);
@@ -228,15 +239,14 @@ public class ZoneFragment extends Fragment{
     		create_help.setVisibility(View.VISIBLE);
     		create_cancel.setVisibility(View.VISIBLE);
     		create_validate.setVisibility(View.VISIBLE);
-            create_edit.setVisibility(View.VISIBLE);
+
+    		//TODO DONT DELETE THAT §§§§§
+            //create_edit.setVisibility(View.VISIBLE);
     		
     		getView().findViewById(R.id.zone_create_button_validate).setEnabled(false);
     		getView().findViewById(R.id.zone_create_button_back).setEnabled(false);
     		
     		myImage.setOnTouchListener(imageCreateTouchListener);
-    		
-    		CharSequence text = "Veuillez ajouter au minimum 3 points";
-			Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
         }
 	};
     private OnClickListener createBackListener = new View.OnClickListener() {
@@ -249,12 +259,22 @@ public class ZoneFragment extends Fragment{
     private OnClickListener createValidateListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
+			ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
+			for (PixelGeom pg : MainActivity.pixelGeom) {
+				lpg.add(pg);
+			}
+			ArrayList<Element> le = new ArrayList<Element>();
+			for (Element elt : MainActivity.element) {
+				le.add(elt);
+			}
 			try {
 				PixelGeom pg = new PixelGeom();
 				pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
 				UtilCharacteristicsZone.addInMainActivityZones(pg, null);
 				exitAction();
 			} catch(TopologyException e) {
+				MainActivity.pixelGeom = lpg;
+				MainActivity.element = le;
 				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
 				diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
 			} catch (ParseException e) {
@@ -349,17 +369,14 @@ public class ZoneFragment extends Fragment{
 		myImage.invalidate();
 	}
     public void refreshEdit(){
-    	//The +1 correspond to the ending point of the polygon
 		Vector<Point> points = zone.getPoints();
-		if(points.size()<3+1){
+		if(points.size()<3){
 			getView().findViewById(R.id.zone_edit_button_validate).setEnabled(false);
-			CharSequence text = "Il n'y a plus assez de points ! Validation impossible.";
-			Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
 		}
 		else{
-			if(points.size()>2+1){
+			if(points.size()>2){
 				getView().findViewById(R.id.zone_edit_button_validate).setEnabled(true);
-				if(points.size()>3+1){
+				if(points.size()>3){
 					Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting());
 					if(!intersections.isEmpty()){
 						getView().findViewById(R.id.zone_edit_button_validate).setEnabled(false);
@@ -416,12 +433,17 @@ public class ZoneFragment extends Fragment{
 									geomCache = pg;
 								}
 							}
+/*=======
+							zoneCache = new Zone(test);
+							zone = new Zone(test);;
+>>>>>>> dev_database*/
+							//zone.setZone(test);
 						}
 					}
 				}
 				else{
 					//If a zone is selected, and one of its points was, it's a point move
-					if(selected.x != 0 || selected.y != 0){
+					if(selected.x != 0 && selected.y != 0){
 						if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
 							zone.updateMiddle(selected, touch);	//If not it's a "middle" point, and it's upgraded to normal
 							//TODO transfer to zone
@@ -439,9 +461,7 @@ public class ZoneFragment extends Fragment{
 							if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
 								selected.set(p.x,p.y);
 								//enable point deleting or releasing
-								if(zone.getPoints().size() > 2+1){
-									getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(true);
-								}
+								getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(true);
 								getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(true);
 							}
 						}
@@ -458,6 +478,7 @@ public class ZoneFragment extends Fragment{
 						}
 					}							
 				}
+				//myImage.invalidate();//refresh points' displaying
 				refreshEdit();
 			}
 			return true;
@@ -470,6 +491,14 @@ public class ZoneFragment extends Fragment{
 			//zones.remove(zoneCache);//delete original 
 
 			if(!zone.getPoints().isEmpty()){
+				ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
+				for (PixelGeom pg : MainActivity.pixelGeom) {
+					lpg.add(pg);
+				}
+				ArrayList<Element> le = new ArrayList<Element>();
+				for (Element elt : MainActivity.element) {
+					le.add(elt);
+				}
 				try {
 					//MainActivity.zones.remove(zoneCache); //delete original
 					MainActivity.pixelGeom.remove(geomCache);
@@ -478,6 +507,8 @@ public class ZoneFragment extends Fragment{
 					UtilCharacteristicsZone.addInMainActivityZones(pg, null);
 					exitAction();
 				} catch(TopologyException e) {
+					MainActivity.pixelGeom = lpg;
+					MainActivity.element = le;
 					TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
 					diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
 				} catch (ParseException e) {
@@ -526,18 +557,11 @@ public class ZoneFragment extends Fragment{
 	private OnClickListener editDeletePointListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
-			if(selected.equals(zone.getPoints().lastElement())){
-				zone.deletePoint(zone.getPoints().get(0));
-				zone.deletePoint(zone.getPoints().lastElement());
-				zone.addPoint(zone.getPoints().get(0));
-			}
-			else{
-				zone.deletePoint(selected);
-			}
+			zone.deletePoint(selected);
 			selected.set(0,0);//no selected point anymore
 			getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(false);
 			getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(false);
-			refreshEdit();//refresh image
+			myImage.invalidate();//refresh image
 		}
 	};
 	private OnClickListener editReleasePointListener = new View.OnClickListener() {			
@@ -546,7 +570,7 @@ public class ZoneFragment extends Fragment{
 			selected.set(0,0);
 			getView().findViewById(R.id.zone_edit_button_delete_point).setEnabled(false);
 			getView().findViewById(R.id.zone_edit_button_release_point).setEnabled(false);
-			refreshEdit();
+			myImage.invalidate();
 		}
 	};
 	
@@ -569,56 +593,12 @@ public class ZoneFragment extends Fragment{
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				getMatrix();
 				Point touch = getTouchedPoint(event);
-
-				//Creation of thelist ofthe zone setted
-				Vector<Zone> zones = new Vector<Zone>();
-				for(PixelGeom pg: MainActivity.pixelGeom){
-					zones.add(ConvertGeom.pixelGeomToZone(pg));
-				}
 				
 				if(zone.getPoints().isEmpty()){
-					for(Zone test : zones){
-						if(test.containPoint(touch)){
-							zoneCache = test;
-						}
-					}
-					if(zoneCache != null){
-						//zones.remove(zoneCache);//delete original 
-						PixelGeom pgeom = new PixelGeom();
-						for(PixelGeom pg : MainActivity.pixelGeom){
-							if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
-								pgeom=pg;
-								break;
-							}
-						}
-						if(pgeom.getPixelGeomId()!=0){
-							int i=-1;
-							for(i=0; i<MainActivity.pixelGeom.size(); i++){
-								if(MainActivity.pixelGeom.get(i).getPixelGeomId()==pgeom.getPixelGeomId()){
-									break;
-								}
-							}
-							if(i>-1){
-								MainActivity.pixelGeom.remove(i);
-							}
-						}
-						long id=0;
-						for(Element el : MainActivity.element){
-							if(el.getPixelGeom_id()==pgeom.getPixelGeomId()){
-								id=el.getElement_id();
-							}
-						}
-						if(id!=0){
-							int i=-1;
-							for(i=0; i<MainActivity.element.size(); i++){
-								if(MainActivity.element.get(i).getElement_id()==id){
-									break;
-								}
-							}
-							if(i>-1){
-								MainActivity.element.remove(i);
-							}
-						}				
+					int pos = -1;
+					pos = UtilCharacteristicsZone.isInsideZone(touch);
+					if(pos != -1){
+						MainActivity.pixelGeom.remove(pos);
 			            exitAction();
 					}
 				}

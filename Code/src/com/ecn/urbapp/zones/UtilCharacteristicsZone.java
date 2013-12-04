@@ -51,8 +51,8 @@ import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
-import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.GetId;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -84,9 +84,14 @@ public final class UtilCharacteristicsZone {
 	 */
 	public static void setTypeForSelectedZones(String type) {
 		for (Element e : getAllSelectedZones()) {
-			for(ElementType et : MainActivity.elementType){
-				if(et.getElementType_name().equals(type)){
-					e.setElementType_id(et.getElementType_id());
+			if(type==null){
+				e.setElementType_id(0);
+			}
+			else{
+				for(ElementType et : MainActivity.elementType){
+					if(et.getElementType_name().equals(type)){
+						e.setElementType_id(et.getElementType_id());
+					}
 				}
 			}
 		}
@@ -99,11 +104,15 @@ public final class UtilCharacteristicsZone {
 	 *            the material to set
 	 */
 	public static void setMaterialForSelectedZones(String material) {
-
 		for (Element e : getAllSelectedZones()) {
-			for(Material m : MainActivity.material){
-				if(m.getMaterial_name().equals(material)){
-					e.setMaterial_id(m.getMaterial_id());
+			if(material==null){
+				e.setMaterial_id(0);
+			}
+			else{
+				for(Material m : MainActivity.material){
+					if(m.getMaterial_name().equals(material)){
+						e.setMaterial_id(m.getMaterial_id());
+					}
 				}
 			}
 		}
@@ -158,13 +167,18 @@ public final class UtilCharacteristicsZone {
 	public static int isInsideZone(Point point) {
 		int result = -1;
 		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
-			if (ConvertGeom.pixelGeomToZone(MainActivity.pixelGeom.get(i)).containPoint(point)) {
-				if (result == -1) {
-					result = i;
-				} else if (ConvertGeom.pixelGeomToZone(MainActivity.pixelGeom.get(i)).area()
-						< ConvertGeom.pixelGeomToZone(MainActivity.pixelGeom.get(result)).area()) {
-					result = i;
+			Coordinate coord = new Coordinate(point.x, point.y);
+			com.vividsolutions.jts.geom.Point geomPoint = gf.createPoint(coord);
+			try {
+				if (geomPoint.within(gf.createPolygon(gf.createLinearRing(((Polygon) wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom())).getExteriorRing().getCoordinates()), null))) {
+					if (result == -1) {
+						result = i;
+					} else if (gf.createPolygon(gf.createLinearRing(((Polygon) wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom())).getExteriorRing().getCoordinates()), null).getArea()
+							< gf.createPolygon(gf.createLinearRing(((Polygon) wktr.read(MainActivity.pixelGeom.get(result).getPixelGeom_the_geom())).getExteriorRing().getCoordinates()), null).getArea()) {
+						result = i;
+					}
 				}
+			} catch (ParseException e) {
 			}
 		}
 		return result;
@@ -283,7 +297,7 @@ public final class UtilCharacteristicsZone {
 
 	public static void addInMainActivityZones(PixelGeom pixelGeom, Element ref)
 			throws TopologyException, ParseException {
-		List<PixelGeom> pixelGeomToRemove = new ArrayList<PixelGeom>();
+		List<Long> pixelGeomIdToRemove = new ArrayList<Long>();
 		List<PixelGeom> pixelGeomToAdd = new ArrayList<PixelGeom>();
 		Map<PixelGeom, Element> linkedElements = new HashMap<PixelGeom, Element>();
 		Geometry geom = null;
@@ -305,6 +319,7 @@ public final class UtilCharacteristicsZone {
 					if (geomColl.getGeometryN(i) instanceof Polygon) {
 						PixelGeom pg = new PixelGeom();
 						Polygon poly = intPolygon((Polygon) geomColl.getGeometryN(i));
+						poly = intPolygon(poly);
 						pg.setPixelGeom_the_geom(poly.toText());
 						pixelGeom = createHole(pixelGeom, pg);
 					}
@@ -318,12 +333,14 @@ public final class UtilCharacteristicsZone {
 		}
 		for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
 			if (wktr.read(pixelGeom.getPixelGeom_the_geom()).within(wktr.read(oldPixelGeom.getPixelGeom_the_geom()))) {
+				pixelGeomIdToRemove.add(oldPixelGeom.getPixelGeomId());
 				oldPixelGeom = createHole(oldPixelGeom, pixelGeom);
+				pixelGeomToAdd.add(oldPixelGeom);
 				pixelGeomToAdd.add(pixelGeom);
 				break;
 			} else if (wktr.read(pixelGeom.getPixelGeom_the_geom()).intersects(wktr.read(oldPixelGeom.getPixelGeom_the_geom()))
 					&& !wktr.read(pixelGeom.getPixelGeom_the_geom()).touches(wktr.read(oldPixelGeom.getPixelGeom_the_geom()))) {
-				pixelGeomToRemove.add(oldPixelGeom);
+				pixelGeomIdToRemove.add(oldPixelGeom.getPixelGeomId());
 				Element elt = null;
 				for (Element element : MainActivity.element) {
 					if (element.getPixelGeom_id() == oldPixelGeom.getPixelGeomId()) {
@@ -349,22 +366,25 @@ public final class UtilCharacteristicsZone {
 					linkedElements.put(pg, elt);
 					pixelGeomToAdd.add(pg);
 				}
-				oldPixelGeom = getPixelGeomsFromGeom(geom).get(0);
 				break;
 			}
 		}
 		if (pixelGeomToAdd.isEmpty()) {
 			addPixelGeom(pixelGeom, ref);
 		} else {
-			Map<PixelGeom, Element> save = new HashMap<PixelGeom, Element>();
-			for (PixelGeom pgeom : pixelGeomToRemove) {
+			for (Long pgeomId : pixelGeomIdToRemove) {
 				Element elt = null;
 				for (Element element : MainActivity.element) {
-					if (element.getPixelGeom_id() == pgeom.getPixelGeomId()) {
+					if (element.getPixelGeom_id() == pgeomId) {
 						elt = element;
 					}
 				}
-				save.put(pgeom, elt);
+				PixelGeom pgeom = null;
+				for (PixelGeom pg : MainActivity.pixelGeom) {
+					if (pg.getPixelGeomId() == pgeomId) {
+						pgeom = pg;
+					}
+				}
 				MainActivity.pixelGeom.remove(pgeom);
 				MainActivity.element.remove(elt);
 			}
@@ -417,7 +437,7 @@ public final class UtilCharacteristicsZone {
 		LinearRing shell = gf.createLinearRing(coords);
 		LinearRing[] holes = new LinearRing[geom.getNumInteriorRing()];
 		for (int j = 0; j < geom.getNumInteriorRing(); j++) {
-			coords = geom.getExteriorRing().getCoordinates();
+			coords = geom.getInteriorRingN(j).getCoordinates();
 			dim = coords.length;
 			for (int i = 0; i < dim; i++) {
 				coords[i] = new Coordinate((int) coords[i].x, (int) coords[i].y);
@@ -448,5 +468,27 @@ public final class UtilCharacteristicsZone {
 		Polygon poly = intPolygon(gf.createPolygon(shell, holes));
 		result.setPixelGeom_the_geom(poly.toText());
 		return result;
+	}
+
+	public static long getNextPixelGeomId() {
+		ArrayList<Long> ids = new ArrayList<Long>();
+		for (int i = 1; i <= MainActivity.pixelGeom.size() + 1; i++) {
+			ids.add((long) i);
+		}
+		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
+			ids.remove(MainActivity.pixelGeom.get(i).getPixelGeomId());
+		}
+		return ids.get(0);
+	}
+
+	public static long getNextElementId() {
+		ArrayList<Long> ids = new ArrayList<Long>();
+		for (int i = 1; i <= MainActivity.element.size() + 1; i++) {
+			ids.add((long) i);
+		}
+		for (int i = 0; i < MainActivity.element.size(); i++) {
+			ids.remove(MainActivity.element.get(i).getElement_id());
+		}
+		return ids.get(0);
 	}
 }

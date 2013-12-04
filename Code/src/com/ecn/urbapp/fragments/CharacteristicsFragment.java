@@ -1,7 +1,6 @@
 package com.ecn.urbapp.fragments;
 
 import java.io.File;
-import java.util.Vector;
 
 import android.app.Fragment;
 import android.graphics.Matrix;
@@ -22,14 +21,11 @@ import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
-import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
-import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.DrawImageView;
 import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
-import com.ecn.urbapp.zones.Zone;
 
 /**
  * @author	COHENDET Sébastien
