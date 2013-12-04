@@ -9,6 +9,7 @@ import java.util.Map;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -64,7 +65,8 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		if (UtilCharacteristicsZone.getColorForSelectedZones() != 0) {
 			colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());
 		} else {
-			colorView.setBackgroundDrawable(getResources().getDrawable(R.drawable.back));
+			colorView.setBackgroundColor(Color.RED);
+			//colorView.setBackgroundDrawable(getResources().getDrawable(R.drawable.back));
 		}
 		colorView.setOnClickListener(chooseColor);
 		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
@@ -174,9 +176,8 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			}/*
 			} else {
 				UtilCharacteristicsZone.setMaterialForSelectedZones(
-						((SpannableStringBuilder) materialCustom.getText()).toString());
 			}*/
-			if (chosenColor >= 0) {
+			if (chosenColor != 0) {
 				UtilCharacteristicsZone.setColorForSelectedZones(chosenColor);
 			}
 			CharacteristicsFragment.getMyImage().invalidate();

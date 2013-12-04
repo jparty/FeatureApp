@@ -84,9 +84,14 @@ public final class UtilCharacteristicsZone {
 	 */
 	public static void setTypeForSelectedZones(String type) {
 		for (Element e : getAllSelectedZones()) {
-			for(ElementType et : MainActivity.elementType){
-				if(et.getElementType_name().equals(type)){
-					e.setElementType_id(et.getElementType_id());
+			if(type==null){
+				e.setElementType_id(0);
+			}
+			else{
+				for(ElementType et : MainActivity.elementType){
+					if(et.getElementType_name().equals(type)){
+						e.setElementType_id(et.getElementType_id());
+					}
 				}
 			}
 		}
@@ -99,11 +104,15 @@ public final class UtilCharacteristicsZone {
 	 *            the material to set
 	 */
 	public static void setMaterialForSelectedZones(String material) {
-
 		for (Element e : getAllSelectedZones()) {
-			for(Material m : MainActivity.material){
-				if(m.getMaterial_name().equals(material)){
-					e.setMaterial_id(m.getMaterial_id());
+			if(material==null){
+				e.setMaterial_id(0);
+			}
+			else{
+				for(Material m : MainActivity.material){
+					if(m.getMaterial_name().equals(material)){
+						e.setMaterial_id(m.getMaterial_id());
+					}
 				}
 			}
 		}
