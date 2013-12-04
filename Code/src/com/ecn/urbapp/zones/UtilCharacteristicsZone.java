@@ -44,7 +44,6 @@ import java.util.Vector;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.util.Log;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
@@ -470,7 +469,6 @@ public final class UtilCharacteristicsZone {
 		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
 			ids.remove(MainActivity.pixelGeom.get(i).getPixelGeomId());
 		}
-		Log.d("Identifiant", "" + ids.get(0));
 		return ids.get(0);
 	}
 
@@ -482,7 +480,6 @@ public final class UtilCharacteristicsZone {
 		for (int i = 0; i < MainActivity.element.size(); i++) {
 			ids.remove(MainActivity.element.get(i).getElement_id());
 		}
-		Log.d("Identifiant", "" + ids.get(0));
 		return ids.get(0);
 	}
 }
