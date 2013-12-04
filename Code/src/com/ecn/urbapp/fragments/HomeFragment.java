@@ -6,7 +6,6 @@ import java.util.Date;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,14 +16,16 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.LoadLocalProjectsActivity;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.activities.Test;
 import com.ecn.urbapp.activities.TestPhoto;
+import com.ecn.urbapp.utils.Cst;
 import com.ecn.urbapp.utils.ImageDownloader;
-import com.ecn.urbapp.utils.UploadImage;
+import com.ecn.urbapp.utils.Utils;
 
 
 /**
@@ -44,11 +45,11 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	/**
 	 * creating the interface
 	 */
-	private Button takePhoto = null ;
-	private Button loadImage = null ;
-	private Button loadLocal = null ;
-	private Button test = null ;
-	private Button testPhoto = null ;
+	private Button takePhoto;
+	private Button loadImage;
+	private Button loadLocal;
+	private Button test;
+	private Button testPhoto;
 	private Button downloadImage;
 	private ImageDownloader imageDownloader = new ImageDownloader();
 	private ImageView image;
@@ -71,9 +72,9 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		View v = inflater.inflate(R.layout.layout_home, null);
 
 		takePhoto=(Button)v.findViewById(R.id.home_takePicture);
-		takePhoto.setOnClickListener(take_picture);
+		takePhoto.setOnClickListener(this);
 		loadImage=(Button)v.findViewById(R.id.home_loadPicture);
-		loadImage.setOnClickListener(loadPhoto);
+		loadImage.setOnClickListener(this);
 		
 		loadLocal=(Button)v.findViewById(R.id.home_loadLocalProject);
 		loadLocal.setOnClickListener(this);
@@ -83,88 +84,50 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		testPhoto=(Button)v.findViewById(R.id.home_test_photo);
 		testPhoto.setOnClickListener(this);
 		
-		Intent i = getActivity().getIntent();
-		
 		downloadImage = (Button) v.findViewById(R.id.home_loadDistantlProject);
-		downloadImage.setOnClickListener(getImage);
-
-		image = (ImageView) v.findViewById(R.id.home_image_loadDistantProject);
-
-		return v;
+		downloadImage.setOnClickListener(this);
 		
+		return v;
 	}
 	
 	@Override
 	public void onClick(View v) {
-		Intent i = null;
-		int id = v.getId();
-        if (id == R.id.home_loadLocalProject) {
-                i = new Intent(this.getActivity(), LoadLocalProjectsActivity.class);
-                getActivity().startActivityForResult(i,1);
-        } else if (id == R.id.home_test_photo) {
-			i = new Intent(this.getActivity(), TestPhoto.class);
-			startActivity(i);
-        } else if (id == R.id.home_test) {
-            i = new Intent(this.getActivity(), Test.class);
-            startActivity(i);
-        }
+		Intent i;
+		switch(v.getId()){
+			case R.id.home_takePicture:
+				Utils.showToast(MainActivity.baseContext, "Lancement de l'appareil photo", Toast.LENGTH_SHORT);
+				File folder = new File(Environment.getExternalStorageDirectory(), "featureapp/");
+				folder.mkdirs();
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+				String currentDateandTime = sdf.format(new Date());
+				File photo = new File(Environment.getExternalStorageDirectory(),"featureapp/Photo_"+currentDateandTime+".jpg");
+				MainActivity.photo.setUrlTemp(photo.getAbsolutePath());
+				
+				i= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+		    	getActivity().startActivityForResult(i, Cst.CODE_TAKE_PICTURE);
+			break;
+			case R.id.home_loadPicture:
+				Utils.showToast(MainActivity.baseContext, "Lancement de la gallerie", Toast.LENGTH_SHORT);
+				i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+				getActivity().startActivityForResult(i, Cst.CODE_LOAD_PICTURE);
+			break;
+			case R.id.home_loadLocalProject:
+				i = new Intent(this.getActivity(), LoadLocalProjectsActivity.class);
+				getActivity().startActivityForResult(i,Cst.CODE_LOAD_LOCAL_PROJECT);
+			break;
+			case R.id.home_test_photo:
+				i = new Intent(this.getActivity(), TestPhoto.class);
+				startActivity(i);
+			break;
+			case R.id.home_test:
+				i = new Intent(this.getActivity(), Test.class);
+				startActivity(i);
+			break;
+			case R.id.home_loadDistantlProject:
+				imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "img"+((int)(Math.random()*3+1))+".png");
+			break;
+		}
 	}
-
-    private OnClickListener getImage = new OnClickListener() {
-        
-        @Override
-        public void onClick(View v) {
-        	imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "img"+((int)(Math.random()*3+1))+".png");
-        }
-    };
-
-    private OnClickListener uploadImage = new OnClickListener() {
-        
-        @Override
-        public void onClick(View v) {
-        	image.buildDrawingCache();
-        	
-        	Bitmap bmap = image.getDrawingCache();
-        	Intent i = new Intent(getActivity(), UploadImage.class);
-			i.putExtra("imageUrl", imageStoredUrl);
-			
-			startActivity(i);
-        }
-    };
-    
-		// Create a click listener on the take_picture button
-
-	OnClickListener take_picture  = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-
-    		// Create a featureapp folder on the tablet if needed
-
-			File folder = new File(Environment.getExternalStorageDirectory(), "featureapp/");
-			folder.mkdirs();
-			// Get the time to create a unique name for the photo
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-			String currentDateandTime = sdf.format(new Date());
-			// The place where to photo will be saved
-			File photo = new File(Environment.getExternalStorageDirectory(),"featureapp/Photo_"+currentDateandTime+".jpg");
-			MainActivity.photo.setUrlTemp(photo.getAbsolutePath());
-    		// Creating an intent to take a photo and store it in photo
-			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
-	    	getActivity().startActivityForResult(intent, 0);
-		}
-	};
-	// Create a click listener on the load_image button
-
-	OnClickListener loadPhoto = new View.OnClickListener(){
-		@Override
-		public void onClick(View v) {
-			// Creating an intent to get an image from the gallery
-			Intent i = new Intent(
-				Intent.ACTION_PICK,
-				android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-			getActivity().startActivityForResult(i, 2);
-		}
-	};
-	
 }

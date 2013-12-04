@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.Toast;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.Composed;
@@ -34,6 +35,7 @@ import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 import com.ecn.urbapp.utils.ConnexionCheck;
+import com.ecn.urbapp.utils.Cst;
 import com.ecn.urbapp.utils.Utils;
 
 /**
@@ -55,19 +57,6 @@ import com.ecn.urbapp.utils.Utils;
 
 public class MainActivity extends Activity {
 
-	/**
-	 * Code for the activity result from the take picture activity
-	 */
-	private final static int CODE_TAKE_PICTURE = 0;
-	/**
-	 * Code for the activity result from the load local project application
-	 */
-	private final static int CODE_LOAD_LOCAL_PROJECT = 1;
-	/**
-	 * Code for the activity result from the load picture application
-	 */
-	private final static int CODE_LOAD_PICTURE = 2;
-	
 	/**
 	 * Attribut represent the action bar of the application
 	 */
@@ -270,9 +259,10 @@ public class MainActivity extends Activity {
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		//TODO verify resultcode for local projectload
+		Utils.showToast(MainActivity.baseContext, "Retour à l'application", Toast.LENGTH_SHORT);
 		if (resultCode == RESULT_OK) {
 			switch(requestCode){
-				case CODE_TAKE_PICTURE:
+				case Cst.CODE_TAKE_PICTURE:
 					Utils.confirm(getFragmentManager());
 	
 					String pathImage = MainActivity.photo.getUrlTemp();
@@ -282,7 +272,7 @@ public class MainActivity extends Activity {
 					
 					getActionBar().setSelectedNavigationItem(1);
 				break;
-				case CODE_LOAD_LOCAL_PROJECT:
+				case Cst.CODE_LOAD_LOCAL_PROJECT:
 					if(MainActivity.project.isEmpty()){
 						datasource.instanciateAllElement();
 						datasource.instanciateAllGpsGeom();
@@ -295,7 +285,7 @@ public class MainActivity extends Activity {
 						getActionBar().setSelectedNavigationItem(2);
 					}
 				break;
-				case CODE_LOAD_PICTURE:
+				case Cst.CODE_LOAD_PICTURE:
 					Utils.confirm(getFragmentManager());
 	
 					String url = Utils.getRealPathFromURI(baseContext, data.getData());
