@@ -60,7 +60,7 @@ public class ZoneFragment extends Fragment{
 	private Button create_help;
 	private Button create_cancel;
 	private Button create_validate;
-	private Button create_edit;	
+	//private Button create_edit;	
 
 	private Button delete_cancel;
 	private Button delete_help;
@@ -99,18 +99,21 @@ public class ZoneFragment extends Fragment{
 		create_help = (Button) v.findViewById(R.id.zone_create_button_help);
 		create_cancel = (Button) v.findViewById(R.id.zone_create_button_cancel);
 		create_validate = (Button) v.findViewById(R.id.zone_create_button_validate);
-		create_edit = (Button) v.findViewById(R.id.zone_create_button_edit);
+		//TODO DONT DELETE THAT §§§§§
+		//create_edit = (Button) v.findViewById(R.id.zone_create_button_edit);
 		
 		create_back.setVisibility(View.GONE);
 		create_help.setVisibility(View.GONE);
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
-		create_edit.setVisibility(View.GONE);
+		//TODO DONT DELETE THAT §§§§§
+		//create_edit.setVisibility(View.GONE);
 
 		create_back.setOnClickListener(createBackListener);
 		create_cancel.setOnClickListener(createCancelListener);
 		create_validate.setOnClickListener(createValidateListener);
-		create_edit.setOnClickListener(editListener);//TODO change listener !
+		//TODO DONT DELETE THAT §§§§§
+		//create_edit.setOnClickListener(editListener);//TODO change listener !
 
 		delete_cancel = (Button) v.findViewById(R.id.zone_delete_button_cancel);
 		delete_help = (Button) v.findViewById(R.id.zone_delete_button_help);
@@ -181,7 +184,9 @@ public class ZoneFragment extends Fragment{
 		create_help.setVisibility(View.GONE);
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
-		create_edit.setVisibility(View.GONE);
+
+		//TODO DONT DELETE THAT §§§§§
+		//create_edit.setVisibility(View.GONE);
 	}
 	
 	private void exitAction(){
@@ -195,7 +200,9 @@ public class ZoneFragment extends Fragment{
 		create_help.setVisibility(View.GONE);
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
-		create_edit.setVisibility(View.GONE);
+
+		//TODO DONT DELETE THAT §§§§§
+		//create_edit.setVisibility(View.GONE);
 		
 		edit_cancel.setVisibility(View.GONE);
 		edit_validate.setVisibility(View.GONE);
@@ -232,7 +239,9 @@ public class ZoneFragment extends Fragment{
     		create_help.setVisibility(View.VISIBLE);
     		create_cancel.setVisibility(View.VISIBLE);
     		create_validate.setVisibility(View.VISIBLE);
-            create_edit.setVisibility(View.VISIBLE);
+
+    		//TODO DONT DELETE THAT §§§§§
+            //create_edit.setVisibility(View.VISIBLE);
     		
     		getView().findViewById(R.id.zone_create_button_validate).setEnabled(false);
     		getView().findViewById(R.id.zone_create_button_back).setEnabled(false);
