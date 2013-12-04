@@ -2,8 +2,6 @@ package com.ecn.urbapp.db;
 
 import android.content.ContentValues;
 
-import com.ecn.urbapp.activities.MainActivity;
-
 public class ElementType extends DataObject {
 
 	
