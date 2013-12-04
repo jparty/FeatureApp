@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.syncToExt.Sync;
 
 public class GpsGeom extends DataObject{
 	
@@ -20,18 +21,8 @@ public class GpsGeom extends DataObject{
 	 * It's used only into the application.
 	 * It will not be registered in the database.
 	 */
-	private String address;
+	private String gpsGeom_address;
 
-	public void setAddress(String s){
-		address=s;
-	}
-	
-	public String getAddress(){
-		return address;
-	}
-
-	
-	
 	
 	//Getters
 	//TODO Adddescription for javadoc
@@ -43,10 +34,10 @@ public class GpsGeom extends DataObject{
 	public String getGpsGeomCord() {
 		return gpsGeom_the_geom;
 	}
-
 	
-	
-	
+	public String getAddress(){
+		return gpsGeom_address;
+	}	
 	
 	//Setters
 	//TODO Adddescription for javadoc
@@ -60,8 +51,11 @@ public class GpsGeom extends DataObject{
 	}
 
 	
+	public void setAddress(String s){
+		gpsGeom_address=s;
+	}
 	
-	
+
 	
 	
 	//Ovveride methods
@@ -92,9 +86,12 @@ public class GpsGeom extends DataObject{
 		values.put(MySQLiteHelper.COLUMN_GPSGEOMCOORD, this.gpsGeom_the_geom);
 		
 		if(this.registredInLocal){
-			String[] s=new String[1];
-			s[0]= ""+this.gpsGeom_id;
-			datasource.getDatabase().update(MySQLiteHelper.TABLE_GPSGEOM, values, MySQLiteHelper.COLUMN_GPSGEOMID,s );
+			//String[] s=new String[1];
+			//s[0]= ""+this.gpsGeom_id;
+			
+			String str = "gpsGeom_id "+"="+this.gpsGeom_id;
+			//datasource.getDatabase().update(MySQLiteHelper.TABLE_GPSGEOM, values, MySQLiteHelper.COLUMN_GPSGEOMID,s );
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_GPSGEOM, values, str, null);
 		}
 		else{
 			
@@ -102,7 +99,8 @@ public class GpsGeom extends DataObject{
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				long old_id = this.getGpsGeomsId();
-				long new_id = 1+cursor.getLong(0);
+				//long new_id = 1+cursor.getLong(0);
+				long new_id = this.gpsGeom_id+Sync.getMaxId().get("GpsGeom");
 				this.setGpsGeomId(new_id);
 				this.trigger(old_id, new_id, MainActivity.photo, MainActivity.project, MainActivity.element);
 			}

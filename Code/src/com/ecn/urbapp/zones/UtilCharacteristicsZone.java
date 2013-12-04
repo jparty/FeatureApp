@@ -52,6 +52,7 @@ import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.utils.GetId;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -386,9 +387,9 @@ public final class UtilCharacteristicsZone {
 	}
 	
 	private static void addPixelGeom(PixelGeom pgeom, Element elt) {
-		pgeom.setPixelGeomId(getNextPixelGeomId());
+		pgeom.setPixelGeomId(GetId.PixelGeom());
 		Element element = new Element();
-		element.setElement_id(getNextElementId());
+		element.setElement_id(GetId.Element());
 		element.setPhoto_id(MainActivity.photo.getPhoto_id());
 		element.setPixelGeom_id(pgeom.getPixelGeomId());
 		element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());

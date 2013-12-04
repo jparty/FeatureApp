@@ -44,6 +44,7 @@ public class SaveFragment extends Fragment{
 
 	private Button saveToLocal = null;
 	private Button saveToExt = null;
+	private Button maxID = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,10 @@ public class SaveFragment extends Fragment{
 		saveToExt = (Button)v.findViewById(R.id.save_button_ext);
 		saveToExt.setOnClickListener(OnClickSaveToExt);
 		
+		maxID = (Button)v.findViewById(R.id.max_id);
+		maxID.setOnClickListener(OnClickMaxID);
+		
+		
 		return v;
 	}
 	
@@ -77,6 +82,14 @@ public class SaveFragment extends Fragment{
         		saveComposedListToLocal(MainActivity.composed);
         		saveElementListToLocal(MainActivity.element); 		 		
         		MainActivity.datasource.close();
+        		
+    			Context context = MainActivity.baseContext;
+    			CharSequence text = "Sauvegarde ...";
+    			int duration = Toast.LENGTH_SHORT;
+    			Toast toast = Toast.makeText(context, text, duration);
+    			toast.show();
+        		Sync synchroExt = new Sync();
+        		synchroExt.doSync();
     		}
     		else{
     			Context context = MainActivity.baseContext;
@@ -95,7 +108,15 @@ public class SaveFragment extends Fragment{
     		Sync synchroExt = new Sync();
     		synchroExt.doSync();
     		
-    		
+    	}
+    };
+    
+    /**
+     * Debug method to show the maxID is working
+     */
+    private OnClickListener OnClickMaxID = new OnClickListener(){
+    	public void onClick(View view){
+    		Sync.getMaxId();
     	}
     };
 	

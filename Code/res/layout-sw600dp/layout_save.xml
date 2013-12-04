@@ -20,36 +20,42 @@
     
     <ImageView 
         android:id="@+id/save_image_status"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
         android:src="@drawable/image"
-       />
+    	android:layout_marginLeft="450dp"
+    	android:layout_marginTop="110dp"/>
     
     <TextView 
         android:id="@+id/save_text_status"
-        android:layout_width="fill_parent"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:text="@string/save_textStatus"
-        android:layout_below="@+id/save_image_status"/>
+        android:layout_below="@+id/save_image_status"
+    	android:layout_marginLeft="450dp"/>
     
     <Button 
         android:id="@+id/save_button_ync"
-        android:layout_width="fill_parent"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:text="@string/save_buttonSync"
-        android:layout_below="@+id/save_text_status"/>
+        android:layout_below="@+id/save_text_status"
+    	android:layout_marginLeft="450dp"/>
     
     <Button 
         android:id="@+id/save_button_ext"
-        android:layout_width="fill_parent"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:text="@string/save_buttonSyncExt"
-        android:layout_below="@+id/save_button_ync"/>
+        android:layout_below="@+id/save_button_ync"
+    	android:layout_marginLeft="450dp"/>
         
         <Button 
         android:id="@+id/max_id"
-        android:layout_width="fill_parent"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:text="MaxId"
-        android:layout_below="@+id/save_button_ext"/>
+        android:layout_below="@+id/save_button_ext"
+    	android:layout_marginLeft="450dp"/>
+
 </RelativeLayout>

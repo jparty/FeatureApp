@@ -19,14 +19,14 @@
     
     <Button 
         android:id="@+id/zone_button_create"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:onClick="zone_button_create"
         android:text="@string/zone_create"/>
     
     <Button 
         android:id="@+id/zone_button_delete"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:onClick="zone_button_delete"
         android:layout_toRightOf="@+id/zone_button_create"
@@ -34,7 +34,7 @@
     
     <Button 
         android:id="@+id/zone_button_edit"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:onClick="zone_button_edit"
         android:layout_toRightOf="@+id/zone_button_delete"
@@ -51,14 +51,14 @@
     <!-- the following elements are for the creation of a zone -->
     <Button
         android:id="@+id/zone_create_button_back"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:onClick="zone_create_button_back"
         android:text="@string/back"/>
 
     <Button
         android:id="@+id/zone_create_button_help"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
@@ -67,7 +67,7 @@
 
     <Button
         android:id="@+id/zone_create_button_cancel"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/zone_create_button_back"
@@ -76,7 +76,7 @@
 
     <Button
         android:id="@+id/zone_create_button_validate"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/zone_create_button_cancel"
@@ -85,7 +85,7 @@
     
       <Button 
         android:id="@+id/zone_create_button_edit"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:onClick="zone_button_edit"
         android:layout_toRightOf="@+id/zone_create_button_validate"
@@ -94,7 +94,7 @@
     <!-- the following elements are for the deletion of a zone -->
     <Button
         android:id="@+id/zone_delete_button_cancel"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -102,7 +102,7 @@
 
     <Button
         android:id="@+id/zone_delete_button_help"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
@@ -113,14 +113,14 @@
 
     <Button
         android:id="@+id/zone_edit_button_cancel"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:text="@string/cancel" />
 
     <Button
         android:id="@+id/zone_edit_button_validate"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/zone_edit_button_cancel"
@@ -128,7 +128,7 @@
     
     <Button
         android:id="@+id/zone_edit_button_delete_point"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/zone_edit_button_validate"
@@ -136,7 +136,7 @@
     
     <Button
         android:id="@+id/zone_edit_button_release_point"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/zone_edit_button_delete_point"
@@ -144,7 +144,7 @@
 
     <Button
         android:id="@+id/zone_edit_button_help"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"

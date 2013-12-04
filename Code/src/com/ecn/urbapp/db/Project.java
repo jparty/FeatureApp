@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.syncToExt.Sync;
 
 
 public class Project extends DataObject {
@@ -20,10 +21,6 @@ public class Project extends DataObject {
 
 	
 	//Getters
-	//TODO Adddescription for javadoc
-	public String getExt_GpsGeomCoord() {
-		return Ext_GpsGeomCoord;
-	}
 	
 	//TODO Adddescription for javadoc
 	public long getGpsGeom_id() {
@@ -40,6 +37,10 @@ public class Project extends DataObject {
 		return project_name;
 	}
 	
+	//TODO Adddescription for javadoc
+	public String getExt_GpsGeomCoord() {
+		return Ext_GpsGeomCoord;
+	}
 
 	//Setters
 	//TODO Adddescription for javadoc
@@ -92,9 +93,13 @@ public class Project extends DataObject {
 		
 			
 		if(this.registredInLocal){
-			String[] s=new String[1];
+			/*String[] s=new String[1];
 			s[0]= ""+this.project_id;
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_PROJECT, values, MySQLiteHelper.COLUMN_PROJECTID,s );
+			*/
+
+			String str = "project_id "+"="+this.project_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_PROJECT, values, str, null);
 		}
 		else{
 			//TODO trigger
@@ -102,7 +107,8 @@ public class Project extends DataObject {
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				long old_id = this.getProjectId();
-				long new_id = 1+cursor.getLong(0);
+				//long new_id = 1+cursor.getLong(0);
+				long new_id = this.project_id+Sync.getMaxId().get("Project");
 				this.setProjectId(new_id);
 				this.trigger(old_id, new_id, MainActivity.composed);
 			}

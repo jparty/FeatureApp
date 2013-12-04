@@ -23,7 +23,9 @@
         <RelativeLayout
             android:layout_width="75dp"
             android:layout_height="fill_parent"
-        	android:src="@drawable/image">
+        	android:src="@drawable/image"
+         	android:layout_marginLeft="180dp"
+         	android:layout_marginTop="90dp">
             
             <TextView
                 android:id="@+id/info_text_author"
@@ -70,7 +72,8 @@
 
         <RelativeLayout
             android:layout_width="270dp"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+         	android:layout_marginTop="80dp" >
             
             <EditText
                 android:id="@+id/info_edit_author"

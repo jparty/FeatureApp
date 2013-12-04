@@ -16,6 +16,7 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Composed;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.utils.GetId;
 
 /**
  * @author	COHENDET Sébastien
@@ -94,14 +95,14 @@ public class InformationFragment extends Fragment implements OnClickListener{
 			    Composed comp= new Composed();
 			    EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
 			    pro.setProjectName(txt.getText().toString());
-			    pro.setProjectId(MainActivity.project.size()+1);
+			    pro.setProjectId(GetId.Project());
 			    
 			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
 			    MainActivity.photo.setPhoto_description(txt.getText().toString());
 			    txt = (EditText) getView().findViewById(R.id.info_edit_author);
 			    MainActivity.photo.setPhoto_author(txt.getText().toString());
 			    
-			    MainActivity.project.add(pro);
+			    MainActivity.project.add((int)pro.getGpsGeom_id(), pro);
 			    MainActivity.projectSet=true;
 			    comp.setPhoto_id(MainActivity.photo.getPhoto_id());
 			    comp.setProject_id(pro.getProjectId());

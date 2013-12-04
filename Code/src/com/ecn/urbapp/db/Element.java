@@ -1,5 +1,7 @@
 package com.ecn.urbapp.db;
 
+import com.ecn.urbapp.syncToExt.Sync;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -131,16 +133,21 @@ public class Element extends DataObject {
 		values.put(MySQLiteHelper.COLUMN_ELEMENTCOLOR, this.element_color);
 		
 		if(this.registredInLocal){
-			String[] s=new String[1];
+			/*String[] s=new String[1];
 			s[0]= ""+this.element_id;
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_ELEMENT, values, MySQLiteHelper.COLUMN_ELEMENTID,s );
+*/
+			
+			String str = "element_id "+"="+this.element_id;
+			datasource.getDatabase().update(MySQLiteHelper.TABLE_ELEMENT, values, str, null);
 		}
 		else{
 			//TODO trigger
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXELEMENTID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
-				this.setElement_id(1+cursor.getLong(0));
+				//this.setElement_id(1+cursor.getLong(0));
+				this.setElement_id(this.element_id+Sync.getMaxId().get("Photo"));
 			}
 			values.put(MySQLiteHelper.COLUMN_ELEMENTID, this.element_id);
 			values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);

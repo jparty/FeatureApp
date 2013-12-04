@@ -23,12 +23,12 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:screenOrientation="landscape">
+        android:theme="@style/AppTheme">
         
         <activity 
             android:name=".activities.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+        android:screenOrientation="landscape" >
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,14 +36,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.GeoActivity"></activity>
+        <activity android:name=".activities.GeoActivity"
+        android:screenOrientation="landscape"></activity>
 
-        <activity android:name=".activities.LoadLocalProjectsActivity"></activity>
-        <activity android:name=".activities.LoadLocalPhotosActivity"></activity>
-        <activity android:name=".activities.Test"></activity>
-        <activity android:name=".activities.TestPhoto"></activity>
+        <activity android:name=".activities.LoadLocalProjectsActivity"
+        android:screenOrientation="landscape"></activity>
+        <activity android:name=".activities.LoadLocalPhotosActivity"
+        android:screenOrientation="landscape"></activity>
+        <activity android:name=".activities.Test"
+        android:screenOrientation="landscape"></activity>
+        <activity android:name=".activities.TestPhoto"
+        android:screenOrientation="landscape"></activity>
         <activity android:name=".utils.UploadImage"
-            	  android:theme="@android:style/Theme.Dialog"></activity>
+            	  android:theme="@android:style/Theme.Dialog"
+        android:screenOrientation="landscape"></activity>
         
 
         <meta-data

@@ -39,8 +39,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 
 import com.ecn.urbapp.activities.MainActivity;

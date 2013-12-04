@@ -170,10 +170,10 @@ public class DrawZoneView extends Drawable {
 						canvas.drawCircle(middles.lastElement().x, middles.lastElement().y, 6/ratio, paintFirstPoint);
 					}
 					canvas.drawLine(points.get(points.size()-1).x, points.get(points.size()-1).y, points.get(0).x, points.get(0).y, paintFirstPoint);
-					try{if(selected.x != 0 && selected.y != 0){
-						canvas.drawCircle(selected.x, selected.y, 33/ratio, paintNormal);
-					}}catch(Exception e){}
-				}
+				}			
+			try{if(selected.x != 0 || selected.y != 0){
+				canvas.drawCircle(selected.x, selected.y, 33/ratio, paintNormal);
+			}}catch(Exception e){}
 			}
 		}
 		try{Log.d("Intersection",intersections.toString());}catch(Exception e){}
