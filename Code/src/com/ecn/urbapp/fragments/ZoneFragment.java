@@ -1,6 +1,7 @@
 package com.ecn.urbapp.fragments;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import android.app.Fragment;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
@@ -30,6 +32,7 @@ import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.ecn.urbapp.zones.Zone;
+
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -247,12 +250,22 @@ public class ZoneFragment extends Fragment{
     private OnClickListener createValidateListener = new View.OnClickListener() {			
 		@Override
 		public void onClick(View v) {
+			ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
+			for (PixelGeom pg : MainActivity.pixelGeom) {
+				lpg.add(pg);
+			}
+			ArrayList<Element> le = new ArrayList<Element>();
+			for (Element elt : MainActivity.element) {
+				le.add(elt);
+			}
 			try {
 				PixelGeom pg = new PixelGeom();
 				pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
 				UtilCharacteristicsZone.addInMainActivityZones(pg, null);
 				exitAction();
 			} catch(TopologyException e) {
+				MainActivity.pixelGeom = lpg;
+				MainActivity.element = le;
 				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
 				diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
 			} catch (ParseException e) {
@@ -469,6 +482,14 @@ public class ZoneFragment extends Fragment{
 			//zones.remove(zoneCache);//delete original 
 
 			if(!zone.getPoints().isEmpty()){
+				ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
+				for (PixelGeom pg : MainActivity.pixelGeom) {
+					lpg.add(pg);
+				}
+				ArrayList<Element> le = new ArrayList<Element>();
+				for (Element elt : MainActivity.element) {
+					le.add(elt);
+				}
 				try {
 					//MainActivity.zones.remove(zoneCache); //delete original
 					MainActivity.pixelGeom.remove(geomCache);
@@ -477,6 +498,8 @@ public class ZoneFragment extends Fragment{
 					UtilCharacteristicsZone.addInMainActivityZones(pg, null);
 					exitAction();
 				} catch(TopologyException e) {
+					MainActivity.pixelGeom = lpg;
+					MainActivity.element = le;
 					TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
 					diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
 				} catch (ParseException e) {
@@ -561,31 +584,12 @@ public class ZoneFragment extends Fragment{
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				getMatrix();
 				Point touch = getTouchedPoint(event);
-
-				//Creation of thelist ofthe zone setted
-				Vector<Zone> zones = new Vector<Zone>();
-				for(PixelGeom pg: MainActivity.pixelGeom){
-					zones.add(ConvertGeom.pixelGeomToZone(pg));
-				}
 				
 				if(zone.getPoints().isEmpty()){
-					for(Zone test : zones){
-						if(test.containPoint(touch)){
-							zoneCache = test;
-						}
-					}
-					if(zoneCache != null){
-						//zones.remove(zoneCache);//delete original 
-						PixelGeom pgeom = new PixelGeom();
-						for(PixelGeom pg : MainActivity.pixelGeom){
-							if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
-								pgeom=pg;
-								break;
-							}
-						}
-						MainActivity.pixelGeom.remove(pgeom);
-						
-						//MainActivity.zones.remove(zoneCache);						
+					int pos = -1;
+					pos = UtilCharacteristicsZone.isInsideZone(touch);
+					if(pos != -1){
+						MainActivity.pixelGeom.remove(pos);
 			            exitAction();
 					}
 				}
