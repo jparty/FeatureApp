@@ -147,7 +147,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 			String currentDateandTime = sdf.format(new Date());
 			// The place where to photo will be saved
 			File photo = new File(Environment.getExternalStorageDirectory(),"featureapp/Photo_"+currentDateandTime+".jpg");
-			MainActivity.pathImage = photo.getAbsolutePath();
+			MainActivity.photo.setUrlTemp(photo.getAbsolutePath());
     		// Creating an intent to take a photo and store it in photo
 			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));

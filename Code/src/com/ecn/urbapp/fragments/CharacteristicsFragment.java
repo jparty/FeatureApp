@@ -75,9 +75,6 @@ public class CharacteristicsFragment extends Fragment {
 		delete = (Button) v.findViewById(R.id.definition_button_delete);
 		recap = (Button) v.findViewById(R.id.definition_button_recap);
 
-
-		MainActivity.sphoto=new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());
-
 		DrawImageView view = new DrawImageView();
 	
 		Drawable[] drawables = {

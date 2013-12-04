@@ -60,7 +60,7 @@ public class ZoneFragment extends Fragment{
 	private Button create_help;
 	private Button create_cancel;
 	private Button create_validate;
-	//private Button create_edit;	
+	private Button create_edit;	
 
 	private Button delete_cancel;
 	private Button delete_help;
@@ -99,21 +99,18 @@ public class ZoneFragment extends Fragment{
 		create_help = (Button) v.findViewById(R.id.zone_create_button_help);
 		create_cancel = (Button) v.findViewById(R.id.zone_create_button_cancel);
 		create_validate = (Button) v.findViewById(R.id.zone_create_button_validate);
-		//TODO DONT DELETE THAT §§§§§
-		//create_edit = (Button) v.findViewById(R.id.zone_create_button_edit);
+		create_edit = (Button) v.findViewById(R.id.zone_create_button_edit);
 		
 		create_back.setVisibility(View.GONE);
 		create_help.setVisibility(View.GONE);
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
-		//TODO DONT DELETE THAT §§§§§
-		//create_edit.setVisibility(View.GONE);
+		create_edit.setVisibility(View.GONE);
 
 		create_back.setOnClickListener(createBackListener);
 		create_cancel.setOnClickListener(createCancelListener);
 		create_validate.setOnClickListener(createValidateListener);
-		//TODO DONT DELETE THAT §§§§§
-		//create_edit.setOnClickListener(editListener);//TODO change listener !
+		create_edit.setOnClickListener(editListener);//TODO change listener !
 
 		delete_cancel = (Button) v.findViewById(R.id.zone_delete_button_cancel);
 		delete_help = (Button) v.findViewById(R.id.zone_delete_button_help);
@@ -143,8 +140,6 @@ public class ZoneFragment extends Fragment{
 		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
 
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
-		
-		MainActivity.sphoto=new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());	
 		
 		drawzoneview = new DrawZoneView(zone, selected) ;
 
@@ -185,8 +180,7 @@ public class ZoneFragment extends Fragment{
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
 
-		//TODO DONT DELETE THAT §§§§§
-		//create_edit.setVisibility(View.GONE);
+		create_edit.setVisibility(View.GONE);
 	}
 	
 	private void exitAction(){
@@ -201,8 +195,7 @@ public class ZoneFragment extends Fragment{
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
 
-		//TODO DONT DELETE THAT §§§§§
-		//create_edit.setVisibility(View.GONE);
+		create_edit.setVisibility(View.GONE);
 		
 		edit_cancel.setVisibility(View.GONE);
 		edit_validate.setVisibility(View.GONE);
@@ -240,8 +233,7 @@ public class ZoneFragment extends Fragment{
     		create_cancel.setVisibility(View.VISIBLE);
     		create_validate.setVisibility(View.VISIBLE);
 
-    		//TODO DONT DELETE THAT §§§§§
-            //create_edit.setVisibility(View.VISIBLE);
+    		create_edit.setVisibility(View.VISIBLE);
     		
     		getView().findViewById(R.id.zone_create_button_validate).setEnabled(false);
     		getView().findViewById(R.id.zone_create_button_back).setEnabled(false);
@@ -281,23 +273,6 @@ public class ZoneFragment extends Fragment{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-/*
-            /** set of the database object **//*
-			PixelGeom pg = new PixelGeom();
-			pg.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zone));
-			pg.setPixelGeomId(MainActivity.pixelGeom.size()+1);
-			
-			Element element = new Element();
-			element.setElement_id(MainActivity.element.size()+1);
-			element.setPhoto_id(MainActivity.photo.getPhoto_id());
-			element.setPixelGeom_id(pg.getPixelGeomId());
-			element.setElement_color(""+Color.RED);
-			element.setGpsGeom_id(1);//TODO DELETE
-			
-
-			MainActivity.element.add(element);
-			MainActivity.pixelGeom.add(pg);
-			exitAction();*/
 		}
 	};
 	private OnClickListener createCancelListener = new View.OnClickListener() {			
