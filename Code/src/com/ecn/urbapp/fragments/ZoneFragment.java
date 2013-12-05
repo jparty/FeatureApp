@@ -569,7 +569,7 @@ public class ZoneFragment extends Fragment{
 					pos = UtilCharacteristicsZone.isInsideZone(touch);
 					if(pos != -1){
 						MainActivity.pixelGeom.remove(pos);
-			            exitAction();
+						exitAction();
 					}
 				}
 			}

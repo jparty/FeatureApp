@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ToggleButton;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.GeoActivity;
@@ -34,7 +36,7 @@ import com.ecn.urbapp.utils.GetId;
 
 public class InformationFragment extends Fragment implements OnClickListener{
 
-	private Button geo = null;
+	private ToggleButton geo;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,18 +47,25 @@ public class InformationFragment extends Fragment implements OnClickListener{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_information, null);
 
-		geo = (Button) v.findViewById(R.id.info_button_geo);
-	    geo.setOnClickListener(this);
-		
-	    /*Intent i = getActivity().getIntent();
-	    EditText txt = (EditText) v.findViewById(R.id.info_edit_adress);
-	    txt.setText(i.getStringExtra("addr"));*/
+		geo = (ToggleButton) v.findViewById(R.id.info_button_geo);
+		geo.setOnClickListener(this);
+
 		return v;
 	}
 		@Override
 		public void onClick(View v) {
-			Intent i = new Intent(this.getActivity(), GeoActivity.class);
-			startActivityForResult(i, 10);
+			switch(v.getId()){
+				case R.id.info_button_geo:
+					if(MainActivity.photo.getGpsGeom_id()==0){
+						geo.setChecked(false);
+					}
+					else{
+						geo.setChecked(true);
+					}
+					Intent i = new Intent(this.getActivity(), GeoActivity.class);
+					startActivityForResult(i, 10);
+				break;
+			}
 		}
 
 		/**
@@ -65,19 +74,6 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		@Override
 		public void onStop(){
 			super.onStop();
-			//TODO supress the following code
-			/*
-		    EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
-		    MainActivity.author = txt.getText().toString();
-		    txt = (EditText) getView().findViewById(R.id.info_edit_deviceName);
-		    MainActivity.device = txt.getText().toString();
-		    txt = (EditText) getView().findViewById(R.id.info_edit_project);
-		    MainActivity.sproject = txt.getText().toString();
-		    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
-		    MainActivity.address = txt.getText().toString();*/
-		    
-		    //TODO verificate the case of multi project (cf maybe get the project selected in the list)
-		    //need to verificate if the project is already defined or not
 		    if(!MainActivity.project.isEmpty()){
 		    	Project pro = MainActivity.project.get(MainActivity.project.size()-1);
 		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
@@ -113,30 +109,26 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		@Override
 		public void onStart(){
 			super.onStart();
-			//TODO supress the following code
-			/*
-		    EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
-		    txt.setText(MainActivity.author);
-		    txt = (EditText) getView().findViewById(R.id.info_edit_deviceName);
-		    txt.setText(MainActivity.device);
-		    txt = (EditText) getView().findViewById(R.id.info_edit_project);
-		    txt.setText(MainActivity.sproject);
-		    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
-		    txt.setText(MainActivity.address);*/
-		    
-		    //if the project is already set
-		    if(!MainActivity.project.isEmpty()){
-		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
-			    txt.setText(MainActivity.photo.getPhoto_author());
-			    txt = (EditText) getView().findViewById(R.id.info_edit_project);
-			    txt.setText(MainActivity.project.get(MainActivity.project.size()-1).getProjectName());
-			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
-			    txt.setText(MainActivity.photo.getPhoto_description());
-			    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
-			    txt.setText("");
-		    }
-		    else{
-		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
+			
+			if(MainActivity.photo.getGpsGeom_id()==0){
+				geo.setChecked(false);
+			}
+			else{
+				geo.setChecked(true);
+			}
+			
+			if(!MainActivity.project.isEmpty()){
+				EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
+				txt.setText(MainActivity.photo.getPhoto_author());
+				txt = (EditText) getView().findViewById(R.id.info_edit_project);
+				txt.setText(MainActivity.project.get(MainActivity.project.size()-1).getProjectName());
+				txt = (EditText) getView().findViewById(R.id.info_edit_description);
+				txt.setText(MainActivity.photo.getPhoto_description());
+				txt = (EditText) getView().findViewById(R.id.info_edit_adress);
+				txt.setText("");
+			}
+			else{
+				EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
 			    txt.setText("");
 			    txt = (EditText) getView().findViewById(R.id.info_edit_project);
 			    txt.setText("");

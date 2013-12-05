@@ -186,9 +186,4 @@ public class CharacteristicsFragment extends Fragment {
 				summarydialog.show(getFragmentManager(), "TypeFragment");
 		}
 	};
-	
-	@Override
-	public void onStop(){
-		super.onStop();
-	}
 }

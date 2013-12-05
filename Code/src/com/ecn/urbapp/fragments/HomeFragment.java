@@ -43,10 +43,13 @@ import com.ecn.urbapp.utils.Utils;
 public class HomeFragment extends Fragment implements OnClickListener{
 	
 	/**
-	 * creating the interface
+	 * Button launching the native photo app
 	 */
 	private Button takePhoto;
 	private Button loadImage;
+	/**
+	 * Button launching the loadLocalProject activity
+	 */
 	private Button loadLocal;
 	private Button test;
 	private Button testPhoto;
