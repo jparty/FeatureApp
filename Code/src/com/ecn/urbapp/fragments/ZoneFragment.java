@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import android.app.Fragment;
+import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,7 +34,6 @@ import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.ecn.urbapp.zones.Zone;
-
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -60,7 +61,7 @@ public class ZoneFragment extends Fragment{
 	private Button create_help;
 	private Button create_cancel;
 	private Button create_validate;
-	//private Button create_edit;	
+	private Button create_edit;	
 
 	private Button delete_cancel;
 	private Button delete_help;
@@ -99,21 +100,18 @@ public class ZoneFragment extends Fragment{
 		create_help = (Button) v.findViewById(R.id.zone_create_button_help);
 		create_cancel = (Button) v.findViewById(R.id.zone_create_button_cancel);
 		create_validate = (Button) v.findViewById(R.id.zone_create_button_validate);
-		//TODO DONT DELETE THAT §§§§§
-		//create_edit = (Button) v.findViewById(R.id.zone_create_button_edit);
+		create_edit = (Button) v.findViewById(R.id.zone_create_button_edit);
 		
 		create_back.setVisibility(View.GONE);
 		create_help.setVisibility(View.GONE);
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
-		//TODO DONT DELETE THAT §§§§§
-		//create_edit.setVisibility(View.GONE);
+		create_edit.setVisibility(View.GONE);
 
 		create_back.setOnClickListener(createBackListener);
 		create_cancel.setOnClickListener(createCancelListener);
 		create_validate.setOnClickListener(createValidateListener);
-		//TODO DONT DELETE THAT §§§§§
-		//create_edit.setOnClickListener(editListener);//TODO change listener !
+		create_edit.setOnClickListener(editListener);//TODO change listener !
 
 		delete_cancel = (Button) v.findViewById(R.id.zone_delete_button_cancel);
 		delete_help = (Button) v.findViewById(R.id.zone_delete_button_help);
@@ -148,29 +146,32 @@ public class ZoneFragment extends Fragment{
 		
 		drawzoneview = new DrawZoneView(zone, selected) ;
 
+		DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
 
 		Drawable[] drawables = {
 			new BitmapDrawable(
 				getResources(),
 				BitmapLoader.decodeSampledBitmapFromFile(
-						Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(), 1000, 1000)), drawzoneview
+						Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(), metrics.widthPixels, metrics.heightPixels - 174)), drawzoneview
 				};
-		imageWidth = BitmapLoader.getWidth();
-		imageHeight = BitmapLoader.getHeight();
+				
+		myImage.setImageDrawable(new LayerDrawable(drawables));	
+		return v;
+	}
+	
+	@Override
+	public void onStart(){
+		super.onStart();
 		
-		float ratioW =((float)getActivity().getWindow().getDecorView().getWidth()/imageWidth);
-		float ratioH =((float)getActivity().getWindow().getDecorView().getHeight()/imageHeight);
+		imageHeight = myImage.getDrawable().getIntrinsicHeight(); 
+		imageWidth = myImage.getDrawable().getIntrinsicWidth();
+		
+		float ratioW =((float)1280/imageWidth);
+		float ratioH =((float)(736-174)/imageHeight);
 		float ratio = ratioW < ratioH ? ratioW : ratioH ;
 			
-		Log.d("Size","ratioH:"+ ratioH + ";ratioW:" + ratioW + ";ratio:" + ratio);
 		drawzoneview.setRatio(ratio);
 		TOUCH_RADIUS_TOLERANCE/=ratio;
-		
-		myImage.setImageDrawable(new LayerDrawable(drawables));	
-		
-		myImage.setOnTouchListener(deleteImageTouchListener);
-		
-		return v;
 	}
 	
 	private void enterAction(){
@@ -185,8 +186,7 @@ public class ZoneFragment extends Fragment{
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
 
-		//TODO DONT DELETE THAT §§§§§
-		//create_edit.setVisibility(View.GONE);
+		create_edit.setVisibility(View.GONE);
 	}
 	
 	private void exitAction(){
@@ -201,8 +201,7 @@ public class ZoneFragment extends Fragment{
 		create_cancel.setVisibility(View.GONE);
 		create_validate.setVisibility(View.GONE);
 
-		//TODO DONT DELETE THAT §§§§§
-		//create_edit.setVisibility(View.GONE);
+		create_edit.setVisibility(View.GONE);
 		
 		edit_cancel.setVisibility(View.GONE);
 		edit_validate.setVisibility(View.GONE);
@@ -240,8 +239,7 @@ public class ZoneFragment extends Fragment{
     		create_cancel.setVisibility(View.VISIBLE);
     		create_validate.setVisibility(View.VISIBLE);
 
-    		//TODO DONT DELETE THAT §§§§§
-            //create_edit.setVisibility(View.VISIBLE);
+            create_edit.setVisibility(View.VISIBLE);
     		
     		getView().findViewById(R.id.zone_create_button_validate).setEnabled(false);
     		getView().findViewById(R.id.zone_create_button_back).setEnabled(false);
@@ -322,6 +320,7 @@ public class ZoneFragment extends Fragment{
 
 		matrix.mapPoints(coord);//apply matrix transformation on points coord
 		int pointX = (int)coord[0]; int pointY = (int)coord[1];
+		Log.d("Touch","x:"+pointX+" y:"+pointY);
 		if(pointX<0){
 			pointX=0;
 		}else{
@@ -340,10 +339,8 @@ public class ZoneFragment extends Fragment{
 	}
 	
 	public void getMatrix(){
-		//if(matrix == null){//tried to create it at fragment's beginning but doesn't work at all
-			matrix = new Matrix();
-			myImage.getImageMatrix().invert(matrix);
-		//}//removed the if for a little, problems when reload
+		matrix = new Matrix();
+		myImage.getImageMatrix().invert(matrix);
 	}
 	
     public void refreshCreate(){
@@ -433,11 +430,6 @@ public class ZoneFragment extends Fragment{
 									geomCache = pg;
 								}
 							}
-/*=======
-							zoneCache = new Zone(test);
-							zone = new Zone(test);;
->>>>>>> dev_database*/
-							//zone.setZone(test);
 						}
 					}
 				}

@@ -26,7 +26,6 @@ import android.util.Log;
  * 
  */
 public class BitmapLoader {
-	public static int height; public static int width;
 	
 	public static int calculateInSampleSize(BitmapFactory.Options options,
 			int reqWidth, int reqHeight) {
@@ -39,32 +38,23 @@ public class BitmapLoader {
 
 			// Calculate ratios of height and width to requested height and
 			// width
-			final int heightRatio = Math.round((float) imageHeight
+			final int heightRatio = (int) Math.round(0.5+(float) imageHeight
 					/ (float) reqHeight);
-			final int widthRatio = Math.round((float) imageWidth / (float) reqWidth);
+			final int widthRatio = (int) Math.round(0.5+(float) imageWidth / (float) reqWidth);
 
 			// Choose the smallest ratio as inSampleSize value, this will
 			// guarantee
 			// a final image with both dimensions larger than or equal to the
 			// requested height and width.
-			inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
+			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+			Log.d("Size","BL ratioH:"+ heightRatio + ";ratioW:" + widthRatio + ";InSampleSize: "+inSampleSize);
 		}
-		height=imageHeight/inSampleSize; width=imageWidth/inSampleSize;
-
-		Log.d("Size","InSampleSize: "+inSampleSize);
 		return inSampleSize;
 	}
 
 	//TODO Add description for javadoc
 	public static Bitmap decodeSampledBitmapFromFile(String file, int reqWidth,
 			int reqHeight) {
-		
-		// To test on different screen size devices 
-		DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-		reqWidth = metrics.widthPixels;//TODO find a way to find memory capacity
-		reqHeight = metrics.heightPixels;
-		Log.d("Size","Ww:"+reqWidth+";Wh:"+reqHeight);
-		
 
 		// First decode with inJustDecodeBounds=true to check dimensions
 		final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -78,14 +68,5 @@ public class BitmapLoader {
 		// Decode bitmap with inSampleSize set
 		options.inJustDecodeBounds = false;
 		return BitmapFactory.decodeFile(file, options);
-	}
-
-	//TODO Add description for javadoc
-	public static int getWidth(){
-		return width;
-	}
-	//TODO Add description for javadoc
-	public static int getHeight(){
-		return height;
 	}
 }
