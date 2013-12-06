@@ -131,6 +131,15 @@
             android:textOff="Aucune Géolocalisation"
             android:textOn="Projet Géolocalisé" />
 
+    <Button
+        android:id="@+id/info_button_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/info_button_geo"
+        android:text="==>" />
+
     </RelativeLayout>
 
 </RelativeLayout>
