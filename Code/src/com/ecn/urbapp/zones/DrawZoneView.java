@@ -147,12 +147,13 @@ public class DrawZoneView extends Drawable {
 		paintFillZone.setStyle(Paint.Style.FILL);
 		paintFillZone.setAlpha(50);
 		
-		Vector<Point> points = zone.getPoints();
+		Vector<Point> points = new Vector<Point>(zone.getPoints());
 		Vector<Point> middles = zone.getMiddles();
 		
 		if(! points.isEmpty()){
 			canvas.drawCircle(points.get(0).x, points.get(0).y, 13/ratio, paintLastPoint);
-			if(points.size()>1){
+			if(points.size()>2){
+				points.remove(points.size()-1);
 				canvas.drawCircle(points.lastElement().x, points.lastElement().y, 13/ratio, paintFirstPoint);
 				canvas.drawLine(points.get(points.size()-2).x, points.get(points.size()-2).y, points.lastElement().x, points.lastElement().y, paintNormal);
 				if(edit){
