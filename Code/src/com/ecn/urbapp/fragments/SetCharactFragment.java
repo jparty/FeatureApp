@@ -201,7 +201,7 @@ public class SetCharactFragment extends Fragment{
 			if (chosenColor != 0) {
 				UtilCharacteristicsZone.setColorForSelectedZones(chosenColor);
 			}
-			CharacteristicsFragment.getMyImage().invalidate();
+			//CharacteristicsFragment.getMyImage().invalidate();
 			
 		}
 	};
