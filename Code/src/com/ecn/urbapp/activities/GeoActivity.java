@@ -440,7 +440,10 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     		GpsGeom gg = new GpsGeom();
     		gg.setGpsGeomCoord(ConvertGeom.latLngToGpsGeom(ll));
     		gg.setGpsGeomId(GetId.GpsGeom());
-    		gg.setAddress(markers.get(markers.size()-1).getSnippet());
+    		/**
+    		 * we need to save the adresse in the photo_adresse attribute
+    		 */
+    		MainActivity.photo.setPhoto_adresse(markers.get(markers.size()-1).getSnippet());
     		if(MainActivity.gpsGeom.size()>=gg.getGpsGeomsId()){
     			MainActivity.gpsGeom.add((int)gg.getGpsGeomsId(), gg);
     		}

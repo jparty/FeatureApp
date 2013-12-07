@@ -35,7 +35,7 @@
                 android:layout_height="400dp"
                 android:layout_alignParentTop="true"
                 android:contentDescription="@string/image_newProject"
-        		android:src="@drawable/city"/>
+        		android:src="@drawable/photo"/>
             
             <Button
                 android:id="@+id/home_takePicture"
@@ -69,7 +69,7 @@
 	         android:layout_height="400dp"
 	         android:layout_alignParentTop="true"
 	         android:contentDescription="@string/image_loadLocalProject"
-	         android:src="@drawable/city"/>
+	         android:src="@drawable/local"/>
 	        
 	         <Button
 	         android:id="@+id/home_loadLocalProject"
@@ -110,7 +110,7 @@
                  android:layout_width="400dp"
                  android:layout_alignParentTop="true"
                  android:contentDescription="@string/image_loadDistantProject"
-	         	android:src="@drawable/city"/>
+	         	android:src="@drawable/ext"/>
                 
                  <Button
                  android:id="@+id/home_loadDistantlProject"
