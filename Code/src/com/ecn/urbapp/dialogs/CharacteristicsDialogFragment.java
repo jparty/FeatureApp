@@ -37,15 +37,29 @@ import com.ecn.urbapp.zones.UtilCharacteristicsZone;
  */
 public class CharacteristicsDialogFragment extends DialogFragment {
 
-	//TODO Adddescription for javadoc
+	/**
+	 * The Dialog instance that allow the user to characterize Elements.
+	 */
 	private Dialog box;
-	//TODO Adddescription for javadoc
+	/**
+	 * The Spinner instance used to select the type of the Element(s) to characterize.
+	 */
 	private Spinner spinType;
-	//TODO Adddescription for javadoc
+	/**
+	 * The Spinner instance used to select the material of the Element(s) to characterize.
+	 */
 	private Spinner spinMaterial;
-	//TODO Adddescription for javadoc
+	/**
+	 * The View instance used to show the color of the Element(s) to characterize.
+	 */
 	private View colorView;
-	//TODO Adddescription for javadoc
+	/**
+	 * Dialog used to choose a color.
+	 */
+	private AmbilWarnaDialog colorDialog;
+	/**
+	 * The Color chosen in the colorView.
+	 */
 	private int chosenColor;
 
 	@Override
@@ -68,7 +82,7 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			colorView.setBackgroundColor(Color.RED);
 			//colorView.setBackgroundDrawable(getResources().getDrawable(R.drawable.back));
 		}
-		colorView.setOnClickListener(chooseColor);
+		colorView.setOnClickListener(openColorDialog);
 		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
 		HashMap<String, Float> types = summary.get(getString(R.string.type));
 		HashMap<String, Float> materials = summary.get(getString(R.string.materials));
@@ -159,7 +173,10 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		}
 	};
 
-	//TODO Adddescription for javadoc
+	/**
+	 * Listener that add the chosen characteristics to all the selected elements
+	 * and close the dialog.
+	 */
 	private OnClickListener validation = new OnClickListener() {
 		
 		@Override
@@ -169,14 +186,10 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			if (!selection.equals("")) {
 				UtilCharacteristicsZone.setTypeForSelectedZones(selection);
 			}
-			//if (spinMaterial.getVisibility() == View.VISIBLE) {
 			selection = (String) spinMaterial.getSelectedItem();
 			if (!selection.equals("")) {
 				UtilCharacteristicsZone.setMaterialForSelectedZones(selection);
-			}/*
-			} else {
-				UtilCharacteristicsZone.setMaterialForSelectedZones(
-			}*/
+			}
 			if (chosenColor != 0) {
 				UtilCharacteristicsZone.setColorForSelectedZones(chosenColor);
 			}
@@ -207,39 +220,41 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		return result;
 	}
 
-	//TODO Adddescription for javadoc
-	private OnClickListener chooseColor = new OnClickListener() {
+	/**
+	 * Listener that open an AmbilWarnaDialog to chose a color.
+	 */
+	private OnClickListener openColorDialog = new OnClickListener() {
 		
 		@Override
 		public void onClick(View v) {
-			chosenColor = -1;
 			// Create the color picker dialog (with the actual color of the selected zone)
-			AmbilWarnaDialog dialog = new AmbilWarnaDialog(getActivity(),
+			colorDialog = new AmbilWarnaDialog(getActivity(),
 					UtilCharacteristicsZone.getColorForSelectedZones(),
-					new OnAmbilWarnaListener() {
-						@Override
-						public void onOk(AmbilWarnaDialog dialog, int color) {
-							// Modify the color of the zone
-							chosenColor = color;
-							colorView.setBackgroundColor(color);
-						}
-
-						@Override
-						public void onCancel(AmbilWarnaDialog dialog) {
-						}
-					});
+					colorListener);
 
 			// Add a title to the dialog
-			dialog.getDialog().setTitle(R.string.definition_dialog_color);
+			colorDialog.getDialog().setTitle(R.string.definition_dialog_color);
 
-			dialog.getDialog().show();
+			colorDialog.getDialog().show();
+		}
+	};
+	
+	/**
+	 * Listener for AmbilWarnaListener that save the chosen color in the attribute chosenColor and change the color of the colorView.
+	 */
+	OnAmbilWarnaListener colorListener = new OnAmbilWarnaListener() {
+		@Override
+		public void onOk(AmbilWarnaDialog dialog, int color) {
+			// Modify the color of the zone
+			chosenColor = color;
+			colorView.setBackgroundColor(color);
+		}
+
+		@Override
+		public void onCancel(AmbilWarnaDialog dialog) {
 		}
 	};
 
-	/**
-	 * Action realized when the user cancel the dialog (touch outside the dialog
-	 * or press the back button)
-	 */
 	@Override
 	public void onCancel(DialogInterface dialog) {
 	}
