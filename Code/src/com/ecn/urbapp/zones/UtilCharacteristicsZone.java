@@ -319,38 +319,31 @@ public final class UtilCharacteristicsZone {
 		List<Long> pixelGeomIdToRemove = new ArrayList<Long>();
 		List<PixelGeom> pixelGeomToAdd = new ArrayList<PixelGeom>();
 		Map<PixelGeom, Element> linkedElements = new HashMap<PixelGeom, Element>();
-		Geometry geom = null;
-		for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
-			if (wktr.read(pixelGeom.getPixelGeom_the_geom()).contains(
-					wktr.read(oldPixelGeom.getPixelGeom_the_geom()))) {
-				if (geom == null) {
-					geom = gf.createGeometry(wktr.read(
-							oldPixelGeom.getPixelGeom_the_geom()));
-				} else {
-					geom = geom.union(wktr.read(
-							oldPixelGeom.getPixelGeom_the_geom()));
-				}
-			}
-		}
+		Geometry geom = getUnionOfExistingPixelGeomInside(pixelGeom);
 		if (geom != null) {
-			if (geom instanceof GeometryCollection) {
-				GeometryCollection geomColl = (GeometryCollection) geom;
-				for (int i = 0; i < geomColl.getNumGeometries(); i++) {
-					if (geomColl.getGeometryN(i) instanceof Polygon) {
-						PixelGeom pg = new PixelGeom();
-						Polygon poly = intPolygon((Polygon) geomColl.getGeometryN(i));
-						poly = intPolygon(poly);
-						pg.setPixelGeom_the_geom(poly.toText());
-						pixelGeom = createHole(pixelGeom, pg);
-					}
-				}
-			} else if (geom instanceof Polygon) {
-				PixelGeom pg = new PixelGeom();
-				Polygon poly = intPolygon((Polygon) geom);
-				pg.setPixelGeom_the_geom(poly.toText());
-				pixelGeom = createHole(pixelGeom, pg);
-			}
+			pixelGeom = createHoleForPixelGeomToAdd(pixelGeom, geom);
 		}
+		findNextIntersection(pixelGeom, ref, pixelGeomIdToRemove, pixelGeomToAdd, linkedElements);
+		if (pixelGeomToAdd.isEmpty()) {
+			addPixelGeom(pixelGeom, ref);
+		} else {
+			removeAllFromMainActivity(pixelGeomIdToRemove);
+			addAllPixelGeom(pixelGeomToAdd, linkedElements);
+		}
+	}
+	
+	/**
+	 * Complete the lists in parameter with the different PixelGeom and Element to add and to remove to practice the next intersection
+	 *  
+	 * @param pixelGeom the PixelGeom to insert
+	 * @param ref the element containing the information linked to the PixelGeom
+	 * @param pixelGeomIdToRemove the list of ID from the PixelGeom that must be removed
+	 * @param pixelGeomToAdd the list of PixelGeom that must be added
+	 * @param linkedElements the map associated PixelGeom to add and the element that characterized
+	 * @throws ParseException if a PixelGeom cannot be interpreted into a Geometry
+	 */
+	private static void findNextIntersection(PixelGeom pixelGeom, Element ref, List<Long> pixelGeomIdToRemove, List<PixelGeom> pixelGeomToAdd, Map<PixelGeom, Element> linkedElements) throws ParseException {
+		Geometry geom;
 		for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
 			if (wktr.read(pixelGeom.getPixelGeom_the_geom()).within(wktr.read(oldPixelGeom.getPixelGeom_the_geom()))) {
 				pixelGeomIdToRemove.add(oldPixelGeom.getPixelGeomId());
@@ -361,16 +354,7 @@ public final class UtilCharacteristicsZone {
 			} else if (wktr.read(pixelGeom.getPixelGeom_the_geom()).intersects(wktr.read(oldPixelGeom.getPixelGeom_the_geom()))
 					&& !wktr.read(pixelGeom.getPixelGeom_the_geom()).touches(wktr.read(oldPixelGeom.getPixelGeom_the_geom()))) {
 				pixelGeomIdToRemove.add(oldPixelGeom.getPixelGeomId());
-				Element elt = null;
-				for (Element element : MainActivity.element) {
-					if (element.getPixelGeom_id() == oldPixelGeom.getPixelGeomId()) {
-						//elt = element;
-						elt = new Element();
-						elt.setElement_color(element.getElement_color());
-						elt.setElementType_id(element.getElementType_id());
-						elt.setMaterial_id(element.getMaterial_id());
-					}
-				}
+				Element elt = getElementFromPixelGeomId(oldPixelGeom.getPixelGeomId());
 				geom = wktr.read(pixelGeom.getPixelGeom_the_geom()).intersection(wktr.read(oldPixelGeom.getPixelGeom_the_geom()));
 				for (PixelGeom pg : getPixelGeomsFromGeom(geom)) {
 					linkedElements.put(pg, elt);
@@ -389,28 +373,117 @@ public final class UtilCharacteristicsZone {
 				break;
 			}
 		}
-		if (pixelGeomToAdd.isEmpty()) {
-			addPixelGeom(pixelGeom, ref);
-		} else {
-			for (Long pgeomId : pixelGeomIdToRemove) {
-				Element elt = null;
-				for (Element element : MainActivity.element) {
-					if (element.getPixelGeom_id() == pgeomId) {
-						elt = element;
-					}
+	}
+	
+	/**
+	 * Return the union of all the PixelGeom entirely contained in the PixelGeom in parameter
+	 * 
+	 * @param pixelGeom the PixelGeom defining the surface to test
+	 * @return the union of all the PixelGeom entirely contained in the PixelGeom in parameter
+	 * @throws ParseException if a PixelGeom cannot be interpreted into a Geometry
+	 */
+	private static Geometry getUnionOfExistingPixelGeomInside(PixelGeom pixelGeom) throws ParseException {
+		Geometry geom = null;
+		for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
+			if (wktr.read(pixelGeom.getPixelGeom_the_geom()).contains(
+					wktr.read(oldPixelGeom.getPixelGeom_the_geom()))) {
+				if (geom == null) {
+					geom = gf.createGeometry(wktr.read(
+							oldPixelGeom.getPixelGeom_the_geom()));
+				} else {
+					geom = geom.union(wktr.read(
+							oldPixelGeom.getPixelGeom_the_geom()));
 				}
-				PixelGeom pgeom = null;
-				for (PixelGeom pg : MainActivity.pixelGeom) {
-					if (pg.getPixelGeomId() == pgeomId) {
-						pgeom = pg;
-					}
+			}
+		}
+		return geom;
+	}
+	
+	/**
+	 * Return the PixelGeom pgeom in parameter with a hole defined by
+	 * the Geometry hole in parameter. pgeom is not modified.
+	 * 
+	 * @param pgeom the PixelGeom to pierce
+	 * @param hole define the hole using the JTS Geometry type
+	 * @return the pierced PixelGeom
+	 * @throws ParseException if a PixelGeom cannot be interpreted into a Geometry
+	 */
+	private static PixelGeom createHoleForPixelGeomToAdd(PixelGeom pgeom, Geometry hole) throws ParseException {
+		if (hole instanceof GeometryCollection) {
+			GeometryCollection geomColl = (GeometryCollection) hole;
+			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
+				if (geomColl.getGeometryN(i) instanceof Polygon) {
+					PixelGeom pg = new PixelGeom();
+					Polygon poly = intPolygon((Polygon) geomColl.getGeometryN(i));
+					poly = intPolygon(poly);
+					pg.setPixelGeom_the_geom(poly.toText());
+					return createHole(pgeom, pg);
 				}
-				MainActivity.pixelGeom.remove(pgeom);
-				MainActivity.element.remove(elt);
 			}
-			for (PixelGeom pg : pixelGeomToAdd) {
-				addInMainActivityZones(pg, linkedElements.get(pg));
+		} else if (hole instanceof Polygon) {
+			PixelGeom pg = new PixelGeom();
+			Polygon poly = intPolygon((Polygon) hole);
+			pg.setPixelGeom_the_geom(poly.toText());
+			return createHole(pgeom, pg);
+		}
+		return pgeom;
+	}
+	
+	/**
+	 * Return the PixelGeom whose id is given in parameter.
+	 * 
+	 * @param pixelGeomId the id of the PixelGeom to get
+	 * @return the PixelGeom corresponding to the ID in parameter 
+	 */
+	private static PixelGeom getPixelGeomFromId(Long pixelGeomId) {
+		for (PixelGeom pg : MainActivity.pixelGeom) {
+			if (pg.getPixelGeomId() == pixelGeomId) {
+				return pg;
 			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Return the Element whose id is given in parameter.
+	 * 
+	 * @param pixelGeomId the id of the Element to get
+	 * @return the Element corresponding to the ID in parameter 
+	 */
+	private static Element getElementFromPixelGeomId(Long pixelGeomId) {
+		for (Element element : MainActivity.element) {
+			if (element.getPixelGeom_id() == pixelGeomId) {
+				return element;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Remove all the PixelGeom from the MainActivity List whose ID are included
+	 * in the List in parameter.
+	 * 
+	 * @param pixelGeomIdToRemove the list of ids to remove
+	 */
+	private static void removeAllFromMainActivity(List<Long> pixelGeomIdToRemove) {
+		for (Long pgeomId : pixelGeomIdToRemove) {
+		Element elt = getElementFromPixelGeomId(pgeomId);
+			PixelGeom pgeom = getPixelGeomFromId(pgeomId);
+			MainActivity.pixelGeom.remove(pgeom);
+			MainActivity.element.remove(elt);
+		}
+	}
+	
+	/**
+	 * Add all the PixelGeom from the list in parameter
+	 * @param pixelGeomToAdd
+	 * @param linkedElements
+	 * @throws TopologyException
+	 * @throws ParseException
+	 */
+	private static void addAllPixelGeom(List<PixelGeom> pixelGeomToAdd, Map<PixelGeom, Element> linkedElements) throws TopologyException, ParseException {
+		for (PixelGeom pg : pixelGeomToAdd) {
+			addInMainActivityZones(pg, linkedElements.get(pg));
 		}
 	}
 	
@@ -433,9 +506,7 @@ public final class UtilCharacteristicsZone {
 		element.setPhoto_id(MainActivity.photo.getPhoto_id());
 		element.setPixelGeom_id(pgeom.getPixelGeomId());
 		element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
-		if (elt == null) {
-			element.setElement_color("" + Color.RED);
-		} else {
+		if (elt != null) {
 			element.setElement_color(elt.getElement_color());
 			element.setElementType_id(elt.getElementType_id());
 			element.setMaterial_id(elt.getMaterial_id());
@@ -469,7 +540,14 @@ public final class UtilCharacteristicsZone {
 		return result;
 	}
 
-	 private static Polygon intPolygon(Polygon geom) {
+	/**
+	 * Convert all the coordinate of the Polygon in Integer so that it can be
+	 * draw in an Android Application
+	 * 
+	 * @param geom the Polygon to convert
+	 * @return the equivalent Polygon with Integer coordinates
+	 */
+	private static Polygon intPolygon(Polygon geom) {
 		Coordinate[] coords = geom.getExteriorRing().getCoordinates();
 		int dim = coords.length;
 		for (int i = 0; i < dim; i++) {
