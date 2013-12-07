@@ -63,9 +63,11 @@ public class InformationFragment extends Fragment implements OnClickListener{
 				case R.id.info_button_geo:
 					if(MainActivity.photo.getGpsGeom_id()==0){
 						geo.setChecked(false);
+						next.setVisibility(View.GONE);
 					}
 					else{
 						geo.setChecked(true);
+						next.setVisibility(View.VISIBLE);
 					}
 					Intent i = new Intent(this.getActivity(), GeoActivity.class);
 					startActivityForResult(i, 10);

@@ -38,11 +38,11 @@
     <string name="info_text_project">Projet :</string>
     <string name="info_text_adress">Adresse :</string>
     <string name="info_text_void"></string>
-    <string name="info_edit_author">Auteur</string>
-    <string name="info_edit_description">Description</string>
-    <string name="info_edit_project">Projet</string>
-    <string name="info_edit_adress">Adresse</string>
-    <string name="info_edit_complement">Complément</string>
+    <string name="info_edit_author">Auteur *</string>
+    <string name="info_edit_description">Description *</string>
+    <string name="info_edit_project">Projet *</string>
+    <string name="info_edit_adress">Adresse *</string>
+    <string name="info_edit_complement">Complément *</string>
     <string name="info_button_geo">Géolocalisation</string>
     
     <string name="save_textStatus">None</string>

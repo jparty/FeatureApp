@@ -593,4 +593,10 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		return true;
 	}
 
+	@Override
+	public void onStop(){
+		super.onStop();
+		((ViewGroup)this.getView().getParent()).removeView(this.getView());
+	}
+	
 }
