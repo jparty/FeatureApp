@@ -79,8 +79,7 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		if (UtilCharacteristicsZone.getColorForSelectedZones() != 0) {
 			colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());
 		} else {
-			colorView.setBackgroundColor(Color.RED);
-			//colorView.setBackgroundDrawable(getResources().getDrawable(R.drawable.back));
+			colorView.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_color_definition));
 		}
 		colorView.setOnClickListener(openColorDialog);
 		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
