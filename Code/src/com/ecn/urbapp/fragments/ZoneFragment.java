@@ -52,7 +52,9 @@ import com.vividsolutions.jts.io.ParseException;
  */
 
 public class ZoneFragment extends Fragment{
-	private int TOUCH_RADIUS_TOLERANCE = 20;//only for catching points in edit mode
+	private int TOUCH_RADIUS_TOLERANCE = 40;//only for catching points in edit mode
+	private final int REFERENCE_HEIGHT = 600;
+	private final int REFERENCE_WIDTH = 1200;
 	private Button create; 
 	private Button edit;
 	private Button delete;
@@ -164,8 +166,8 @@ public class ZoneFragment extends Fragment{
 		imageHeight = myImage.getDrawable().getIntrinsicHeight(); 
 		imageWidth = myImage.getDrawable().getIntrinsicWidth();
 		
-		float ratioW =((float)this.getResources().getDisplayMetrics().widthPixels/imageWidth);
-		float ratioH =((float)this.getResources().getDisplayMetrics().widthPixels/imageHeight);
+		float ratioW =((float)REFERENCE_WIDTH/imageWidth);
+		float ratioH =((float)REFERENCE_HEIGHT/imageHeight);
 		float ratio = ratioW < ratioH ? ratioW : ratioH ;
 			
 		drawzoneview.setRatio(ratio);
@@ -282,7 +284,7 @@ public class ZoneFragment extends Fragment{
 			exitAction();
 		}
 	};
-	private OnTouchListener imageCreateTouchListener = new ImageView.OnTouchListener() {
+	/*private OnTouchListener imageCreateTouchListener = new ImageView.OnTouchListener() {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -292,10 +294,53 @@ public class ZoneFragment extends Fragment{
 			}
 			return true;
 		}
+	};*/
+	private OnTouchListener imageCreateTouchListener = new ImageView.OnTouchListener() {
+		Point selected;
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			if(event.getAction() == MotionEvent.ACTION_DOWN){
+				Log.d("Move","Action Down");
+				selected = new Point(0, 0);
+				Point touch = getTouchedPoint(event);
+				for(Point p : zone.getPoints()){//is the touched point a normal point ?
+					float dx=Math.abs(p.x-touch.x);
+					float dy=Math.abs(p.y-touch.y);
+					if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
+						selected.set(p.x,p.y);
+					}
+				}
+			}
+			if (event.getAction() == MotionEvent.ACTION_UP) {
+				Log.d("Move","Action Up");
+				if(selected.x==0 && selected.y==0){
+					zone.addPoint2(getTouchedPoint(event));				
+				}
+				else{
+					Point touch = getTouchedPoint(event);
+					if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
+						zone.updateMiddle(selected, touch);	//If not it's a "middle" point, and it's upgraded to normal
+						//TODO transfer to zone
+					}
+					selected.set(0, 0);//No selected point anymore
+				}
+			}
+			if (event.getAction() == MotionEvent.ACTION_MOVE) {
+				Log.d("Move","Action Move");
+				if(selected.x!=0 || selected.y!=0){
+					Point touch = getTouchedPoint(event);
+					zone.updatePoint(selected, touch);
+					selected.set(touch.x,touch.y);
+				}
+			}
+			refreshCreate();//display new point, refresh buttons' availabilities	
+			return true;
+		}
 	};
 	public Point getTouchedPoint(MotionEvent event){
 		float[] coord = {event.getX(),event.getY()};//get touched point coord
 
+		getMatrix();
 		matrix.mapPoints(coord);//apply matrix transformation on points coord
 		int pointX = (int)coord[0]; int pointY = (int)coord[1];
 		Log.d("Touch","x:"+pointX+" y:"+pointY);
