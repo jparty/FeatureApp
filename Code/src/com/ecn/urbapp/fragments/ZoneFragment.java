@@ -291,6 +291,10 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		myImage.setOnTouchListener(this);
+		
+		SetCharactFragment scf = (SetCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentCaract);
+		
+		
 		return v;
 	}
 	
