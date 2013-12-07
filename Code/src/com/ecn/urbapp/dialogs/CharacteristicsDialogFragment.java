@@ -86,12 +86,11 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
 		HashMap<String, Float> types = summary.get(getString(R.string.type));
 		HashMap<String, Float> materials = summary.get(getString(R.string.materials));
-		List<String> list = //c
-				new ArrayList<String>();
+		List<String> list = new ArrayList<String>();
 		for (ElementType et : MainActivity.elementType) {
 			list.add(et.getElementType_name());
 		}
-		list = getMaterialList(R.array.type);
+		list.add(0, getResources().getString(R.string.nullString));
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
 		spinType.setAdapter(adapter);
 		int position = -1;
@@ -113,7 +112,7 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		for (Material mat : MainActivity.material) {
 			list.add(mat.getMaterial_name());
 		}
-		list = getMaterialList(R.array.frontagematerial, R.array.groundmaterial, R.array.roofmaterial);
+		list.add(0, getResources().getString(R.string.nullString));
 		String material;
 		if (materials.keySet().size() == 1) {
 			material = (String) materials.keySet().toArray()[0];
@@ -145,20 +144,6 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		public void onNothingSelected(AdapterView<?> arg0) {
 		}
 	};
-
-	//TODO Adddescription for javadoc
-	private List<String> getMaterialList(int... arrayIds) {
-		List<String> list = new ArrayList<String>();
-		for (int arrayId : arrayIds) {
-			String[] array = getResources().getStringArray(arrayId);
-			List<String> subList = new ArrayList<String>(Arrays.asList(array));
-			subList.remove(getResources().getString(R.string.nullString));
-			java.util.Collections.sort(subList);
-			list = fusionSortedList(list, subList);
-		}
-		list.add(0, getResources().getString(R.string.nullString));
-		return list;
-	}
 
 	//TODO Adddescription for javadoc
 	private OnItemSelectedListener itemSelectedListenerMaterial = new OnItemSelectedListener() {
@@ -197,28 +182,6 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			box.dismiss();
 		}
 	};
-
-	//TODO Adddescription for javadoc
-	private List<String> fusionSortedList(List<String> list1, List<String> list2) {
-		List<String> result = new ArrayList<String>();
-		while (!list1.isEmpty()) {
-			String str1 = list1.remove(0);
-			while (!list2.isEmpty()) {
-				if (str1.compareToIgnoreCase(list2.get(0)) < 0) {
-					break;
-				} else {
-					String str2 = list2.remove(0);
-					result.add(str2);
-				}
-			}
-			result.add(str1);
-		}
-		while (!list2.isEmpty()) {
-			String str2 = list2.remove(0);
-			result.add(str2);
-		}
-		return result;
-	}
 
 	/**
 	 * Listener that open an AmbilWarnaDialog to chose a color.

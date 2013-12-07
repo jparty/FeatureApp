@@ -68,6 +68,7 @@
     <string name="satellite">satellite</string>
     <string name="plan">plan</string>
 	<string name ="topology_exception">TopologyException</string>
+    <string name="nullString"></string>
     
     <string name="hybrid">hybride</string>
 	<string name="confirm">Confirmer</string>

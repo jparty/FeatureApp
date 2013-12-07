@@ -33,8 +33,7 @@
         <Spinner
             android:id="@+id/typeZone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/type" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <LinearLayout
@@ -54,8 +53,7 @@
         <Spinner
             android:id="@+id/materialZone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/frontagematerial" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
     
     <LinearLayout
