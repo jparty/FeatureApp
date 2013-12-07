@@ -295,6 +295,25 @@ public final class UtilCharacteristicsZone {
 		return summary;
 	}
 
+	/**
+	 * This method add the PixelGeom in parameter to the list of PixelGeom from
+	 * MainActivity. If the PixelGeom intersects with existing PixelGeoms, the
+	 * method calculates the intersections between those PixelGeoms and add them
+	 * so that no PixelGeom covers another one. The method also add the Element
+	 * linked to the PixelGeom. This element will have the same characteristics
+	 * that the Element in parameter, unless the PixelGeom intersects an
+	 * existing zones already characterized.
+	 * 
+	 * @param pixelGeom
+	 *            the PixelGeom to add
+	 * @param ref
+	 *            the Element defining the characteristics of the PixelGeom
+	 * @throws TopologyException
+	 *             when the JTS library does not manage to compute the
+	 *             intersection
+	 * @throws ParseException
+	 *             when a PixelGeom cannot be interpreted into a Geometry
+	 */
 	public static void addInMainActivityZones(PixelGeom pixelGeom, Element ref)
 			throws TopologyException, ParseException {
 		List<Long> pixelGeomIdToRemove = new ArrayList<Long>();
@@ -302,7 +321,8 @@ public final class UtilCharacteristicsZone {
 		Map<PixelGeom, Element> linkedElements = new HashMap<PixelGeom, Element>();
 		Geometry geom = null;
 		for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
-			if (wktr.read(pixelGeom.getPixelGeom_the_geom()).contains(wktr.read(oldPixelGeom.getPixelGeom_the_geom()))) {
+			if (wktr.read(pixelGeom.getPixelGeom_the_geom()).contains(
+					wktr.read(oldPixelGeom.getPixelGeom_the_geom()))) {
 				if (geom == null) {
 					geom = gf.createGeometry(wktr.read(
 							oldPixelGeom.getPixelGeom_the_geom()));
@@ -394,6 +414,18 @@ public final class UtilCharacteristicsZone {
 		}
 	}
 	
+	/**
+	 * This method add the PixelGeom in parameter to the list of PixelGeom from
+	 * MainActivity. The method also add the Element linked to the PixelGeom.
+	 * This element will have the same characteristics that the Element in
+	 * parameter. This method should be used only if the PixelGeom does not
+	 * intersect any existing PixelGeom.
+	 * 
+	 * @param pixelGeom
+	 *            the PixelGeom to add
+	 * @param ref
+	 *            the Element defining the characteristics of the PixelGeom
+	 */
 	private static void addPixelGeom(PixelGeom pgeom, Element elt) {
 		pgeom.setPixelGeomId(GetId.PixelGeom());
 		Element element = new Element();
@@ -412,6 +444,15 @@ public final class UtilCharacteristicsZone {
 		MainActivity.pixelGeom.add(pgeom);
 	}
 
+	/**
+	 * Transform the Geometry in parameter into a list of the Polygons composing
+	 * the Geometry, possible LineString or Point are ignored. The Polygons are
+	 * then converted into PixelGeoms and returned.
+	 * 
+	 * @param geom
+	 *            the Geometry to convert into PixelGeom(s)
+	 * @return the equivalent PixelGeom 
+	 */
 	private static List<PixelGeom> getPixelGeomsFromGeom(Geometry geom) {
 		List<PixelGeom> result = new ArrayList<PixelGeom>();
 		if (geom instanceof GeometryCollection) {
@@ -447,7 +488,21 @@ public final class UtilCharacteristicsZone {
 		return gf.createPolygon(shell, holes);
 	}
 
-	public static PixelGeom createHole(PixelGeom pgeomShell, PixelGeom pgeomHole) throws ParseException {
+	/**
+	 * Return the PixelGeom pgeomShell in parameter with a new hole defined by
+	 * the PixelGeom pgeomHole in parameter. The method does not checked that
+	 * the hole can be added.
+	 * 
+	 * @param pgeomShell
+	 *            the PixelGeom to pierce
+	 * @param pgeomHole
+	 *            define the edge of the hole
+	 * @return the pierced PixelGeom
+	 * @throws ParseException
+	 *             if a PixelGeom cannot be interpreted into a Geometry
+	 */
+	public static PixelGeom createHole(PixelGeom pgeomShell, PixelGeom pgeomHole)
+			throws ParseException {
 		Polygon polyShell = (Polygon) wktr.read(pgeomShell.getPixelGeom_the_geom());
 		Polygon polyHole = (Polygon) wktr.read(pgeomHole.getPixelGeom_the_geom());
 		LinearRing shell = gf.createLinearRing(polyShell.getExteriorRing()
@@ -468,27 +523,5 @@ public final class UtilCharacteristicsZone {
 		Polygon poly = intPolygon(gf.createPolygon(shell, holes));
 		result.setPixelGeom_the_geom(poly.toText());
 		return result;
-	}
-
-	public static long getNextPixelGeomId() {
-		ArrayList<Long> ids = new ArrayList<Long>();
-		for (int i = 1; i <= MainActivity.pixelGeom.size() + 1; i++) {
-			ids.add((long) i);
-		}
-		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
-			ids.remove(MainActivity.pixelGeom.get(i).getPixelGeomId());
-		}
-		return ids.get(0);
-	}
-
-	public static long getNextElementId() {
-		ArrayList<Long> ids = new ArrayList<Long>();
-		for (int i = 1; i <= MainActivity.element.size() + 1; i++) {
-			ids.add((long) i);
-		}
-		for (int i = 0; i < MainActivity.element.size(); i++) {
-			ids.remove(MainActivity.element.get(i).getElement_id());
-		}
-		return ids.get(0);
 	}
 }

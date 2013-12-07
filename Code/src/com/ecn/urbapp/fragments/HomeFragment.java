@@ -51,8 +51,6 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	 * Button launching the loadLocalProject activity
 	 */
 	private Button loadLocal;
-	private Button test;
-	private Button testPhoto;
 	private Button downloadImage;
 	private ImageDownloader imageDownloader = new ImageDownloader();
 	private ImageView image;
@@ -63,13 +61,12 @@ public class HomeFragment extends Fragment implements OnClickListener{
 			"http://axemdo.files.wordpress.com/2010/07/loutre1.jpg",
 			"http://www.spaycificzoo.com/wp-content/uploads/2011/11/loutre_naine1-300x232.jpg"
 	};
-	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_home, null);
@@ -81,18 +78,13 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		
 		loadLocal=(Button)v.findViewById(R.id.home_loadLocalProject);
 		loadLocal.setOnClickListener(this);
-		test=(Button)v.findViewById(R.id.home_test);
-		test.setOnClickListener(this);
-		
-		testPhoto=(Button)v.findViewById(R.id.home_test_photo);
-		testPhoto.setOnClickListener(this);
 		
 		downloadImage = (Button) v.findViewById(R.id.home_loadDistantlProject);
 		downloadImage.setOnClickListener(this);
 		
 		return v;
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 		Intent i;
@@ -112,7 +104,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		    	getActivity().startActivityForResult(i, Cst.CODE_TAKE_PICTURE);
 			break;
 			case R.id.home_loadPicture:
-				Utils.showToast(MainActivity.baseContext, "Lancement de la gallerie", Toast.LENGTH_SHORT);
+				Utils.showToast(MainActivity.baseContext, "Lancement de la galerie", Toast.LENGTH_SHORT);
 				i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
 				getActivity().startActivityForResult(i, Cst.CODE_LOAD_PICTURE);
 			break;

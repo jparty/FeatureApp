@@ -1,4 +1,4 @@
-package com.ecn.urbapp.dialogs;
+package com.ecn.urbapp.fragments;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,13 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -23,24 +25,13 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.Material;
-import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.utils.colorpicker.AmbilWarnaDialog;
 import com.ecn.urbapp.utils.colorpicker.AmbilWarnaDialog.OnAmbilWarnaListener;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
+import com.ecn.urbapp.zones.Zone;
 
-/**
- * This class creates the dialog that ask the user to choose the characteristics of the
- * zone
- * 
- * @author Jules Party
- * 
- */
-public class CharacteristicsDialogFragment extends DialogFragment {
+public class SetCharactFragment extends Fragment{
 
-	/**
-	 * The Dialog instance that allow the user to characterize Elements.
-	 */
-	private Dialog box;
 	/**
 	 * The Spinner instance used to select the type of the Element(s) to characterize.
 	 */
@@ -61,20 +52,31 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 	 * The Color chosen in the colorView.
 	 */
 	private int chosenColor;
+	
+	/**
+	 * Zone to set
+	 */
+	private Zone zone=null;;
+
 
 	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		box = new Dialog(getActivity());
-		box.setContentView(R.layout.layout_definition_dialog);
-		box.setTitle(R.string.definition_dialog_title);
-		box.setCanceledOnTouchOutside(true);
-		spinType = (Spinner) box.findViewById(R.id.typeZone);
-		spinMaterial = (Spinner) box.findViewById(R.id.materialZone);
-		Button validate = (Button) box.findViewById(R.id.validation);
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
+	
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+		View v = inflater.inflate(R.layout.layout_definition_dialog, null);
+		
+		spinType = (Spinner) v.findViewById(R.id.typeZone);
+		spinMaterial = (Spinner) v.findViewById(R.id.materialZone);
+		Button validate = (Button) v.findViewById(R.id.validation);
 		spinType.setOnItemSelectedListener(itemSelectedListenerType);
 		spinMaterial.setOnItemSelectedListener(itemSelectedListenerMaterial);
 		validate.setOnClickListener(validation);
-		colorView = box.findViewById(R.id.color);
+		colorView = v.findViewById(R.id.color);
 		chosenColor = -1;
 		if (UtilCharacteristicsZone.getColorForSelectedZones() != 0) {
 			colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());
@@ -129,8 +131,14 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		if (position != -1) {
 			spinMaterial.setSelection(position);
 		}
-		return box;
-
+		/*
+		FragmentManager fragmentManager = getFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		SetCharactFragment fragment = new SetCharactFragment();
+		fragmentTransaction.add(R.id.layout_caract, fragment);
+		fragmentTransaction.commit();*/
+				
+		return v;
 	}
 
 	//TODO Adddescription for javadoc
@@ -193,8 +201,8 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			if (chosenColor != 0) {
 				UtilCharacteristicsZone.setColorForSelectedZones(chosenColor);
 			}
-			CharacteristicsFragment.getMyImage().invalidate();
-			box.dismiss();
+			//CharacteristicsFragment.getMyImage().invalidate();
+			
 		}
 	};
 
@@ -254,8 +262,4 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		public void onCancel(AmbilWarnaDialog dialog) {
 		}
 	};
-
-	@Override
-	public void onCancel(DialogInterface dialog) {
-	}
 }
