@@ -90,6 +90,8 @@ public class InformationFragment extends Fragment implements OnClickListener{
 				MainActivity.photo.setPhoto_description(txt.getText().toString());
 				txt = (EditText) getView().findViewById(R.id.info_edit_author);
 				MainActivity.photo.setPhoto_author(txt.getText().toString());
+				txt = (EditText) getView().findViewById(R.id.info_edit_adress);
+				MainActivity.photo.setPhoto_adresse(txt.getText().toString());
 		    }
 		    else{
 			    Project pro = new Project();
@@ -135,7 +137,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 				txt = (EditText) getView().findViewById(R.id.info_edit_description);
 				txt.setText(MainActivity.photo.getPhoto_description());
 				txt = (EditText) getView().findViewById(R.id.info_edit_adress);
-				txt.setText("");
+				txt.setText(MainActivity.photo.getPhoto_adresse());
 			}
 			else{
 				EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
@@ -147,15 +149,5 @@ public class InformationFragment extends Fragment implements OnClickListener{
 			    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
 			    txt.setText("");
 		    }
-		    EditText txt = (EditText) getView().findViewById(R.id.info_edit_adress);
-	    	for(GpsGeom gg : MainActivity.gpsGeom){
-	    		if(gg.getGpsGeomsId()==MainActivity.photo.getGpsGeom_id()){
-				    txt.setText(gg.getAddress());
-				    break;
-	    		}
-	    		else{
-	    			txt.setText("");
-	    		}
-	    	}
 		}
 }
