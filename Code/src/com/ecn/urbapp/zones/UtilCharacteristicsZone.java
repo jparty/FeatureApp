@@ -144,10 +144,9 @@ public final class UtilCharacteristicsZone {
 				color = Integer.parseInt(element.get(0).getElement_color());
 			}
 			for (Element e : element) {
-				if(element.get(0).getElement_color()!=null){
-					if (Integer.parseInt(e.getElement_color()) != color) {
-						color = 0;
-					}
+				if(e.getElement_color() == null || Integer.parseInt(e.getElement_color()) != color) {
+					color = 0;
+					break;
 				}
 			}
 			return color;
@@ -435,7 +434,7 @@ public final class UtilCharacteristicsZone {
 	 * @param pixelGeomId the id of the PixelGeom to get
 	 * @return the PixelGeom corresponding to the ID in parameter 
 	 */
-	private static PixelGeom getPixelGeomFromId(Long pixelGeomId) {
+	public static PixelGeom getPixelGeomFromId(Long pixelGeomId) {
 		for (PixelGeom pg : MainActivity.pixelGeom) {
 			if (pg.getPixelGeomId() == pixelGeomId) {
 				return pg;
@@ -450,7 +449,7 @@ public final class UtilCharacteristicsZone {
 	 * @param pixelGeomId the id of the Element to get
 	 * @return the Element corresponding to the ID in parameter 
 	 */
-	private static Element getElementFromPixelGeomId(Long pixelGeomId) {
+	public static Element getElementFromPixelGeomId(Long pixelGeomId) {
 		for (Element element : MainActivity.element) {
 			if (element.getPixelGeom_id() == pixelGeomId) {
 				return element;
@@ -511,8 +510,16 @@ public final class UtilCharacteristicsZone {
 			element.setElementType_id(elt.getElementType_id());
 			element.setMaterial_id(elt.getMaterial_id());
 		}
-		MainActivity.element.add(element);
-		MainActivity.pixelGeom.add(pgeom);
+		if (MainActivity.element.size() < element.getElement_id()) {
+			MainActivity.element.add(element);
+		} else {
+			MainActivity.element.add((int) element.getElement_id() -1, element);
+		}
+		if (MainActivity.pixelGeom.size() < pgeom.getPixelGeomId()) {
+			MainActivity.pixelGeom.add(pgeom);
+		} else {
+			MainActivity.pixelGeom.add((int) pgeom.getPixelGeomId() - 1, pgeom);
+		}
 	}
 
 	/**

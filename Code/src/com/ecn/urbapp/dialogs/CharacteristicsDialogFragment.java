@@ -71,8 +71,6 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		spinType = (Spinner) box.findViewById(R.id.typeZone);
 		spinMaterial = (Spinner) box.findViewById(R.id.materialZone);
 		Button validate = (Button) box.findViewById(R.id.validation);
-		spinType.setOnItemSelectedListener(itemSelectedListenerType);
-		spinMaterial.setOnItemSelectedListener(itemSelectedListenerMaterial);
 		validate.setOnClickListener(validation);
 		colorView = box.findViewById(R.id.color);
 		chosenColor = -1;
@@ -130,32 +128,6 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		return box;
 
 	}
-
-	//TODO Adddescription for javadoc
-	private OnItemSelectedListener itemSelectedListenerType = new OnItemSelectedListener() {
-
-		@Override
-		public void onItemSelected(AdapterView<?> parent, View view, int position,
-				long id) {
-		}
-
-		@Override
-		public void onNothingSelected(AdapterView<?> arg0) {
-		}
-	};
-
-	//TODO Adddescription for javadoc
-	private OnItemSelectedListener itemSelectedListenerMaterial = new OnItemSelectedListener() {
-
-		@Override
-		public void onItemSelected(AdapterView<?> parent, View view, int position,
-				long id) {
-		}
-
-		@Override
-		public void onNothingSelected(AdapterView<?> parent) {
-		}
-	};
 
 	/**
 	 * Listener that add the chosen characteristics to all the selected elements
