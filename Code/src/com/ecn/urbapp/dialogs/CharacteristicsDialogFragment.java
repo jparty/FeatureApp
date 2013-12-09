@@ -61,6 +61,10 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 	 * The Color chosen in the colorView.
 	 */
 	private int chosenColor;
+	/**
+	 * Should be set to true if this dialog has been opened from a SummaryDialodFragment
+	 */
+	private boolean fromRecap = false;
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -151,6 +155,10 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			}
 			CharacteristicsFragment.getMyImage().invalidate();
 			box.dismiss();
+			if (fromRecap) {
+				SummaryDialogFragment summarydialog = new SummaryDialogFragment();
+				summarydialog.show(getFragmentManager(), "TypeFragment");
+			}
 		}
 	};
 
@@ -191,5 +199,18 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 
 	@Override
 	public void onCancel(DialogInterface dialog) {
+		if (fromRecap) {
+			SummaryDialogFragment summarydialog = new SummaryDialogFragment();
+			summarydialog.show(getFragmentManager(), "TypeFragment");
+		}
+	}
+
+	/**
+	 * Set the fromRecap attribute to true. It means that this box is opened
+	 * from a SummaryDialogFragment, and thus that a SummaryDialogFragment
+	 * should be opened again when this Dialog is closed.
+	 */
+	public void setFromSummary() {
+		fromRecap = true;
 	}
 }
