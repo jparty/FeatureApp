@@ -575,6 +575,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	public void onStop(){
 		super.onStop();
 		((ViewGroup)this.getView().getParent()).removeView(this.getView());
+		getFragmentManager().beginTransaction().remove(scf).commit();
 	}
 	
 }
