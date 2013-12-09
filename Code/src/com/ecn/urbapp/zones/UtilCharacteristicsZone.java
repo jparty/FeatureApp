@@ -497,8 +497,10 @@ public final class UtilCharacteristicsZone {
 	 *            the PixelGeom to add
 	 * @param ref
 	 *            the Element defining the characteristics of the PixelGeom
+	 * @throws ParseException if a PixelGeom cannot be interpreted into a Geometry
 	 */
-	private static void addPixelGeom(PixelGeom pgeom, Element elt) {
+	private static void addPixelGeom(PixelGeom pgeom, Element elt) throws ParseException {
+		pgeom = getPixelGeomsFromGeom(wktr.read(pgeom.getPixelGeom_the_geom())).get(0);
 		pgeom.setPixelGeomId(GetId.PixelGeom());
 		Element element = new Element();
 		element.setElement_id(GetId.Element());
@@ -549,9 +551,11 @@ public final class UtilCharacteristicsZone {
 
 	/**
 	 * Convert all the coordinate of the Polygon in Integer so that it can be
-	 * draw in an Android Application
+	 * draw in an Android Application. Also check the order of the points to
+	 * properly draw hole.
 	 * 
-	 * @param geom the Polygon to convert
+	 * @param geom
+	 *            the Polygon to convert
 	 * @return the equivalent Polygon with Integer coordinates
 	 */
 	private static Polygon intPolygon(Polygon geom) {
@@ -561,6 +565,10 @@ public final class UtilCharacteristicsZone {
 			coords[i] = new Coordinate((int) coords[i].x, (int) coords[i].y);
 		}
 		LinearRing shell = gf.createLinearRing(coords);
+		if ((coords[0].x - coords[1].x) * (coords[2].y - coords[0].y)
+				-  (coords[0].y - coords[1].y) * (coords[2].x - coords[0].x) < 0) {
+			shell = gf.createLinearRing(shell.reverse().getCoordinates());
+		}
 		LinearRing[] holes = new LinearRing[geom.getNumInteriorRing()];
 		for (int j = 0; j < geom.getNumInteriorRing(); j++) {
 			coords = geom.getInteriorRingN(j).getCoordinates();
@@ -569,6 +577,10 @@ public final class UtilCharacteristicsZone {
 				coords[i] = new Coordinate((int) coords[i].x, (int) coords[i].y);
 			}
 			holes[j] = gf.createLinearRing(coords);
+			if ((coords[0].x - coords[1].x) * (coords[2].y - coords[0].y)
+					-  (coords[0].y - coords[1].y) * (coords[2].x - coords[0].x) > 0) {
+				holes[j] = gf.createLinearRing(holes[j].reverse().getCoordinates());
+			}
 		}
 		return gf.createPolygon(shell, holes);
 	}
@@ -599,10 +611,6 @@ public final class UtilCharacteristicsZone {
 		}
 		Coordinate[] coordinates = polyHole.getExteriorRing().getCoordinates();
 		LinearRing lr = gf.createLinearRing(coordinates);
-		if ((coordinates[0].x - coordinates[1].x) * (coordinates[2].y - coordinates[0].y)
-				-  (coordinates[0].y - coordinates[1].y) * (coordinates[2].x - coordinates[0].x) > 0) {
-			lr = gf.createLinearRing(lr.reverse().getCoordinates());
-		}
 		holes[nbrHoles] = lr;
 		PixelGeom result = new PixelGeom();
 		Polygon poly = intPolygon(gf.createPolygon(shell, holes));

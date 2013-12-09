@@ -101,51 +101,49 @@ public class DrawImageView extends Drawable {
 						.get(i).getPixelGeom_the_geom());
 				Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
 
-				if (!MainActivity.pixelGeom.get(i).selected) {
-					if (el.getElement_color() != null
-							&& Integer.parseInt(el.getElement_color()) != 0) {
-						finishedPaint.setColor(Integer.parseInt(el
-								.getElement_color()));
-					} else {
-						finishedPaint.setColor(Color.RED);
-					}
-					// Add all the lines of the polygon
-					for (int j = 0; j < points2.length - 1; j++) {
-						canvas.drawLine((int) points2[j].x, (int) points2[j].y,
-								(int) points2[j + 1].x, (int) points2[j + 1].y,
-								finishedPaint);
-					}
-
-					// If the zone is selected, draw a filled polygon
+				if (el.getElement_color() != null
+						&& Integer.parseInt(el.getElement_color()) != 0) {
+					finishedPaint.setColor(Integer.parseInt(el
+							.getElement_color()));
 				} else {
-					// Create a closed path for the polygon
-					Path polyPath = new Path();
-					polyPath.moveTo((int) points2[0].x, (int) points2[0].y);
+					finishedPaint.setColor(Color.RED);
+				}
+				// Add all the lines of the polygon
+				for (int j = 0; j < points2.length - 1; j++) {
+					canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+							(int) points2[j + 1].x, (int) points2[j + 1].y,
+							finishedPaint);
+				}
+
+				// Create a closed path for the polygon
+				Path polyPath = new Path();
+				polyPath.moveTo((int) points2[0].x, (int) points2[0].y);
+				for (int j = 0; j < points2.length; j++) {
+					polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
+				}
+				for (int k = 0; k < poly.getNumInteriorRing(); k++) {
+					polyPath.close();
+					points2 = poly.getInteriorRingN(k).getCoordinates();
 					for (int j = 0; j < points2.length; j++) {
 						polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
 					}
-					for (int k = 0; k < poly.getNumInteriorRing(); k++) {
-						polyPath.close();
-						for (int j = 0; j < poly.getInteriorRingN(k)
-								.getNumPoints(); j++) {
-							polyPath.lineTo((int) poly.getInteriorRingN(k)
-									.reverse().getCoordinateN(j).x, (int) poly
-									.getInteriorRingN(k).reverse()
-									.getCoordinateN(j).y);
-						}
-					}
-
-					if (el.getElement_color() != null
-							&& Integer.parseInt(el.getElement_color()) != 0) {
-						fillPaint.setColor(Integer.parseInt(el
-								.getElement_color()));
-					} else {
-						fillPaint.setColor(Color.RED);
-					}
-					// Draw the polygon
-					fillPaint.setAlpha(50);
-					canvas.drawPath(polyPath, fillPaint);
 				}
+
+				if (el.getElement_color() != null
+						&& Integer.parseInt(el.getElement_color()) != 0) {
+					fillPaint.setColor(Integer.parseInt(el
+							.getElement_color()));
+				} else {
+					fillPaint.setColor(Color.RED);
+				}
+
+				if (!MainActivity.pixelGeom.get(i).selected) {
+					fillPaint.setAlpha(50);
+				} else {
+					fillPaint.setAlpha(150);
+				}
+				// Draw the polygon
+				canvas.drawPath(polyPath, fillPaint);
 			} catch (ParseException e) {
 			}
 		}
