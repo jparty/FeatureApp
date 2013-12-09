@@ -142,13 +142,15 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 */
 	public static final int IMAGE_SELECTION= 1;
 	
-	private SetCharactFragment scf;
 	/**
 	 * Constant value
 	 */
 	private final int POINT_SELECTED = 4;
 	
 	private int moving;
+
+	private SetCharactFragment scf;
+	private RecapCharactFragment rcf;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -335,8 +337,10 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		myImage.setOnTouchListener(this);
-		
+
 		scf = (SetCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentCaract);
+		rcf = (RecapCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentRecap);
+		rcf.setZoneFragment(this);
 		
 		
 		return v;
@@ -375,6 +379,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
 		myImage.invalidate();
+		rcf.getView().invalidate();
 	}
 	
 	private void validate(){
@@ -562,11 +567,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					getMatrix();
 					Point touch = getTouchedPoint(event);
 					
-					//Vector<Zone> zones = new Vector<Zone>();
 					boolean flag=false;
 					Zone z=null;
 					for(PixelGeom pg: MainActivity.pixelGeom){
-						//zones.add(ConvertGeom.pixelGeomToZone(pg));
 						if(ConvertGeom.pixelGeomToZone(pg).containPoint(touch)){
 							flag=true;
 							z=ConvertGeom.pixelGeomToZone(pg);
@@ -636,8 +639,35 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	@Override
 	public void onStop(){
 		super.onStop();
-		((ViewGroup)this.getView().getParent()).removeView(this.getView());
 		getFragmentManager().beginTransaction().remove(scf).commit();
+		getFragmentManager().beginTransaction().remove(rcf).commit();
+	}
+	
+	public void selectGeom(long i){
+		if(state==IMAGE_CREATION){
+			scf.resetAffichage();
+			state = IMAGE_SELECTION;
+			exitAction();
+		}
+		else if(state==IMAGE_EDITION){
+			scf.resetAffichage();
+            exitAction();
+		}
+		for(PixelGeom pg : MainActivity.pixelGeom){
+			if(pg.getId()==i){
+				pg.selected=true;
+			}
+		}
+		state = IMAGE_EDITION;
+		validate.setEnabled(true);
+		back.setEnabled(false);
+		cancel.setEnabled(true);
+		help.setEnabled(true);
+		delete.setEnabled(true);
+		refreshEdit();
+		
+		
+			
 	}
 	
 }

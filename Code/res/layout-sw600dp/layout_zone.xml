@@ -72,9 +72,15 @@
 
 		<fragment android:name="com.ecn.urbapp.fragments.SetCharactFragment"
 			android:id="@+id/fragmentCaract"
-			android:layout_width="200dp"
-			android:layout_height="fill_parent"
-			android:layout_weight="1" />
+			android:layout_width="300dp"
+			android:layout_height="wrap_content"/>
+		
+		<fragment android:name="com.ecn.urbapp.fragments.RecapCharactFragment"
+			android:id="@+id/fragmentRecap"
+			android:layout_width="300dp"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/fragmentCaract"/>
+		
 		
 		<ImageView
 			android:id="@+id/image_zone"
