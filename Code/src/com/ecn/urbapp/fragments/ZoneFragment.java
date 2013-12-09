@@ -69,6 +69,11 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	private final int REFERENCE_WIDTH = 1200;
 	
 	/**
+	 * Constant field defining the reference time length to force selection
+	 */
+	private final int REFERENCE_TIME = 150;
+	
+	/**
 	 * Field defining the actual sate of definition of zones
 	 */
 	public static int state;
@@ -526,7 +531,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						}
 					}
 					else{
-						if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<150){
+						if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<REFERENCE_TIME){
 							float dx=Math.abs(zone.getPoints().get(0).x-selected.x);//TODO there is a math problem no ?
 							float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
 							if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
@@ -569,12 +574,14 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					
 					boolean flag=false;
 					Zone z=null;
-					for(PixelGeom pg: MainActivity.pixelGeom){
-						if(ConvertGeom.pixelGeomToZone(pg).containPoint(touch)){
-							flag=true;
-							z=ConvertGeom.pixelGeomToZone(pg);
-							scf.setAffichage(pg);
-							break;
+					if(event.getEventTime()-event.getDownTime()>REFERENCE_TIME){
+						for(PixelGeom pg: MainActivity.pixelGeom){
+							if(ConvertGeom.pixelGeomToZone(pg).containPoint(touch)){
+								flag=true;
+								z=ConvertGeom.pixelGeomToZone(pg);
+								scf.setAffichage(pg);
+								break;
+							}
 						}
 					}
 					/*for(Zone test : zones){
