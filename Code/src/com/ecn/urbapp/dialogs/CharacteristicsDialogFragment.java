@@ -65,6 +65,10 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 	 * Should be set to true if this dialog has been opened from a SummaryDialodFragment
 	 */
 	private boolean fromRecap = false;
+	/**
+	 * True if a new color has been chosen
+	 */
+	private boolean newColor = false;
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -77,7 +81,6 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		Button validate = (Button) box.findViewById(R.id.validation);
 		validate.setOnClickListener(validation);
 		colorView = box.findViewById(R.id.color);
-		chosenColor = -1;
 		if (UtilCharacteristicsZone.getColorForSelectedZones() != 0) {
 			colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());
 		} else {
@@ -150,7 +153,7 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			if (!selection.equals("")) {
 				UtilCharacteristicsZone.setMaterialForSelectedZones(selection);
 			}
-			if (chosenColor != 0) {
+			if (newColor) {
 				UtilCharacteristicsZone.setColorForSelectedZones(chosenColor);
 			}
 			CharacteristicsFragment.getMyImage().invalidate();
@@ -189,6 +192,7 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		public void onOk(AmbilWarnaDialog dialog, int color) {
 			// Modify the color of the zone
 			chosenColor = color;
+			newColor = true;
 			colorView.setBackgroundColor(color);
 		}
 
