@@ -21,6 +21,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
+import com.ecn.urbapp.dialogs.UnionDialogFragment;
 import com.ecn.urbapp.utils.DrawImageView;
 import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
@@ -52,6 +53,9 @@ public class CharacteristicsFragment extends Fragment {
 	/** Button to show a summary of the characteristics of the selected zones */
 	private Button recap = null;
 
+	/** Button to group all selected zones */
+	private Button union = null;
+
 	/**
 	 * Returns the Image used in this project.
 	 */
@@ -72,6 +76,7 @@ public class CharacteristicsFragment extends Fragment {
 		define = (Button) v.findViewById(R.id.definition_button_define);
 		delete = (Button) v.findViewById(R.id.definition_button_delete);
 		recap = (Button) v.findViewById(R.id.definition_button_recap);
+		union = (Button) v.findViewById(R.id.definition_button_union);
 
 		DrawImageView view = new DrawImageView();
 	
@@ -88,6 +93,7 @@ public class CharacteristicsFragment extends Fragment {
 	    define.setOnClickListener(clickListenerDefine);
 	    delete.setOnClickListener(clickListenerDelete);
 	    recap.setOnClickListener(clickListenerRecap);
+	    union.setOnClickListener(clickListenerUnion);
 
 		return v;
 	}
@@ -182,6 +188,18 @@ public class CharacteristicsFragment extends Fragment {
 		public void onClick(View v) {
 				SummaryDialogFragment summarydialog = new SummaryDialogFragment();
 				summarydialog.show(getFragmentManager(), "TypeFragment");
+		}
+	};
+
+	/**
+	 * Open a Dialog window that give to the user two choice to bind zones.
+	 */
+	private OnClickListener clickListenerUnion = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+				UnionDialogFragment summarydialog = new UnionDialogFragment();
+				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
 		}
 	};
 }

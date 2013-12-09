@@ -45,8 +45,12 @@ import android.graphics.drawable.Drawable;
 
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
+import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -97,57 +101,64 @@ public class DrawImageView extends Drawable {
 					}
 				}
 				WKTReader wktr = new WKTReader();
-				Polygon poly = (Polygon) wktr.read(MainActivity.pixelGeom
-						.get(i).getPixelGeom_the_geom());
-				Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
+				for (PixelGeom pg : UtilCharacteristicsZone
+						.getPixelGeomsFromGeom(wktr.read(MainActivity.pixelGeom
+								.get(i).getPixelGeom_the_geom()))) {
+					Polygon poly = (Polygon) wktr.read(pg
+							.getPixelGeom_the_geom());
+					Coordinate[] points2 = poly.getExteriorRing()
+							.getCoordinates();
 
-				if (el.getElement_color() != null
-						&& Integer.parseInt(el.getElement_color()) != 0) {
-					finishedPaint.setColor(Integer.parseInt(el
-							.getElement_color()));
-				} else {
-					finishedPaint.setColor(Color.RED);
-				}
-
-				// Create a closed path for the polygon
-				Path polyPath = new Path();
-				polyPath.moveTo((int) points2[0].x, (int) points2[0].y);
-				for (int j = 0; j < points2.length; j++) {
-					polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
-					if (j != points2.length - 1) {
-						canvas.drawLine((int) points2[j].x, (int) points2[j].y,
-								(int) points2[j + 1].x, (int) points2[j + 1].y,
-								finishedPaint);
+					if (el.getElement_color() != null
+							&& Integer.parseInt(el.getElement_color()) != 0) {
+						finishedPaint.setColor(Integer.parseInt(el
+								.getElement_color()));
+					} else {
+						finishedPaint.setColor(Color.RED);
 					}
-				}
-				for (int k = 0; k < poly.getNumInteriorRing(); k++) {
-					polyPath.close();
-					points2 = poly.getInteriorRingN(k).getCoordinates();
+
+					// Create a closed path for the polygon
+					Path polyPath = new Path();
+					polyPath.moveTo((int) points2[0].x, (int) points2[0].y);
 					for (int j = 0; j < points2.length; j++) {
 						polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
 						if (j != points2.length - 1) {
-							canvas.drawLine((int) points2[j].x, (int) points2[j].y,
-									(int) points2[j + 1].x, (int) points2[j + 1].y,
-									finishedPaint);
+							canvas.drawLine((int) points2[j].x,
+									(int) points2[j].y, (int) points2[j + 1].x,
+									(int) points2[j + 1].y, finishedPaint);
 						}
 					}
-				}
+					for (int k = 0; k < poly.getNumInteriorRing(); k++) {
+						polyPath.close();
+						points2 = poly.getInteriorRingN(k).getCoordinates();
+						for (int j = 0; j < points2.length; j++) {
+							polyPath.lineTo((int) points2[j].x,
+									(int) points2[j].y);
+							if (j != points2.length - 1) {
+								canvas.drawLine((int) points2[j].x,
+										(int) points2[j].y,
+										(int) points2[j + 1].x,
+										(int) points2[j + 1].y, finishedPaint);
+							}
+						}
+					}
 
-				if (el.getElement_color() != null
-						&& Integer.parseInt(el.getElement_color()) != 0) {
-					fillPaint.setColor(Integer.parseInt(el
-							.getElement_color()));
-				} else {
-					fillPaint.setColor(Color.RED);
-				}
+					if (el.getElement_color() != null
+							&& Integer.parseInt(el.getElement_color()) != 0) {
+						fillPaint.setColor(Integer.parseInt(el
+								.getElement_color()));
+					} else {
+						fillPaint.setColor(Color.RED);
+					}
 
-				if (!MainActivity.pixelGeom.get(i).selected) {
-					fillPaint.setAlpha(50);
-				} else {
-					fillPaint.setAlpha(150);
+					if (!MainActivity.pixelGeom.get(i).selected) {
+						fillPaint.setAlpha(50);
+					} else {
+						fillPaint.setAlpha(150);
+					}
+					// Draw the polygon
+					canvas.drawPath(polyPath, fillPaint);
 				}
-				// Draw the polygon
-				canvas.drawPath(polyPath, fillPaint);
 			} catch (ParseException e) {
 			}
 		}

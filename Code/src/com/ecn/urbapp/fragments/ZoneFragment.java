@@ -524,7 +524,9 @@ public class ZoneFragment extends Fragment{
 					int pos = -1;
 					pos = UtilCharacteristicsZone.isInsideZone(touch);
 					if(pos != -1){
+						Element elt = UtilCharacteristicsZone.getElementFromPixelGeomId(MainActivity.pixelGeom.get(pos).getPixelGeomId());
 						MainActivity.pixelGeom.remove(pos);
+						MainActivity.element.remove(elt);
 						exitAction();
 					}
 				}

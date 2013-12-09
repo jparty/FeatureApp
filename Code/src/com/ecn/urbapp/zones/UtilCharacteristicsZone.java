@@ -50,6 +50,7 @@ import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.GetId;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -61,8 +62,6 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-
-//TODO only dsplay databased material and not those put into ressources
 
 /**
  * This class regroup all the zones linked to a photo
@@ -168,7 +167,7 @@ public final class UtilCharacteristicsZone {
 			Coordinate coord = new Coordinate(point.x, point.y);
 			com.vividsolutions.jts.geom.Point geomPoint = gf.createPoint(coord);
 			try {
-				if (geomPoint.within(gf.createPolygon(gf.createLinearRing(((Polygon) wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom())).getExteriorRing().getCoordinates()), null))) {
+				if (geomPoint.within(wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom()))) {
 					if (result == -1) {
 						result = i;
 					} else if (gf.createPolygon(gf.createLinearRing(((Polygon) wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom())).getExteriorRing().getCoordinates()), null).getArea()
@@ -201,6 +200,9 @@ public final class UtilCharacteristicsZone {
 	public static void select(int zoneNumber) {
 		if (zoneNumber >= 0) {
 			MainActivity.pixelGeom.get(zoneNumber).selected = !MainActivity.pixelGeom.get(zoneNumber).selected;
+			for (PixelGeom pg : MainActivity.pixelGeom.get(zoneNumber).getLinkedPixelGeom()) {
+				pg.selected = MainActivity.pixelGeom.get(zoneNumber).selected;
+			}
 		} else {
 			unselectAll();
 		}
@@ -411,17 +413,12 @@ public final class UtilCharacteristicsZone {
 			GeometryCollection geomColl = (GeometryCollection) hole;
 			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
 				if (geomColl.getGeometryN(i) instanceof Polygon) {
-					PixelGeom pg = new PixelGeom();
-					Polygon poly = intPolygon((Polygon) geomColl.getGeometryN(i));
-					poly = intPolygon(poly);
-					pg.setPixelGeom_the_geom(poly.toText());
+					PixelGeom pg = getPixelGeomFromGeom(geomColl.getGeometryN(i), true);
 					return createHole(pgeom, pg);
 				}
 			}
 		} else if (hole instanceof Polygon) {
-			PixelGeom pg = new PixelGeom();
-			Polygon poly = intPolygon((Polygon) hole);
-			pg.setPixelGeom_the_geom(poly.toText());
+			PixelGeom pg = getPixelGeomFromGeom(hole, true);
 			return createHole(pgeom, pg);
 		}
 		return pgeom;
@@ -465,7 +462,7 @@ public final class UtilCharacteristicsZone {
 	 */
 	private static void removeAllFromMainActivity(List<Long> pixelGeomIdToRemove) {
 		for (Long pgeomId : pixelGeomIdToRemove) {
-		Element elt = getElementFromPixelGeomId(pgeomId);
+			Element elt = getElementFromPixelGeomId(pgeomId);
 			PixelGeom pgeom = getPixelGeomFromId(pgeomId);
 			MainActivity.pixelGeom.remove(pgeom);
 			MainActivity.element.remove(elt);
@@ -499,7 +496,6 @@ public final class UtilCharacteristicsZone {
 	 * @throws ParseException if a PixelGeom cannot be interpreted into a Geometry
 	 */
 	private static void addPixelGeom(PixelGeom pgeom, Element elt) throws ParseException {
-		pgeom = getPixelGeomsFromGeom(wktr.read(pgeom.getPixelGeom_the_geom())).get(0);
 		pgeom.setPixelGeomId(GetId.PixelGeom());
 		Element element = new Element();
 		element.setElement_id(GetId.Element());
@@ -532,7 +528,7 @@ public final class UtilCharacteristicsZone {
 	 *            the Geometry to convert into PixelGeom(s)
 	 * @return the equivalent PixelGeom 
 	 */
-	private static List<PixelGeom> getPixelGeomsFromGeom(Geometry geom) {
+	public static List<PixelGeom> getPixelGeomsFromGeom(Geometry geom) {
 		List<PixelGeom> result = new ArrayList<PixelGeom>();
 		if (geom instanceof GeometryCollection) {
 			GeometryCollection geomColl = (GeometryCollection) geom;
@@ -540,12 +536,42 @@ public final class UtilCharacteristicsZone {
 				result.addAll(getPixelGeomsFromGeom(geomColl.getGeometryN(i)));
 			}
 		} else if (geom instanceof Polygon) {
-			PixelGeom pg = new PixelGeom();
-			Polygon poly = intPolygon((Polygon) geom);
-			pg.setPixelGeom_the_geom(poly.toText());
-			result.add(pg);
+			result.add(getPixelGeomFromGeom(geom));
 		}
 		return result;
+	}
+
+	/**
+	 * Transform the Geometry in parameter into a PixelGeom by directly
+	 * transform it into its WKT representation.
+	 * 
+	 * @param geom
+	 *            the Geometry to convert into PixelGeom
+	 * @param checkPoint true if the value of Coordinates must be checked and convert from double to int
+	 * @return the equivalent PixelGeom
+	 */
+	private static PixelGeom getPixelGeomFromGeom(Geometry geom) {
+		return getPixelGeomFromGeom(geom, true);
+	}
+
+	/**
+	 * Transform the Geometry in parameter into a PixelGeom by directly
+	 * transform it into its WKT representation.
+	 * 
+	 * @param geom
+	 *            the Geometry to convert into PixelGeom
+	 * @param checkPoint true if the value of Coordinates must be checked and convert from double to int
+	 * @return the equivalent PixelGeom
+	 */
+	private static PixelGeom getPixelGeomFromGeom(Geometry geom, boolean checkPoint) {
+		PixelGeom pg = new PixelGeom();
+		if (checkPoint) {
+			Polygon poly = intPolygon((Polygon) geom);
+			pg.setPixelGeom_the_geom(poly.toText());
+		} else {
+			pg.setPixelGeom_the_geom(geom.toText());
+		}
+		return pg;
 	}
 
 	/**
@@ -615,5 +641,35 @@ public final class UtilCharacteristicsZone {
 		Polygon poly = intPolygon(gf.createPolygon(shell, holes));
 		result.setPixelGeom_the_geom(poly.toText());
 		return result;
+	}
+
+	/**
+	 * Return the union of the elements from the Vector of PixelGeom as a Geometry.
+	 * 
+	 * @param selectedPixelGeom the PixelGeom to transform
+	 * @return the union of the elements from the Vector of PixelGeom as a Geometry
+	 * @throws ParseException if a PixelGeom cannot be interpreted into a Geometry
+	 */
+	public static Geometry getGeometryUnion(Vector<PixelGeom> selectedPixelGeom) throws ParseException {
+		Geometry newGeom = null;
+		for (PixelGeom pg : selectedPixelGeom) {
+			if (newGeom == null) {
+				newGeom = wktr.read(pg.getPixelGeom_the_geom());
+			} else {
+				newGeom = newGeom.union(wktr.read(pg.getPixelGeom_the_geom()));
+			}
+		}
+		return newGeom;
+	}
+
+	public static void union(Vector<PixelGeom> selectedPixelGeom) throws ParseException {
+		Geometry geom = getGeometryUnion(selectedPixelGeom);
+		PixelGeom pg = getPixelGeomFromGeom(geom, false);
+		ArrayList<Long> pgeomId = new ArrayList<Long>();
+		for (PixelGeom pgeom : selectedPixelGeom) {
+			pgeomId.add(pgeom.getPixelGeomId());
+		}
+		removeAllFromMainActivity(pgeomId);
+		addPixelGeom(pg, null);
 	}
 }
