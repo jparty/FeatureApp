@@ -70,30 +70,20 @@
             android:text="@string/definition_dialog_color"
             android:textColor="#000000" />
 
-        <View
-        	android:id="@+id/color"
-        	android:layout_width="150dp"
-        	android:layout_height="30dp"
-        	android:layout_marginLeft="80dip"
-        	android:layout_marginBottom="30dip"
-            android:src="@drawable/back" />
+        <Button
+            android:id="@+id/definition_button_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button Color" />
+
+        <!--<View
+            android:id="@+id/color"
+            android:layout_width="150dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="80dp"
+            android:src="@drawable/back" />-->
         
     </LinearLayout>
-    
-    <RelativeLayout
-        android:id="@+id/definition_validation_linear_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/definition_color_linear_layout"
-        android:orientation="horizontal" >
-
-        <Button
-        	android:id="@+id/validation"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:layout_alignParentRight="true"
-        	android:text="@string/ok"/>
-        
-    </RelativeLayout>
 
 </RelativeLayout>

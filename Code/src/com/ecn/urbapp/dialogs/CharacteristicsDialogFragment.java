@@ -1,7 +1,6 @@
 package com.ecn.urbapp.dialogs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +8,9 @@ import java.util.Map;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -70,6 +66,7 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 	 */
 	private boolean newColor = false;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		box = new Dialog(getActivity());

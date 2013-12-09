@@ -1,44 +1,33 @@
 package com.ecn.urbapp.fragments;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Dialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.Material;
+import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
 import com.ecn.urbapp.utils.colorpicker.AmbilWarnaDialog;
 import com.ecn.urbapp.utils.colorpicker.AmbilWarnaDialog.OnAmbilWarnaListener;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
-import com.ecn.urbapp.zones.Zone;
 
 public class SetCharactFragment extends Fragment{
-
-	/**
-	 * The Dialog instance that allow the user to characterize Elements.
-	 */
-	private Dialog box;
 	/**
 	 * The Spinner instance used to select the type of the Element(s) to characterize.
 	 */
@@ -50,7 +39,7 @@ public class SetCharactFragment extends Fragment{
 	/**
 	 * The View instance used to show the color of the Element(s) to characterize.
 	 */
-	private View colorView;
+	private Button colorView;
 	/**
 	 * Dialog used to choose a color.
 	 */
@@ -80,15 +69,11 @@ public class SetCharactFragment extends Fragment{
 
 		View v = inflater.inflate(R.layout.layout_definition_dialog, null);
 		
-		spinType = (Spinner) box.findViewById(R.id.typeZone);
-		spinMaterial = (Spinner) box.findViewById(R.id.materialZone);
-		Button validate = (Button) box.findViewById(R.id.validation);
-		validate.setOnClickListener(validation);
-		colorView = box.findViewById(R.id.color);
+		spinType = (Spinner) v.findViewById(R.id.typeZone);
+		spinMaterial = (Spinner) v.findViewById(R.id.materialZone);
+		colorView = (Button)v.findViewById(R.id.definition_button_color);
 		if (UtilCharacteristicsZone.getColorForSelectedZones() != 0) {
 			colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());
-		} else {
-			colorView.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_color_definition));
 		}
 		colorView.setOnClickListener(openColorDialog);
 		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
@@ -136,13 +121,6 @@ public class SetCharactFragment extends Fragment{
 		if (position != -1) {
 			spinMaterial.setSelection(position);
 		}
-		/*
-		FragmentManager fragmentManager = getFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		SetCharactFragment fragment = new SetCharactFragment();
-		fragmentTransaction.add(R.id.layout_caract, fragment);
-		fragmentTransaction.commit();*/
-				
 		return v;
 	}
 
@@ -150,11 +128,35 @@ public class SetCharactFragment extends Fragment{
 	 * Listener that add the chosen characteristics to all the selected elements
 	 * and close the dialog.
 	 */
-	private OnClickListener validation = new OnClickListener() {
-		
-		@Override
-		public void onClick(View v) {
-			String selection;
+	public void validation(){
+		String selection;
+		if(ZoneFragment.state==ZoneFragment.IMAGE_CREATION){
+			selection = (String) spinType.getSelectedItem();
+			if (!selection.equals("")) {
+				for(ElementType et : MainActivity.elementType){
+					if(et.getElementType_name().equals(selection)){
+						ZoneFragment.elementTemp.setElementType_id(et.getElementType_id());
+					}
+				}
+			}
+			selection = (String) spinMaterial.getSelectedItem();
+			if (!selection.equals("")) {
+				for(Material et : MainActivity.material){
+					if(et.getMaterial_name().equals(selection)){
+						ZoneFragment.elementTemp.setMaterial_id(et.getMaterial_id());
+					}
+				}
+			}
+			if (newColor) {
+				ZoneFragment.elementTemp.setElement_color(""+chosenColor);
+			}
+			//CharacteristicsFragment.getMyImage().invalidate();
+			/*if (fromRecap) {
+				SummaryDialogFragment summarydialog = new SummaryDialogFragment();
+				summarydialog.show(getFragmentManager(), "TypeFragment");
+			}*/
+		}
+		else if(ZoneFragment.state==ZoneFragment.IMAGE_EDITION){
 			selection = (String) spinType.getSelectedItem();
 			if (!selection.equals("")) {
 				UtilCharacteristicsZone.setTypeForSelectedZones(selection);
@@ -166,13 +168,13 @@ public class SetCharactFragment extends Fragment{
 			if (newColor) {
 				UtilCharacteristicsZone.setColorForSelectedZones(chosenColor);
 			}
-			CharacteristicsFragment.getMyImage().invalidate();
-			box.dismiss();
+			//CharacteristicsFragment.getMyImage().invalidate();
 			if (fromRecap) {
 				SummaryDialogFragment summarydialog = new SummaryDialogFragment();
 				summarydialog.show(getFragmentManager(), "TypeFragment");
 			}
 		}
+		resetAffichage();
 	};
 
 	/**
@@ -184,8 +186,7 @@ public class SetCharactFragment extends Fragment{
 		public void onClick(View v) {
 			// Create the color picker dialog (with the actual color of the selected zone)
 			colorDialog = new AmbilWarnaDialog(getActivity(),
-					UtilCharacteristicsZone.getColorForSelectedZones(),
-					colorListener);
+					UtilCharacteristicsZone.getColorForSelectedZones(),colorListener);
 
 			// Add a title to the dialog
 			colorDialog.getDialog().setTitle(R.string.definition_dialog_color);
@@ -211,14 +212,6 @@ public class SetCharactFragment extends Fragment{
 		}
 	};
 
-	/*@Override
-	public void onCancel(DialogInterface dialog) {
-		if (fromRecap) {
-			SummaryDialogFragment summarydialog = new SummaryDialogFragment();
-			summarydialog.show(getFragmentManager(), "TypeFragment");
-		}
-	}*/
-
 	/**
 	 * Set the fromRecap attribute to true. It means that this box is opened
 	 * from a SummaryDialogFragment, and thus that a SummaryDialogFragment
@@ -226,5 +219,24 @@ public class SetCharactFragment extends Fragment{
 	 */
 	public void setFromSummary() {
 		fromRecap = true;
+	}
+	
+	public void setAffichage(PixelGeom pg){
+		for(Element e : MainActivity.element){
+			if(e.getPixelGeom_id()==pg.getPixelGeomId()){
+				if(e.getMaterial_id()!=0)
+					spinMaterial.setSelection((int)e.getMaterial_id());
+				if(e.getElementType_id()!=0)
+					spinType.setSelection((int)e.getElementType_id());
+				if(e.getElement_color()!=null)
+					colorView.setBackgroundColor(Integer.parseInt(e.getElement_color()));
+			}
+		}
+	}
+	
+	public void resetAffichage(){
+		spinMaterial.setSelection(0);
+		spinType.setSelection(0);
+		colorView.setBackgroundColor(Color.GRAY);
 	}
 }

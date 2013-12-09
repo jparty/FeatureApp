@@ -29,6 +29,7 @@ import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
+import com.ecn.urbapp.utils.GetId;
 import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
@@ -69,7 +70,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	/**
 	 * Field defining the actual sate of definition of zones
 	 */
-	private int state;
+	public static int state;
 
 	/**
 	 * Button cancel
@@ -123,21 +124,24 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 * Point selected
 	 */
 	private Point selected;
+	public static Element elementTemp;
 	private DrawZoneView drawzoneview;
 	private int imageHeight; private int imageWidth;
 	
 	/**
 	 * Constant value
 	 */
-	private final int IMAGE_CREATION = 2;
+	public static final int IMAGE_CREATION = 2;
 	/**
 	 * Constant value
 	 */
-	private final int IMAGE_EDITION = 3;
+	public static final int IMAGE_EDITION = 3;
 	/**
 	 * Constant value
 	 */
-	private final int IMAGE_SELECTION= 1;
+	public static final int IMAGE_SELECTION= 1;
+	
+	private SetCharactFragment scf;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -157,12 +161,14 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				refreshCreate();
 				break;
 			case R.id.zone_button_cancel:
+				scf.resetAffichage();
 				state = IMAGE_SELECTION;
 				exitAction();
 				break;
 			case R.id.zone_button_help:
 				break;
 			case R.id.zone_button_validate:
+				scf.validation();
 				ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
 				for (PixelGeom pg : MainActivity.pixelGeom) {
 					lpg.add(pg);
@@ -174,7 +180,13 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				try {
 					PixelGeom pg = new PixelGeom();
 					pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
-					UtilCharacteristicsZone.addInMainActivityZones(pg, null);
+					if(elementTemp.getElementType_id()==0 && elementTemp.getMaterial_id()==0){
+						UtilCharacteristicsZone.addInMainActivityZones(pg, null);
+					}
+					else{
+						UtilCharacteristicsZone.addInMainActivityZones(pg, elementTemp);
+						//MainActivity.element.add(elementTemp);
+					}
 					exitAction();
 				} catch(TopologyException e) {
 					MainActivity.pixelGeom = lpg;
@@ -202,7 +214,15 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					int pos;
 					for(pos=0; pos<MainActivity.pixelGeom.size(); pos++){
 						if(MainActivity.pixelGeom.get(pos).getPixelGeomId()==geomCache.getPixelGeomId()){
+							for(int i=0; i<MainActivity.element.size(); i++){
+								if(MainActivity.element.get(i).getPixelGeom_id()==MainActivity.pixelGeom.get(pos).getPixelGeomId()){
+									MainActivity.element.remove(i);
+									scf.resetAffichage();
+									break;
+								}
+							}
 							MainActivity.pixelGeom.remove(pos);
+							break;
 						}
 					}
 					state = IMAGE_SELECTION;
@@ -212,15 +232,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			case R.id.zone_button_back:
 				break;
 			case R.id.zone_button_cancel:
-				if(zoneCache != null){
-					//if user is coming from CreateZone there is no original to save
-				}
-					//MainActivity.zones.add(new Zone(zoneCache));//save original
-					/*PixelGeom pgeom = new PixelGeom();
-					pgeom.setPixelGeomId(MainActivity.pixelGeom.size());
-					pgeom.setPixelGeom_the_geom(ConvertGeom.ZoneToPixelGeom(zoneCache));
-					
-					MainActivity.pixelGeom.add(pgeom);*/
+				scf.resetAffichage();
 	            exitAction();
 				state = IMAGE_SELECTION;
 				break;
@@ -228,6 +240,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				break;
 			case R.id.zone_button_validate:
 				if(!zone.getPoints().isEmpty()){
+					scf.validation();
 					ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
 					for (PixelGeom pg : MainActivity.pixelGeom) {
 						lpg.add(pg);
@@ -300,7 +313,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		myImage.setOnTouchListener(this);
 		
-		SetCharactFragment scf = (SetCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentCaract);
+		scf = (SetCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentCaract);
 		
 		
 		return v;
@@ -340,50 +353,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		drawzoneview.setIntersections(new Vector<Point>());
 		myImage.invalidate();
 	}
-	
-	/** Declarations for create zone **/
-	/*private OnTouchListener imageCreateTouchListener = new ImageView.OnTouchListener() {
-		Point selected;
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			if(event.getAction() == MotionEvent.ACTION_DOWN){
-				Log.d("Move","Action Down");
-				selected = new Point(0, 0);
-				Point touch = getTouchedPoint(event);
-				for(Point p : zone.getPoints()){//is the touched point a normal point ?
-					float dx=Math.abs(p.x-touch.x);
-					float dy=Math.abs(p.y-touch.y);
-					if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
-						selected.set(p.x,p.y);
-					}
-				}
-			}
-			if (event.getAction() == MotionEvent.ACTION_UP) {
-				Log.d("Move","Action Up");
-				if(selected.x==0 && selected.y==0){
-					zone.addPoint2(getTouchedPoint(event));				
-				}
-				else{
-					Point touch = getTouchedPoint(event);
-					if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
-						zone.updateMiddle(selected, touch);	//If not it's a "middle" point, and it's upgraded to normal
-						//TODO transfer to zone
-					}
-					selected.set(0, 0);//No selected point anymore
-				}
-			}
-			if (event.getAction() == MotionEvent.ACTION_MOVE) {
-				Log.d("Move","Action Move");
-				if(selected.x!=0 || selected.y!=0){
-					Point touch = getTouchedPoint(event);
-					zone.updatePoint(selected, touch);
-					selected.set(touch.x,touch.y);
-				}
-			}
-			refreshCreate();//display new point, refresh buttons' availabilities	
-			return true;
-		}
-	};*/
 	
 	public Point getTouchedPoint(MotionEvent event){
 		float[] coord = {event.getX(),event.getY()};//get touched point coord
@@ -460,10 +429,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	public boolean onTouch(View v, MotionEvent event) {
 			switch(state){
 			case IMAGE_CREATION:
-	    		/*getMatrix();
-				zone.addPoint(getTouchedPoint(event));
-				refreshCreate();
-				break;*/
 				if(event.getAction() == MotionEvent.ACTION_DOWN){
 					Log.d("Move","Action Down");
 					selected = new Point(0, 0);
@@ -539,31 +504,38 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				}
 				refreshEdit();
 				break;
-				
+
 			case IMAGE_SELECTION:
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					getMatrix();
 					Point touch = getTouchedPoint(event);
 					
-					Vector<Zone> zones = new Vector<Zone>();
-					for(PixelGeom pg: MainActivity.pixelGeom){
-						zones.add(ConvertGeom.pixelGeomToZone(pg));
-					}
+					//Vector<Zone> zones = new Vector<Zone>();
 					boolean flag=false;
 					Zone z=null;
-					for(Zone test : zones){
-						if(test.containPoint(touch)){
+					for(PixelGeom pg: MainActivity.pixelGeom){
+						//zones.add(ConvertGeom.pixelGeomToZone(pg));
+						if(ConvertGeom.pixelGeomToZone(pg).containPoint(touch)){
 							flag=true;
-							z=test;
+							z=ConvertGeom.pixelGeomToZone(pg);
+							scf.setAffichage(pg);
 							break;
 						}
 					}
+					/*for(Zone test : zones){
+						if(test.containPoint(touch)){
+							flag=true;
+							z=test;
+							scf.setAffichage(pg)
+							break;
+						}
+					}*/
 					if(flag){
 						zoneCache = z;
 						zone.setZone(z);
 	
 						for(int i=0; i<MainActivity.pixelGeom.size(); i++){
-							if(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom().equals(zoneCache.getPolygon().toString())){
+							if(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
 								geomCache = MainActivity.pixelGeom.get(i);
 								MainActivity.pixelGeom.get(i).selected=true;
 							}
@@ -585,6 +557,12 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						back.setEnabled(false);
 						cancel.setEnabled(true);
 						help.setEnabled(true);
+						
+						elementTemp = new Element();
+						elementTemp.setElement_id(GetId.Element());
+						elementTemp.setPhoto_id(MainActivity.photo.getPhoto_id());
+						elementTemp.setPixelGeom_id(GetId.PixelGeom());
+						elementTemp.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
 					}
 				break;
 			}

@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Point;
 
 import com.ecn.urbapp.R;
@@ -52,7 +51,6 @@ import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.utils.GetId;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -502,20 +500,28 @@ public final class UtilCharacteristicsZone {
 	private static void addPixelGeom(PixelGeom pgeom, Element elt) throws ParseException {
 		pgeom = getPixelGeomsFromGeom(wktr.read(pgeom.getPixelGeom_the_geom())).get(0);
 		pgeom.setPixelGeomId(GetId.PixelGeom());
-		Element element = new Element();
-		element.setElement_id(GetId.Element());
-		element.setPhoto_id(MainActivity.photo.getPhoto_id());
-		element.setPixelGeom_id(pgeom.getPixelGeomId());
-		element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
-		if (elt != null) {
-			element.setElement_color(elt.getElement_color());
-			element.setElementType_id(elt.getElementType_id());
-			element.setMaterial_id(elt.getMaterial_id());
+		boolean flag=false;
+		for(Element e :MainActivity.element){
+			if(e.getPixelGeom_id()==pgeom.getPixelGeomId()){
+				flag=true;
+			}
 		}
-		if (MainActivity.element.size() < element.getElement_id()) {
-			MainActivity.element.add(element);
-		} else {
-			MainActivity.element.add((int) element.getElement_id() -1, element);
+		if(!flag){
+			Element element = new Element();
+			element.setElement_id(GetId.Element());
+			element.setPhoto_id(MainActivity.photo.getPhoto_id());
+			element.setPixelGeom_id(pgeom.getPixelGeomId());
+			element.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
+			if (elt != null) {
+				element.setElement_color(elt.getElement_color());
+				element.setElementType_id(elt.getElementType_id());
+				element.setMaterial_id(elt.getMaterial_id());
+			}
+			if (MainActivity.element.size() < element.getElement_id()) {
+				MainActivity.element.add(element);
+			} else {
+				MainActivity.element.add((int) element.getElement_id() -1, element);
+			}
 		}
 		if (MainActivity.pixelGeom.size() < pgeom.getPixelGeomId()) {
 			MainActivity.pixelGeom.add(pgeom);
