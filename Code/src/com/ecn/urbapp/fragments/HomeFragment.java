@@ -45,14 +45,13 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	/**
 	 * Button launching the native photo app
 	 */
-	private Button takePhoto;
-	private Button loadImage;
+
 	/**
 	 * Button launching the loadLocalProject activity
 	 */
-	private Button loadLocal;
-	private Button downloadImage;
+
 	private ImageDownloader imageDownloader = new ImageDownloader();
+	private ImageView imageTakePhoto;
 	private ImageView imagePhoto;
 	private ImageView imageLoadLocal;
 	private ImageView imageLoadDistant;
@@ -73,18 +72,12 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_home, null);
 
-		takePhoto=(Button)v.findViewById(R.id.home_takePicture);
-		takePhoto.setOnClickListener(this);
-		loadImage=(Button)v.findViewById(R.id.home_loadPicture);
-		loadImage.setOnClickListener(this);
 		
-		loadLocal=(Button)v.findViewById(R.id.home_loadLocalProject);
-		loadLocal.setOnClickListener(this);
 		
-		downloadImage = (Button) v.findViewById(R.id.home_loadDistantlProject);
-		downloadImage.setOnClickListener(this);
+		imageTakePhoto = (ImageView) v.findViewById(R.id.home_image_newProject_takePhoto);
+		imageTakePhoto.setOnClickListener(this);
 		
-		imagePhoto = (ImageView) v.findViewById(R.id.home_image_newProject);
+		imagePhoto = (ImageView) v.findViewById(R.id.home_image_newProject_photo);
 		imagePhoto.setOnClickListener(this);
 		
 		imageLoadLocal = (ImageView) v.findViewById(R.id.home_image_loadLocalProject);
@@ -100,8 +93,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	public void onClick(View v) {
 		Intent i;
 		switch(v.getId()){
-			case R.id.home_takePicture :
-			case R.id.home_image_newProject:
+			case R.id.home_image_newProject_takePhoto :
 				Utils.showToast(MainActivity.baseContext, "Lancement de l'appareil photo", Toast.LENGTH_SHORT);
 				File folder = new File(Environment.getExternalStorageDirectory(), "featureapp/");
 				folder.mkdirs();
@@ -115,7 +107,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 				i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
 		    	getActivity().startActivityForResult(i, Cst.CODE_TAKE_PICTURE);
 		    	break;
-			case R.id.home_loadPicture:
+			case R.id.home_image_newProject_photo:
 				Utils.showToast(MainActivity.baseContext, "Lancement de la galerie", Toast.LENGTH_SHORT);
 				i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
 				getActivity().startActivityForResult(i, Cst.CODE_LOAD_PICTURE);
