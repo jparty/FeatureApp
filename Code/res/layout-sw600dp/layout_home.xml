@@ -28,21 +28,30 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true"
 		android:layout_alignParentTop="true"
+		android:layout_marginTop="100dp"
 		android:layout_marginLeft="20dp">
 		
                 <ImageView
-                android:id="@+id/home_image_newProject"
+                android:id="@+id/home_image_newProject_takePhoto"
                 android:layout_width="wrap_content"
-                android:layout_height="400dp"
+                android:layout_height="200dp"
                 android:layout_alignParentTop="true"
-                android:contentDescription="@string/image_newProject"
+                android:contentDescription="@string/image_newProject_takePhoto"
+        		android:src="@drawable/take_photo"/>
+                
+                <ImageView
+                android:id="@+id/home_image_newProject_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_below="@+id/home_image_newProject_takePhoto"
+                android:contentDescription="@string/image_newProject_photo"
         		android:src="@drawable/photo"/>
             
-            <Button
+           <!--  <Button
                 android:id="@+id/home_takePicture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/home_image_newProject"
+                android:layout_below="@+id/home_image_newProject_photo"
                 android:layout_alignParentLeft="true"
                 android:text="@string/takePicture"/>
             
@@ -52,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/home_takePicture"
                 android:layout_alignParentLeft="true"
-                android:text="@string/loadPicture"/>
+                android:text="@string/loadPicture"/>-->
             
 
         </RelativeLayout>
@@ -62,7 +71,8 @@
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_alignParentTop="true">
+            		android:layout_alignParentTop="true"
+		android:layout_marginTop="100dp">
             
 	         <ImageView
 	         android:id="@+id/home_image_loadLocalProject"
@@ -72,7 +82,7 @@
 	         android:contentDescription="@string/image_loadLocalProject"
 	         android:src="@drawable/local"/>
 	        
-	         <Button
+	        <!--   <Button
 	         android:id="@+id/home_loadLocalProject"
 	         android:layout_width="match_parent"
 	         android:layout_height="wrap_content"
@@ -94,7 +104,7 @@
 	         android:layout_height="wrap_content"
 	         android:layout_below="@+id/home_test"
 	         android:layout_alignParentLeft="true"
-	         android:text="test photo"/>
+	         android:text="test photo"/>-->
             
         </RelativeLayout>
         
@@ -103,7 +113,8 @@
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
+            		android:layout_alignParentTop="true"
+		android:layout_marginTop="100dp"
 			android:layout_marginRight="20dp">
          
                  <ImageView
@@ -114,13 +125,13 @@
                  android:contentDescription="@string/image_loadDistantProject"
 	         	android:src="@drawable/ext"/>
                 
-                 <Button
+                <!--  <Button
                  android:id="@+id/home_loadDistantlProject"
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:layout_below="@+id/home_image_loadDistantProject"
                  android:layout_alignParentLeft="true"
-                 android:text="@string/loadDistantlProject"/>
+                 android:text="@string/loadDistantlProject"/>-->
 
     </RelativeLayout>
     
