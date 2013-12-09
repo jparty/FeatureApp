@@ -1,6 +1,7 @@
 package com.ecn.urbapp.db;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -20,6 +21,7 @@ public class PixelGeom extends DataObject  {
 	//TODO rendre private et mettre accesseur
 	public boolean selected;
 
+	private Vector<PixelGeom> linkedPixelGeom = new Vector<PixelGeom>();
 	
 	
 
@@ -136,5 +138,13 @@ public class PixelGeom extends DataObject  {
 			
 		}
 		
+	}
+
+	public void setLinkedPixelGeom(Vector<PixelGeom> selectedPixelGeom) {
+		linkedPixelGeom = selectedPixelGeom;
+	}
+
+	public Vector<PixelGeom> getLinkedPixelGeom() {
+		return linkedPixelGeom;
 	}
 }

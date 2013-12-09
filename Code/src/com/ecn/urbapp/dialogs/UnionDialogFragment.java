@@ -35,6 +35,8 @@ knowledge of the CeCILL license and that you accept its terms.
 
 package com.ecn.urbapp.dialogs;
 
+import java.util.Vector;
+
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -50,6 +52,7 @@ import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
+import com.vividsolutions.jts.io.ParseException;
 
 /**
  * This class creates the dialog that indicate which pixelgeoms is not defined
@@ -57,48 +60,73 @@ import com.ecn.urbapp.zones.UtilCharacteristicsZone;
  * @author Jules Party
  * 
  */
-public class SummaryDialogFragment extends DialogFragment {
-	
-	private long pgeomIdToSelect;
+public class UnionDialogFragment extends DialogFragment {
+
+	/**
+	 * The Dialog instance that allows the user to group Elements.
+	 */
 	private Dialog box;
+	/** 
+	 * Button to fill the characteristic the selected zones
+	 */
+	private Button bindStrong = null;
+	/**
+	 * Button to delete all the characteristics of the selected zones
+	 */
+	private Button bindWeak = null;
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		box = new Dialog(getActivity());
-		box.setContentView(R.layout.layout_definition_dialog_recap);
-		box.setTitle(R.string.definition_recap);
-		LinearLayout recapList = (LinearLayout) box.findViewById(R.id.definition_recap_linear_layout);
-		for (PixelGeom pgeom : MainActivity.pixelGeom) {
-			Element element = UtilCharacteristicsZone.getElementFromPixelGeomId(pgeom.getPixelGeomId());
-			if (element.getElementType_id() == 0 || element.getMaterial_id() == 0 || element.getElement_color() == null) {
-				pgeomIdToSelect = pgeom.getPixelGeomId();
-				Button button = new Button(getActivity());
-				button.setText("La zone n°" + pgeom.getPixelGeomId() + " n'est pas entièrement défini.");
-				button.setOnClickListener(new OnClickListener() {
-
-					private long idToSelect = pgeomIdToSelect;
-
-					@Override
-					public void onClick(View v) {
-						UtilCharacteristicsZone.unselectAll();
-						UtilCharacteristicsZone.getPixelGeomFromId(idToSelect).selected = true;
-						for (PixelGeom pg : UtilCharacteristicsZone.getPixelGeomFromId(idToSelect).getLinkedPixelGeom()) {
-							pg.selected = true;
-						}
-						CharacteristicsFragment.getMyImage().invalidate();
-						box.dismiss();
-						// Show the dialog to choose the characteristics
-						CharacteristicsDialogFragment typedialog = new CharacteristicsDialogFragment();
-						// Say the charasteristics dialog to re-open the summary dialog when exit
-						typedialog.setFromSummary();
-						typedialog.show(getFragmentManager(), "CharacteristicsDialogFragment");
-					}
-				});
-				recapList.addView(button);
-			}
-		}
+		box.setContentView(R.layout.layout_definition_dialog_union);
+		box.setTitle(R.string.definition_union);
+		bindStrong = (Button) box.findViewById(R.id.definition_button_union_strong);
+		bindWeak = (Button) box.findViewById(R.id.definition_button_union_weak);
+		bindStrong.setOnClickListener(strongUnion);
+		bindWeak.setOnClickListener(weakUnion);
 		return box;
 	}
+
+	private OnClickListener strongUnion = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			Vector<PixelGeom> selectedPixelGeom = new Vector<PixelGeom>();
+			for(PixelGeom pg: MainActivity.pixelGeom){
+				if(pg.selected){
+					selectedPixelGeom.add(pg);
+				}
+			}
+			try {
+				UtilCharacteristicsZone.union(selectedPixelGeom);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			box.dismiss();
+			CharacteristicsFragment.getMyImage().invalidate();
+		}
+	};
+
+	private OnClickListener weakUnion = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			Vector<PixelGeom> selectedPixelGeom = new Vector<PixelGeom>();
+			for(PixelGeom pg: MainActivity.pixelGeom){
+				if(pg.selected){
+					selectedPixelGeom.add(pg);
+				}
+			}
+			for(PixelGeom pg: MainActivity.pixelGeom){
+				if(pg.selected){
+					pg.setLinkedPixelGeom(selectedPixelGeom);
+				}
+			}
+			box.dismiss();
+			CharacteristicsFragment.getMyImage().invalidate();
+		}
+	};
 
 	@Override
 	public void onCancel(DialogInterface dialog) {

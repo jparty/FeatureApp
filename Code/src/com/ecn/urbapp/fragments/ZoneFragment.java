@@ -93,7 +93,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 * Button delete
 	 */
 	private Button delete;
-	
 
 	/**
 	 * Image displayed
@@ -321,7 +320,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		delete.setEnabled(false);
 
 		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
-
+		
+		zone = new Zone(); selected = new Point(0,0); 
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 		
 		drawzoneview = new DrawZoneView(zone, selected) ;
@@ -375,7 +375,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		delete.setEnabled(false);
 		
 		zone.setZone(new Zone());
-		zoneCache.setZone(new Zone());
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
 		myImage.invalidate();
@@ -482,6 +481,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		}
 		myImage.invalidate();
 	}
+
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
