@@ -10,8 +10,9 @@
     <string name="zoneFragment">Définition des zones</string>
     <string name="informationFragment">Informations</string>
     
-    
     <string name="image_newProject">Image : nouveau projet</string>
+    <string name="image_newProject_takePhoto">Image : nouveau projet</string>
+    <string name="image_newProject_photo">Image : nouveau projet</string>
     <string name="takePicture">Prendre une photo</string>
     <string name="loadPicture">Charger une photo</string>
     <string name="image_loadLocalProject">Image : chargement d\'un projet local</string>
