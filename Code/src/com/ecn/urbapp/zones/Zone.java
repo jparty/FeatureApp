@@ -1,13 +1,10 @@
 package com.ecn.urbapp.zones;
 
+import java.util.Arrays;
 import java.util.Vector;
 
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.util.Log;
-
-import com.ecn.urbapp.R;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -21,17 +18,8 @@ public class Zone {
 	 */
 	public Vector<Point> points;
 
-	/** Material of this zone */
-	protected String material;
-
 	/** If the zone is selected or not */
 	protected boolean selected;
-
-	/** Type of this zone */
-	protected String type;
-
-	/** Color of this zone */
-	protected int color;
 	
 	/** List of small points displayed between normal points in zone edition mode **/
 	protected Vector<Point> middles;//useful for updateMiddles only, otherwise it's built everytime its getter is used
@@ -49,7 +37,6 @@ public class Zone {
 		points = new Vector<Point>();
 		selected = false;
 		middles = new Vector<Point>();
-		color = Color.RED;
 	}
 
 	/**
@@ -62,6 +49,7 @@ public class Zone {
 		for (Point p : zone.getPoints()) {
 			points.add(new Point(p));
 		}
+		this.poly = zone.getPolygon();
 	}
 
 	/**
@@ -73,28 +61,53 @@ public class Zone {
 		this();
 		Vector<Point> vectPoints = zone.getPoints();
 		int nbrPoints = vectPoints.size();
+		for (Point p : vectPoints) {
+			points.add(new Point(p));
+		}
+		if (!vectPoints.get(0).equals(vectPoints.get(nbrPoints - 1))) {
+			points.add(vectPoints.get(0));
+		}
+		actualizePolygon();
+	}
+	
+	/**
+	 * Actualize the polygon representation of the zone from its list of points. 
+	 */
+	public void actualizePolygon() {
+		int nbrPoints = points.size();
 		Coordinate[] coordinates;
-		if (vectPoints.get(0).equals(vectPoints.get(nbrPoints - 1))) {
+		if (points.get(0).equals(points.get(nbrPoints - 1))) {
 			coordinates = new Coordinate[nbrPoints];
 		} else {
 			coordinates = new Coordinate[nbrPoints + 1];
 		}
-		int i = 0;
-		for (Point p : vectPoints) {
-			points.add(new Point(p));
-			coordinates[i] = new Coordinate(p.x, p.y);
-			i++;
+		LinearRing shell = null;
+		LinearRing[] holes = null;
+		int index;
+		int startIndex = 0;
+		int holeSize = - 1;
+		for (index = 0; index < nbrPoints; index ++) {
+			coordinates[index] = new Coordinate(points.get(index).x, points.get(index).y);
+			Log.d("point", points.get(index).x+" "+points.get(index).y);
+			if (index != startIndex && coordinates[index].equals2D(coordinates[startIndex])) {
+				if (holeSize == -1) {
+					shell = gf.createLinearRing(Arrays.copyOf(coordinates, index + 1));
+					holeSize++;
+				} else {
+					if (holeSize == 0) {
+						holes = new LinearRing[1];
+					} else {
+						holes = Arrays.copyOf(holes, holeSize);
+					}
+					holes[holeSize] = gf.createLinearRing(Arrays.copyOfRange(coordinates, startIndex, index + 1));
+					holeSize++;
+				}
+				startIndex = index + 1;
+			}
 		}
-		if (!vectPoints.get(0).equals(vectPoints.get(nbrPoints - 1))) {
-			coordinates[nbrPoints] = coordinates[0];
-			points.add(vectPoints.get(0));
-		}
-		LinearRing lr = gf.createLinearRing(coordinates);
-		if ((coordinates[0].x - coordinates[1].x) * (coordinates[2].y - coordinates[0].y)
-				-  (coordinates[0].y - coordinates[1].y) * (coordinates[2].x - coordinates[0].x) > 0) {
-			lr = gf.createLinearRing(lr.reverse().getCoordinates());
-		}
-		poly = gf.createPolygon(lr, null);
+		
+		poly = gf.createPolygon(shell, holes);
+		
 	}
 
 	//TODO Add description for javadoc
@@ -157,45 +170,6 @@ public class Zone {
 	public void updateMiddle(Point oldMiddle, Point newPoint){
 		points.insertElementAt(newPoint, middles.indexOf(oldMiddle)+1);
 	}
-	
-	/**
-	 * Setter for the type
-	 * 
-	 * @param type
-	 *            the new type
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	/**
-	 * Setter for the material
-	 * 
-	 * @param material
-	 *            the new material
-	 */
-	public void setMaterial(String material) {
-		this.material = material;
-	}
-
-	/**
-	 * Getter for the color
-	 * 
-	 * @return the color
-	 */
-	public int getColor() {
-		return this.color;
-	}
-
-	/**
-	 * Setter for the color
-	 * 
-	 * @param color
-	 *            the new color
-	 */
-	public void setColor(int color) {
-		this.color = color;
-	}
 
 	/**
 	 * Set selected to true
@@ -211,36 +185,6 @@ public class Zone {
 	 */
 	public boolean isSelected() {
 		return this.selected;
-	}
-
-	/**
-	 * Return the type in text form (with written not defined if it is null)
-	 * 
-	 * @param res
-	 *            the resource
-	 * @return the type in text form
-	 */
-	public String getTypeToText(Resources res) {
-		if (this.type == null) {
-			return res.getString(R.string.not_defined);
-		} else {
-			return this.type;
-		}
-	}
-
-	/**
-	 * Return the material in text form (with written not defined if it is null)
-	 * 
-	 * @param res
-	 *            the resource
-	 * @return the material in text form
-	 */
-	public String getMaterialToText(Resources res) {
-		if (this.material == null) {
-			return res.getString(R.string.not_defined);
-		} else {
-			return this.material;
-		}
 	}
 
 	/**

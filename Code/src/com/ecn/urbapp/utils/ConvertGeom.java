@@ -9,41 +9,34 @@ import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.zones.Zone;
 import com.google.android.gms.maps.model.LatLng;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 public class ConvertGeom{
+
+	private static WKTReader wktr = new WKTReader();
+	
 	//TODO test every function
 	public static Zone pixelGeomToZone(PixelGeom the_geom){
-		ArrayList<Point> list = new ArrayList<Point>();
-
-		String s = the_geom.getPixelGeom_the_geom().replace("POLYGON ((", "");
-		s = s.replace("))", "");
-		ArrayList<String> tab = new ArrayList<String>(Arrays.asList(s.split(", ")));
-		for(String str : tab){
-			list.add(new Point(Integer.parseInt(str.split(" ")[0]), Integer.parseInt(str.split(" ")[1])));
-		}
-		
-		Zone z = new Zone();
-		for(Point p : list){
-			z.addPoint(p);
-		}
-		return new Zone(z);
+			Zone temp = new Zone();
+			Coordinate[] coords;
+			try {
+				coords = ((Polygon) wktr.read(the_geom.getPixelGeom_the_geom())).getCoordinates();
+				for (Coordinate coord : coords) {
+					temp.addPoint(new Point((int) coord.x, (int) coord.y));
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			temp.actualizePolygon();
+			return temp;
 	}
 	
 	public static String ZoneToPixelGeom(Zone zone){
-		String ret="POLYGON ((";
-		String s="";
-		
-		s="";
-		for(Point p : zone.getPoints()){
-			s+=p.x+" "+p.y;
-			if(zone.getPoints().lastElement()!=p){
-				s+=", ";
-			}
-		}
-		ret+=s;
-		
-		ret+="))";
-		return ret;
+		zone.actualizePolygon();
+		return zone.getPolygon().toText();
 	}
 	
 	public static ArrayList<LatLng> gpsGeomToLatLng(GpsGeom the_geom){

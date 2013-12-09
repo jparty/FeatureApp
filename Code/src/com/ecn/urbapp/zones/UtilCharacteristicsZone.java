@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Point;
 
 import com.ecn.urbapp.R;

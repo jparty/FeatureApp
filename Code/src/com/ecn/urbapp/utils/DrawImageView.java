@@ -108,24 +108,28 @@ public class DrawImageView extends Drawable {
 				} else {
 					finishedPaint.setColor(Color.RED);
 				}
-				// Add all the lines of the polygon
-				for (int j = 0; j < points2.length - 1; j++) {
-					canvas.drawLine((int) points2[j].x, (int) points2[j].y,
-							(int) points2[j + 1].x, (int) points2[j + 1].y,
-							finishedPaint);
-				}
 
 				// Create a closed path for the polygon
 				Path polyPath = new Path();
 				polyPath.moveTo((int) points2[0].x, (int) points2[0].y);
 				for (int j = 0; j < points2.length; j++) {
 					polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
+					if (j != points2.length - 1) {
+						canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+								(int) points2[j + 1].x, (int) points2[j + 1].y,
+								finishedPaint);
+					}
 				}
 				for (int k = 0; k < poly.getNumInteriorRing(); k++) {
 					polyPath.close();
 					points2 = poly.getInteriorRingN(k).getCoordinates();
 					for (int j = 0; j < points2.length; j++) {
 						polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
+						if (j != points2.length - 1) {
+							canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+									(int) points2[j + 1].x, (int) points2[j + 1].y,
+									finishedPaint);
+						}
 					}
 				}
 
