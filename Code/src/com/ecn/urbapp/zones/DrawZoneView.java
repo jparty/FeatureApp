@@ -40,6 +40,7 @@ import java.util.Vector;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -48,7 +49,6 @@ import android.util.Log;
 
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.PixelGeom;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
@@ -63,7 +63,7 @@ import com.vividsolutions.jts.io.WKTReader;
 //la méthode draw dessine en fonction des informations dont elle dispose, qui sont apportées via les différents constructeur
 public class DrawZoneView extends Drawable {
 	private Zone zone; private Point selected; private Vector<Point> intersections;
-	private boolean edit; private boolean create; Paint paintLastPoint; Paint paintFirstPoint;
+	private boolean edit; private boolean create; private Paint paintLastPoint; private Paint paintProjection;
 	float ratio = 1;
 	
 	//TODO Add description for javadoc
@@ -82,7 +82,7 @@ public class DrawZoneView extends Drawable {
 	public DrawZoneView(Zone zone, Point selected) {
 		super();
 		this.zone = zone; this.selected = selected; this.intersections = new Vector<Point>();
-		this.edit = false; this.create = false;
+		this.edit = false; this.create = true;
 	}
 
 	//TODO Add description for javadoc
@@ -121,20 +121,23 @@ public class DrawZoneView extends Drawable {
 		paintNormal.setColor(Color.RED);
 		paintNormal.setStyle(Paint.Style.FILL);
 		paintNormal.setAlpha(255);
+		paintNormal.setStrokeWidth(3/ratio);
 		
 		if(create){
+			
 			paintLastPoint = new Paint();
-			paintLastPoint.setColor(Color.MAGENTA);
+			paintLastPoint.setColor(Color.YELLOW);
 			paintLastPoint.setStyle(Paint.Style.FILL);
 			paintLastPoint.setAlpha(255);
 			
-			paintFirstPoint = new Paint();
-			paintFirstPoint.setColor(Color.YELLOW);
-			paintFirstPoint.setStyle(Paint.Style.FILL);
-			paintFirstPoint.setAlpha(255);
+			paintProjection = new Paint(paintLastPoint);
+			paintProjection.setPathEffect(new DashPathEffect(new float[] {13/ratio,13/ratio},0));
+			paintProjection.setStyle(Paint.Style.STROKE);
+			paintProjection.setStrokeWidth(3/ratio);
 		}else{
 			paintLastPoint = new Paint(paintNormal);
-			paintFirstPoint = new Paint(paintNormal);
+			paintProjection = new Paint(paintNormal);
+			paintProjection.setStyle(Paint.Style.STROKE);
 		}
 		
 		Paint paintIntersections = new Paint();
@@ -147,29 +150,39 @@ public class DrawZoneView extends Drawable {
 		paintFillZone.setStyle(Paint.Style.FILL);
 		paintFillZone.setAlpha(50);
 		
-		Vector<Point> points = zone.getPoints();
+		Paint paintBorderZone = new Paint();
+		paintBorderZone.setColor(Color.WHITE);
+		paintBorderZone.setStyle(Paint.Style.STROKE);
+		paintBorderZone.setAlpha(255);
+		
+		Vector<Point> points = new Vector<Point>(zone.getPoints());//copying the points to display
 		Vector<Point> middles = zone.getMiddles();
 		
 		if(! points.isEmpty()){
-			canvas.drawCircle(points.get(0).x, points.get(0).y, 13/ratio, paintLastPoint);
-			if(points.size()>1){
-				canvas.drawCircle(points.lastElement().x, points.lastElement().y, 13/ratio, paintFirstPoint);
+			canvas.drawCircle(points.get(0).x, points.get(0).y, 13/ratio, paintNormal);
+			if(points.size()>2){
+				points.remove(points.size()-1);
+				canvas.drawCircle(points.lastElement().x, points.lastElement().y, 13/ratio, paintLastPoint);
 				canvas.drawLine(points.get(points.size()-2).x, points.get(points.size()-2).y, points.lastElement().x, points.lastElement().y, paintNormal);
-				if(edit){
+				//if(edit){
 					canvas.drawCircle(middles.get(0).x, middles.get(0).y, 6/ratio, paintNormal);
-				}
+				//}
 				if(points.size()>2){
 					for(int i=1; i<points.size()-1; i++){
 						canvas.drawCircle(points.get(i).x, points.get(i).y, 13/ratio, paintNormal);
 						canvas.drawLine(points.get(i-1).x, points.get(i-1).y, points.get(i).x, points.get(i).y, paintNormal);
-						if(edit){
+						//if(edit){
 							canvas.drawCircle(middles.get(i).x, middles.get(i).y, 6/ratio, paintNormal);
-						}
+						//}
 					}
 					if(edit){
-						canvas.drawCircle(middles.lastElement().x, middles.lastElement().y, 6/ratio, paintFirstPoint);
+						canvas.drawCircle(middles.lastElement().x, middles.lastElement().y, 6/ratio, paintLastPoint);
 					}
-					canvas.drawLine(points.get(points.size()-1).x, points.get(points.size()-1).y, points.get(0).x, points.get(0).y, paintFirstPoint);
+					//canvas.drawLine(points.get(points.size()-1).x, points.get(points.size()-1).y, points.get(0).x, points.get(0).y, paintLastPoint);
+					Path projection = new Path();
+					projection.moveTo(points.get(points.size()-1).x, points.get(points.size()-1).y);
+					projection.lineTo(points.get(0).x, points.get(0).y);
+					canvas.drawPath(projection, paintProjection);
 				}			
 			try{if(selected.x != 0 || selected.y != 0){
 				canvas.drawCircle(selected.x, selected.y, 33/ratio, paintNormal);
@@ -197,6 +210,7 @@ public class DrawZoneView extends Drawable {
 						}
 					// Draw the polygon
 					canvas.drawPath(polyPath, paintFillZone);
+					canvas.drawPath(polyPath, paintBorderZone);
 					}
 				}
 		} catch (ParseException e) {

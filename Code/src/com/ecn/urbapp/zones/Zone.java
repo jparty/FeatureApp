@@ -145,8 +145,26 @@ public class Zone {
 	 * Delete a point, rebuild list
 	 * @param point
 	 */
-	public void deletePoint(Point point){
-		points.remove(point);
+	public boolean deletePoint(Point point){
+		if(points.get(0).equals(point) || points.lastElement().equals(point)){
+			points.remove(0);
+			points.remove(points.lastElement());
+			if(points.size()>0){
+				points.add(points.get(0));
+			}
+			return true;
+		}
+		else{
+			return points.remove(point);
+		}
+	}
+
+	/**
+	 * Delete a point, rebuild list
+	 * @param point
+	 */
+	public boolean deletePoint(int index){
+		return deletePoint(points.get(index));
 	}
 	
 	/**
@@ -302,6 +320,7 @@ public class Zone {
 				);
 			}
 		}
+		/*
 		if(points.size()>1){
 			middles.add(
 			new Point(
@@ -309,6 +328,7 @@ public class Zone {
 				(points.lastElement().y + points.get(0).y)/2)
 			);
 		}
+		*/
 	}
 	/**
 	 * Check if zone's polygon is self intersecting, segment by segment.
