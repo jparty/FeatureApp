@@ -88,82 +88,76 @@ public class DrawImageView extends Drawable {
 		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
 			// If the zone is not selected, only draw the lines
 			try {
-			Element el=null;
-			for(Element e : MainActivity.element){
-				if(e.getPixelGeom_id()==MainActivity.pixelGeom.get(i).getPixelGeomId()){
-					el=e;
-					break;
+				Element el = null;
+				for (Element e : MainActivity.element) {
+					if (e.getPixelGeom_id() == MainActivity.pixelGeom.get(i)
+							.getPixelGeomId()) {
+						el = e;
+						break;
+					}
 				}
-			}
-			WKTReader wktr = new WKTReader();
-			Polygon poly = (Polygon) wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom());
-			Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
-			
-			if (!MainActivity.pixelGeom.get(i).selected) {
-				if(el!=null){
-					if (Integer.parseInt(el.getElement_color()) != 0) {
-						finishedPaint.setColor(Integer.parseInt(el.getElement_color()));
-					}
-					else{
-						finishedPaint.setColor(Color.RED);
-					}
+				WKTReader wktr = new WKTReader();
+				Polygon poly = (Polygon) wktr.read(MainActivity.pixelGeom
+						.get(i).getPixelGeom_the_geom());
+				Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
+
+				if (el.getElement_color() != null
+						&& Integer.parseInt(el.getElement_color()) != 0) {
+					finishedPaint.setColor(Integer.parseInt(el
+							.getElement_color()));
+				} else {
+					finishedPaint.setColor(Color.RED);
 				}
 				// Add all the lines of the polygon
-					for (int j = 0; j < points2.length - 1; j++) {
-						canvas.drawLine((int) points2[j].x, (int) points2[j].y,
-								(int) points2[j+1].x, (int) points2[j+1].y, finishedPaint);
-					}
+				for (int j = 0; j < points2.length - 1; j++) {
+					canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+							(int) points2[j + 1].x, (int) points2[j + 1].y,
+							finishedPaint);
+				}
 
-				// If the zone is selected, draw a filled polygon
-			} else {
 				// Create a closed path for the polygon
 				Path polyPath = new Path();
 				polyPath.moveTo((int) points2[0].x, (int) points2[0].y);
-				for(int j=0; j<points2.length; j++){
+				for (int j = 0; j < points2.length; j++) {
 					polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
 				}
 				for (int k = 0; k < poly.getNumInteriorRing(); k++) {
 					polyPath.close();
-					for (int j = 0; j < poly.getInteriorRingN(k).getNumPoints(); j++) {
-						polyPath.lineTo(
-								(int) poly.getInteriorRingN(k).reverse().getCoordinateN(j).x,
-								(int) poly.getInteriorRingN(k).reverse().getCoordinateN(j).y);
+					points2 = poly.getInteriorRingN(k).getCoordinates();
+					for (int j = 0; j < points2.length; j++) {
+						polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
 					}
 				}
 
-				/*if (zone.getColor() != 0) {
-					fillPaint.setColor(zone.getColor());
-					fillPaint.setAlpha(50);
-				}*/
-				if (Integer.parseInt(el.getElement_color()) != 0) {
-					fillPaint.setColor(Integer.parseInt(el.getElement_color()));
-					fillPaint.setAlpha(50);
-				}
-				else{
+				if (el.getElement_color() != null
+						&& Integer.parseInt(el.getElement_color()) != 0) {
+					fillPaint.setColor(Integer.parseInt(el
+							.getElement_color()));
+				} else {
 					fillPaint.setColor(Color.RED);
+				}
+
+				if (!MainActivity.pixelGeom.get(i).selected) {
 					fillPaint.setAlpha(50);
+				} else {
+					fillPaint.setAlpha(150);
 				}
 				// Draw the polygon
 				canvas.drawPath(polyPath, fillPaint);
-				//fillPaint.setColor(Color.RED);
-				fillPaint.setAlpha(50);
-			}
 			} catch (ParseException e) {
 			}
 		}
 	}
 
-	//TODO Adddescription for javadoc
 	@Override
 	public void setAlpha(int arg0) {
 	}
 
-	//TODO Adddescription for javadoc
 	@Override
 	public void setColorFilter(ColorFilter arg0) {
 	}
 
-	//TODO Adddescription for javadoc
+	// TODO Adddescription for javadoc
 	@Override
 	public int getOpacity() {
 		return 0;

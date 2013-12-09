@@ -35,72 +35,67 @@ knowledge of the CeCILL license and that you accept its terms.
 
 package com.ecn.urbapp.dialogs;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Element;
+import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 
 /**
- * This class creates the dialog that give information about a zone
+ * This class creates the dialog that indicate which pixelgeoms is not defined
  * 
- * @author patrick, Jules Party
+ * @author Jules Party
  * 
  */
 public class SummaryDialogFragment extends DialogFragment {
+	
+	private long pgeomIdToSelect;
+	private Dialog box;
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		box = new Dialog(getActivity());
+		box.setContentView(R.layout.layout_definition_dialog_recap);
+		box.setTitle(R.string.definition_recap);
+		LinearLayout recapList = (LinearLayout) box.findViewById(R.id.definition_recap_linear_layout);
+		for (PixelGeom pgeom : MainActivity.pixelGeom) {
+			Element element = UtilCharacteristicsZone.getElementFromPixelGeomId(pgeom.getPixelGeomId());
+			if (element.getElementType_id() == 0 || element.getMaterial_id() == 0 || element.getElement_color() == null) {
+				pgeomIdToSelect = pgeom.getPixelGeomId();
+				Button button = new Button(getActivity());
+				button.setText("La zone n°" + pgeom.getPixelGeomId() + " n'est pas entièrement défini.");
+				button.setOnClickListener(new OnClickListener() {
 
-		// Create a dialog and set the title
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle(R.string.information_about_frontage);
+					private long idToSelect = pgeomIdToSelect;
 
-		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
-		HashMap<String, Float> types = summary.get(getString(R.string.type));
-		HashMap<String, Float> materials = summary
-				.get(getString(R.string.materials));
-
-		String contenu = "<b><u>" + getString(R.string.type) + " :</b></u>";
-		if (types.keySet().size() == 1) {
-			contenu += " ";
-		} else {
-			contenu += "<br>";
+					@Override
+					public void onClick(View v) {
+						UtilCharacteristicsZone.unselectAll();
+						UtilCharacteristicsZone.getPixelGeomFromId(idToSelect).selected = true;
+						CharacteristicsFragment.getMyImage().invalidate();
+						box.dismiss();
+						// Show the dialog to choose the characteristics
+						CharacteristicsDialogFragment typedialog = new CharacteristicsDialogFragment();
+						// Say the charasteristics dialog to re-open the summary dialog when exit
+						typedialog.setFromSummary();
+						typedialog.show(getFragmentManager(), "CharacteristicsDialogFragment");
+					}
+				});
+				recapList.addView(button);
+			}
 		}
-		for (String type : types.keySet()) {
-			contenu += type + " (" + (float) (Math.rint(types.get(type) *1e4) / 100) + " %)<br>";
-		}
-		contenu += "<b><u>" + getString(R.string.materials) + " :</b></u>";
-		if (materials.keySet().size() == 1) {
-			contenu += " ";
-		} else {
-			contenu += "<br>";
-		}
-		for (String material : materials.keySet()) {
-			contenu += material + " (" + (float) (Math.rint(materials.get(material) *1e4) / 100)
-					+ " %)<br>";
-		}
-
-		contenu = contenu + "<br><b><u>" + getString(R.string.color)
-				+ " :</b></u>";
-		builder.setMessage(Html.fromHtml(contenu));
-		// Add a rectangle of the color of the zone to the dialog
-		LayoutInflater inflater = getActivity().getLayoutInflater();
-		View dialoglayout = inflater.inflate(R.layout.summary_dialog, null);
-		View colorView = dialoglayout.findViewById(R.id.color);
-		colorView.setBackgroundColor(UtilCharacteristicsZone
-				.getColorForSelectedZones());
-		builder.setView(dialoglayout);
-
-		return builder.create();
+		return box;
 	}
 
 	@Override
