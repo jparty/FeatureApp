@@ -69,7 +69,13 @@ public class Zone {
 		}
 		actualizePolygon();
 	}
-	
+
+	public void closePolygon() {
+		if (!points.get(0).equals(points.get(points.size() - 1))) {
+			points.add(points.get(0));
+		}
+	}
+
 	/**
 	 * Actualize the polygon representation of the zone from its list of points. 
 	 */
@@ -88,7 +94,6 @@ public class Zone {
 		int holeSize = - 1;
 		for (index = 0; index < nbrPoints; index ++) {
 			coordinates[index] = new Coordinate(points.get(index).x, points.get(index).y);
-			Log.d("point", points.get(index).x+" "+points.get(index).y);
 			if (index != startIndex && coordinates[index].equals2D(coordinates[startIndex])) {
 				if (holeSize == -1) {
 					shell = gf.createLinearRing(Arrays.copyOf(coordinates, index + 1));
