@@ -74,8 +74,12 @@ public class RecapCharactFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		View v = inflater.inflate(R.layout.layout_definition_dialog_recap, null);
-		
-		LinearLayout recapList = (LinearLayout) v.findViewById(R.id.definition_recap_linear_layout);
+		return v;
+	}
+	
+	public void refresh(){
+		LinearLayout recapList = (LinearLayout) getView().findViewById(R.id.definition_recap_linear_layout);
+		recapList.removeAllViews();
 		for (PixelGeom pgeom : MainActivity.pixelGeom) {
 			Element element = UtilCharacteristicsZone.getElementFromPixelGeomId(pgeom.getPixelGeomId());
 			if (element.getElementType_id() == 0 || element.getMaterial_id() == 0 || element.getElement_color() == null) {
@@ -90,7 +94,7 @@ public class RecapCharactFragment extends Fragment {
 					public void onClick(View v) {
 						
 						if(zf!=null){
-							//zf.selectGeom(pgeomIdToSelect);
+							zf.selectGeom(pgeomIdToSelect);
 						}
 						//TODO call selection int the zone fragment
 						/*UtilCharacteristicsZone.unselectAll();
@@ -105,6 +109,5 @@ public class RecapCharactFragment extends Fragment {
 				recapList.addView(button);
 			}
 		}
-		return v;
 	}
 }

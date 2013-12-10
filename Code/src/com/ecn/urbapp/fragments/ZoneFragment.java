@@ -378,7 +378,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
 		myImage.invalidate();
-		rcf.getView().invalidate();
+		rcf.refresh();
 	}
 	
 	private void validate(){
@@ -577,21 +577,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 							break;
 						}
 					}
-					/*for(Zone test : zones){
-						if(test.containPoint(touch)){
-							flag=true;
-							z=test;
-							scf.setAffichage(pg)
-							break;
-					if(event.getEventTime()-event.getDownTime()>150){
-						for(Zone test : zones){
-							if(test.containPoint(touch)){
-								flag=true;
-								z=test;
-								break;
-							}
-						}
-					}*/
 					if(flag){
 						zoneCache = z;
 						zone.setZone(z);
@@ -653,7 +638,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			scf.resetAffichage();
             exitAction();
 		}
-		for(PixelGeom pg : MainActivity.pixelGeom){
+		/*for(PixelGeom pg : MainActivity.pixelGeom){
 			if(pg.getId()==i){
 				pg.selected=true;
 			}
@@ -664,10 +649,44 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		cancel.setEnabled(true);
 		help.setEnabled(true);
 		delete.setEnabled(true);
-		refreshEdit();
+		refreshEdit();*/
 		
 		
-			
+		/*for(Zone test : zones){
+			if(test.containPoint(touch)){
+				flag=true;
+				z=test;
+				scf.setAffichage(pg)
+				break;
+		if(event.getEventTime()-event.getDownTime()>150){
+			for(Zone test : zones){
+				if(test.containPoint(touch)){
+					flag=true;
+					z=test;
+					break;
+				}
+			}
+		}*/
+			Zone z=null;
+			for(PixelGeom pg : MainActivity.pixelGeom){
+				z=ConvertGeom.pixelGeomToZone(pg);
+			}
+			zoneCache = z;
+			zone.setZone(z);
+
+			for(int j=0; j<MainActivity.pixelGeom.size(); j++){
+				if(MainActivity.pixelGeom.get(j).getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
+					geomCache = MainActivity.pixelGeom.get(j);
+					MainActivity.pixelGeom.get(j).selected=true;
+				}
+			}
+			state = IMAGE_EDITION;	drawzoneview.onEditMode();
+			validate.setEnabled(true);
+			back.setEnabled(false);
+			cancel.setEnabled(true);
+			help.setEnabled(true);
+			delete.setEnabled(true);
+			refreshEdit();
 	}
 	
 }
