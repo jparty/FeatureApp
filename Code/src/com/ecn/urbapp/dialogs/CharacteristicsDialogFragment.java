@@ -75,8 +75,8 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		box.setCanceledOnTouchOutside(true);
 		spinType = (Spinner) box.findViewById(R.id.typeZone);
 		spinMaterial = (Spinner) box.findViewById(R.id.materialZone);
-		Button validate = (Button) box.findViewById(R.id.validation);
-		validate.setOnClickListener(validation);
+		//Button validate = (Button) box.findViewById(R.id.validation);
+		//validate.setOnClickListener(validation);
 		colorView = box.findViewById(R.id.color);
 		if (UtilCharacteristicsZone.getColorForSelectedZones() != 0) {
 			colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());

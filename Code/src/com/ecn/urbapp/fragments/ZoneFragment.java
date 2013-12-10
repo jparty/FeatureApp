@@ -29,6 +29,7 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
+import com.ecn.urbapp.dialogs.UnionDialogFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.GetId;
 import com.ecn.urbapp.zones.BitmapLoader;
@@ -78,9 +79,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 */
 	private Button cancel;
 	/**
-	 * Button help
+	 * Button fusion
 	 */
-	private Button help;
+	private Button fusion;
 	/**
 	 * Button back
 	 */
@@ -113,7 +114,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	/**
 	 * Temporary pixelGeom for edition
 	 */
-	private PixelGeom geomCache;
+	public static PixelGeom geomCache;
 	
 	/**
 	 * Zone selected
@@ -174,7 +175,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				state = IMAGE_SELECTION;
 				exitAction();
 				break;
-			case R.id.zone_button_help:
+			case R.id.zone_button_fusion:
+				UnionDialogFragment summarydialog = new UnionDialogFragment();
+				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
 				break;
 			case R.id.zone_button_validate:
 				scf.validation();
@@ -196,6 +199,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						UtilCharacteristicsZone.addInMainActivityZones(pg, elementTemp);
 						//MainActivity.element.add(elementTemp);
 					}
+					geomCache=pg;
 					exitAction();
 				} catch(TopologyException e) {
 					MainActivity.pixelGeom = lpg;
@@ -245,7 +249,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	            exitAction();
 				state = IMAGE_SELECTION;
 				break;
-			case R.id.zone_button_help:
+			case R.id.zone_button_fusion:
+				UnionDialogFragment summarydialog = new UnionDialogFragment();
+				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
 				break;
 			case R.id.zone_button_validate:
 				if(!zone.getPoints().isEmpty()){
@@ -271,7 +277,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
 						diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -303,7 +308,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		View v = inflater.inflate(R.layout.layout_zone, null);
 
 		back = (Button) v.findViewById(R.id.zone_button_back);
-		help = (Button) v.findViewById(R.id.zone_button_help);
+		fusion = (Button) v.findViewById(R.id.zone_button_fusion);
 		cancel = (Button) v.findViewById(R.id.zone_button_cancel);
 		validate = (Button) v.findViewById(R.id.zone_button_validate);
 		delete = (Button) v.findViewById(R.id.zone_button_delete);
@@ -312,11 +317,12 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		cancel.setOnClickListener(this);
 		validate.setOnClickListener(this);
 		delete.setOnClickListener(this);
+		fusion.setOnClickListener(this);
 		
 		validate.setEnabled(false);
 		back.setEnabled(false);
 		cancel.setEnabled(false);
-		help.setEnabled(true);
+		fusion.setEnabled(false);
 		delete.setEnabled(false);
 
 		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
@@ -371,7 +377,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		validate.setEnabled(false);
 		back.setEnabled(false);
 		cancel.setEnabled(false);
-		help.setEnabled(true);
+		fusion.setEnabled(false);
 		delete.setEnabled(false);
 		
 		zone.setZone(new Zone());
@@ -591,7 +597,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						validate.setEnabled(true);
 						back.setEnabled(false);
 						cancel.setEnabled(true);
-						help.setEnabled(true);
+						fusion.setEnabled(true);
 						delete.setEnabled(true);
 						refreshEdit();
 					}
@@ -603,7 +609,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						validate.setEnabled(false);
 						back.setEnabled(false);
 						cancel.setEnabled(true);
-						help.setEnabled(true);
+						fusion.setEnabled(true);
 						
 						elementTemp = new Element();
 						elementTemp.setElement_id(GetId.Element());
@@ -638,35 +644,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			scf.resetAffichage();
             exitAction();
 		}
-		/*for(PixelGeom pg : MainActivity.pixelGeom){
-			if(pg.getId()==i){
-				pg.selected=true;
-			}
-		}
-		state = IMAGE_EDITION;
-		validate.setEnabled(true);
-		back.setEnabled(false);
-		cancel.setEnabled(true);
-		help.setEnabled(true);
-		delete.setEnabled(true);
-		refreshEdit();*/
-		
-		
-		/*for(Zone test : zones){
-			if(test.containPoint(touch)){
-				flag=true;
-				z=test;
-				scf.setAffichage(pg)
-				break;
-		if(event.getEventTime()-event.getDownTime()>150){
-			for(Zone test : zones){
-				if(test.containPoint(touch)){
-					flag=true;
-					z=test;
-					break;
-				}
-			}
-		}*/
 			Zone z=null;
 			for(PixelGeom pg : MainActivity.pixelGeom){
 				z=ConvertGeom.pixelGeomToZone(pg);
@@ -684,9 +661,10 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			validate.setEnabled(true);
 			back.setEnabled(false);
 			cancel.setEnabled(true);
-			help.setEnabled(true);
+			fusion.setEnabled(true);
 			delete.setEnabled(true);
 			refreshEdit();
+			scf.setAffichage(geomCache);
 	}
 	
 }

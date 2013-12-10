@@ -112,12 +112,12 @@ public class HomeFragment extends Fragment implements OnClickListener{
 				i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
 				getActivity().startActivityForResult(i, Cst.CODE_LOAD_PICTURE);
 				break;
-			case R.id.home_loadLocalProject:
+			//case R.id.home_loadLocalProject:
 			case R.id.home_image_loadLocalProject:
 				i = new Intent(this.getActivity(), LoadLocalProjectsActivity.class);
 				getActivity().startActivityForResult(i,Cst.CODE_LOAD_LOCAL_PROJECT);
 				break;
-			case R.id.home_test_photo:
+			/*case R.id.home_test_photo:
 				i = new Intent(this.getActivity(), TestPhoto.class);
 				startActivity(i);
 				break;
@@ -125,7 +125,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 				i = new Intent(this.getActivity(), Test.class);
 				startActivity(i);
 				break;
-			case R.id.home_loadDistantlProject:
+			case R.id.home_loadDistantlProject:*/
 			case R.id.home_image_loadDistantProject:
 				//TODO transfert this piece of code
 				//imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "img"+((int)(Math.random()*3+1))+".png");
