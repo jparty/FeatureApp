@@ -98,7 +98,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	/**
 	 * Image displayed
 	 */
-	private ImageView myImage;
+	private static ImageView myImage;
 	
 	/**
 	 * Matrix for displaying
@@ -279,6 +279,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
+				}
+				for(PixelGeom pg : MainActivity.pixelGeom){
+					pg.selected=false;
 				}
 				state = IMAGE_SELECTION;
 				exitAction();
@@ -527,8 +530,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 							zone.addPoint2(getTouchedPoint(event));				
 						}else{
 							//TODO behavior in IMAGE_EDITION when user touch out of the selected zone intentionally
-							/*state = IMAGE_SELECTION;
-							exitAction();*/
+							state = IMAGE_SELECTION;
+							exitAction();
 						}
 					}
 					else{
@@ -666,5 +669,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			refreshEdit();
 			scf.setAffichage(geomCache);
 	}
-	
+
+	public static ImageView getMyImage(){
+		return myImage;
+	}
 }

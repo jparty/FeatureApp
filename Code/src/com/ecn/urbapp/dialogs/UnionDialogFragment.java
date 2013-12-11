@@ -44,13 +44,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
-import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.fragments.CharacteristicsFragment;
+import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -104,7 +103,7 @@ public class UnionDialogFragment extends DialogFragment {
 				e.printStackTrace();
 			}
 			box.dismiss();
-			CharacteristicsFragment.getMyImage().invalidate();
+			ZoneFragment.getMyImage().invalidate();
 		}
 	};
 
@@ -124,7 +123,7 @@ public class UnionDialogFragment extends DialogFragment {
 				}
 			}
 			box.dismiss();
-			CharacteristicsFragment.getMyImage().invalidate();
+			ZoneFragment.getMyImage().invalidate();
 		}
 	};
 
