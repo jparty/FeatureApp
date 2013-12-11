@@ -28,6 +28,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.dialogs.AddZoneDialogFragment;
 import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
 import com.ecn.urbapp.dialogs.UnionDialogFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
@@ -156,7 +157,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 
 	private SetCharactFragment scf;
 	private RecapCharactFragment rcf;
-
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
@@ -437,7 +437,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		state = IMAGE_SELECTION;
 		exitAction();
 	}
-	
 	public Point getTouchedPoint(MotionEvent event){
 		float[] coord = {event.getX(),event.getY()};//get touched point coord
 
@@ -507,7 +506,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		}
 		myImage.invalidate();
 	}
-
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
@@ -699,5 +697,44 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 
 	public static ImageView getMyImage(){
 		return myImage;
+	}
+
+	/**
+	 * Add the equivalent of the attribute zone in MainActivity.pixelGeom.
+	 * Intersect this new PixelGeom wih older if the boolean in parameter is true. 
+	 * @param tryIntersect intersect the zone to add with existing zones if true
+	 */
+	public void addZone(boolean tryIntersect) {
+		PixelGeom pgeom = new PixelGeom();
+		zone.closePolygon();
+		zone.actualizePolygon();
+		pgeom.setPixelGeom_the_geom(zone.getPolygon().toText());
+		try {
+			if (tryIntersect) {
+				ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
+				for (PixelGeom pg : MainActivity.pixelGeom) {
+					lpg.add(pg);
+				}
+				ArrayList<Element> le = new ArrayList<Element>();
+				for (Element elt : MainActivity.element) {
+					le.add(elt);
+				}
+				try {
+					UtilCharacteristicsZone.addInMainActivityZones(pgeom, null);
+					exitAction();
+				} catch(TopologyException e) {
+					MainActivity.pixelGeom = lpg;
+					MainActivity.element = le;
+					TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
+					diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
+				}
+			} else {
+				UtilCharacteristicsZone.addPixelGeom(pgeom, null);
+				exitAction();
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

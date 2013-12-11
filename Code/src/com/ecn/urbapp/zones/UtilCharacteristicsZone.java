@@ -494,7 +494,7 @@ public final class UtilCharacteristicsZone {
 	 *            the Element defining the characteristics of the PixelGeom
 	 * @throws ParseException if a PixelGeom cannot be interpreted into a Geometry
 	 */
-	private static void addPixelGeom(PixelGeom pgeom, Element elt) throws ParseException {
+	public static void addPixelGeom(PixelGeom pgeom, Element elt) throws ParseException {
 		pgeom.setPixelGeomId(GetId.PixelGeom());
 		boolean flag=false;
 		for(Element e :MainActivity.element){

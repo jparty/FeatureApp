@@ -126,8 +126,19 @@ public class MainActivity extends Activity {
 	 * Database element Photo
 	 */
 	public static Photo photo=null;
-	
-	
+
+	/**
+	 * Static reference to the ZoneFragment.
+	 */
+	public static ZoneFragment zone;
+
+	/**
+	 * Getter for the ZoneFragment.
+	 */
+	public static ZoneFragment getZoneFragment() {
+		return zone;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
@@ -180,7 +191,7 @@ public class MainActivity extends Activity {
 		//Zone tab
 		Tab tabZone =  bar.newTab();
 		tabZone.setText(R.string.zoneFragment);
-		ZoneFragment zone = new ZoneFragment();
+		zone = new ZoneFragment();
 		tabZone.setTabListener(new MyTabListener(zone, this));
 		bar.addTab(tabZone);
 		fragments.add(zone);

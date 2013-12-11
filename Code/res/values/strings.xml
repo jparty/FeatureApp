@@ -25,6 +25,9 @@
     <string name="save">Sauvegarder</string>
 
     <string name="zone_create">Créer</string>
+    <string name="zone_create_dialog">Comment voulez-vous ajouter la zone ?</string>
+    <string name="zone_create_intersect">Découper la zone</string>
+    <string name="zone_create_add">Ajouter la zone directement</string>
     <string name="zone_delete">Supprimer</string>
     <string name="zone_edit">Editer</string>
     
