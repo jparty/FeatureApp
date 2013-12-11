@@ -151,12 +151,14 @@ public class DrawZoneView extends Drawable {
 		Paint paintFillZone = new Paint();
 		paintFillZone.setColor(Color.BLUE);
 		paintFillZone.setStyle(Paint.Style.FILL);
-		paintFillZone.setAlpha(50);
+		paintFillZone.setAlpha(20);
 		
 		for(Element e : MainActivity.element){
-			if(e.getPixelGeom_id()==ZoneFragment.geomCache.getPixelGeomId()){
-				if(e.getElement_color()!=null)
-					paintFillZone.setColor(Integer.parseInt(e.getElement_color()));
+			if(ZoneFragment.geomCache!=null){
+				if(e.getPixelGeom_id()==ZoneFragment.geomCache.getPixelGeomId()){
+					if(e.getElement_color()!=null)
+						paintFillZone.setColor(Integer.parseInt(e.getElement_color()));
+				}
 			}
 		}
 		

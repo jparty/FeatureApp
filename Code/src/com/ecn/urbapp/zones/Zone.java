@@ -30,6 +30,9 @@ public class Zone {
 	/** The geometry factory used to create geometries. */
 	GeometryFactory gf = new GeometryFactory();
 
+	/** Zone list of last actions of creation or edition**/
+	private Vector<Action> actions;
+
 	/**
 	 * Constructor of a new points (unfinished by default)
 	 */
@@ -37,6 +40,7 @@ public class Zone {
 		points = new Vector<Point>();
 		selected = false;
 		middles = new Vector<Point>();
+		actions = new Vector<Action>();
 	}
 
 	/**
@@ -155,10 +159,48 @@ public class Zone {
 	}
 	
 	/**
+	 * 
+	 */
+	
+	public void startMove(Point oldPoint){
+		actions.add(new Action().startMove(oldPoint));
+	}
+	
+	/**
+	 * Declare moving action
+	 * @param oldPoint 
+	 * @param newPoint
+	 */
+	public void endMove(Point newPoint){
+		actions.lastElement().endMove(newPoint);
+	}
+	
+	/** 
+	 * Insert a point at a chosen location
+	 * @param point
+	 * @param location
+	 */
+	public void insertPoint(int location, Point point){
+		points.add(location, point);
+	}
+	
+	/**
 	 * Delete a point, rebuild list
 	 * @param point
 	 */
 	public boolean deletePoint(Point point){
+		Exception exc = new Exception();
+		String className = ((exc.getStackTrace())[1]).getClassName();
+		Class calling = null;
+		try {
+			calling = Class.forName(className);
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if(calling != Action.class){
+			actions.add(new Action().delete(point));
+		}
 		if(points.get(0).equals(point) || points.lastElement().equals(point)){
 			points.remove(0);
 			points.remove(points.lastElement());
@@ -216,6 +258,18 @@ public class Zone {
 	}
 	
 	public void addPoint2(Point point) {
+		Exception exc = new Exception();
+		String className = ((exc.getStackTrace())[1]).getClassName();
+		Class calling = null;
+		try {
+			calling = Class.forName(className);
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if(calling != Action.class){
+			actions.add(new Action().create(point));
+		}
 	if(points.size()==0){
 		points.add(point);
 		points.add(point);
@@ -303,7 +357,7 @@ public class Zone {
 	 * @param end1
 	 * @param start2
 	 * @param end2
-	 * @return
+	 * @return intersection flag
 	 */
 	// méthode d'un forum Google
 	private boolean intersect(Point start1,
@@ -379,4 +433,129 @@ public class Zone {
 				return false;
 			}
 		}
+	
+	/***INNER CLASS ACTION***/
+	/** An action corresponds to a point's creation, edition or deletion **/
+	private class Action{
+		private final int CREATE = 1;
+		private final int DELETE = 2;
+		private final int MOVE = 3;
+		
+		/** Action type : creation, deletion or move **/
+		private int action;
+		
+		/** Old point - previous location of a point, in case of deletion or move. If null in move means that action is an insertion **/ 
+		private Point oldPoint;
+		
+		/** New Point - new location of a point, in case of creation or move **/
+		private Point newPoint;
+		
+		/** Old Location - where was the point in the list in case of deletion **/
+		private int oldLocation;
+		
+		/** Constructor of an action. Does nothing, because of the differences between actions types. TODO Code class extensions instead of types ?**/
+		public Action(){
+		}
+		
+		/** 
+		 * ACTION INNER CLASS : Create action, called for each point creation 
+		 * @param newPoint (the point created)
+		 * @return Action (in fact this method is like a constructor)
+		 */
+		public Action create(Point newPoint){
+			this.action = CREATE;
+			this.newPoint = new Point(newPoint);
+			return this;
+		}
+		
+		/**
+		 * ACTION INNER CLASS : Delete action, called for each point deletion
+		 * @param oldPoint (the point deleted)
+		 * @return Action (in fact this method is like a constructor)
+		 */
+		public Action delete(Point oldPoint){
+			this.action = DELETE;
+			this.oldPoint = new Point(oldPoint);
+			this.oldLocation = points.indexOf(oldPoint);
+			return this;
+		}
+		
+		/**
+		 * ACTION INNER CLASS : Move action, begin call. Save the point moved, new location entered in end call.
+		 * !! It's possible that the end call never occurs !! See cancel() method.
+		 * !! It's possible that the moved point is null in middle point case.
+		 * @param oldPoint
+		 * @return Action (in fact this method is like a constructor)
+		 */
+		public Action startMove(Point oldPoint){
+			this.action = MOVE;
+			if(oldPoint != null){
+				this.oldPoint = new Point(oldPoint);
+			}else{
+				this.oldPoint = null;
+			}
+			this.newPoint = null;
+			return this;
+		}
+		
+		/**
+		 * ACTION INNER CLASS : Move action, end call. Save the point moved new location, old one entered in begin call.
+		 * !! It's possible that begin call occurs and not end
+		 * @param newPoint
+		 */
+		public void endMove(Point newPoint){
+			this.newPoint = new Point(newPoint);
+		}
+		
+		/** 
+		 * ACTION INNER CLASS : Canceling action method
+		 */
+		public void cancel(){
+			switch(action){
+			case CREATE:
+				//create case : just delete the point
+				deletePoint(newPoint);
+				break;
+			case DELETE:
+				//delete case : insert the ancient point at its ancient location in points' list
+				insertPoint(oldLocation,oldPoint);
+				break;
+			case MOVE:
+				// move case : depends on the point original type (middle or not) and if end call occured
+				if(oldPoint == null){
+					//if there was no old point (middle point case) the point is just deleted
+					deletePoint(newPoint);
+					break;
+				}
+				if(newPoint != null){
+					//if there was an end call, replace the new point by the old one
+					updatePoint(newPoint, oldPoint);
+				}
+				//if there was no end call (select point case) : do nothing and wait for action deletion TODO better dealing with point selection
+				break;
+				}		
+		}
+	}
+	/*** END OF INNER CLASS ACTION ***/
+	
+	/**
+	 * Zone back method. Cancel, then remove last action from actions list, if exists.
+	 * @return execution flag
+	 */
+	public boolean back(){
+		if(actions.size()>0){
+			actions.lastElement().cancel();
+			actions.remove(actions.lastElement());
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * Actions list clearing method
+	 */
+	public void clearBacks(){
+		actions = new Vector<Action>();
+	}
 }

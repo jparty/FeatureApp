@@ -70,6 +70,11 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	private final int REFERENCE_WIDTH = 1200;
 	
 	/**
+	 * Constant field defining the reference time length to force selection
+	 */
+	private final int REFERENCE_TIME = 150;
+	
+	/**
 	 * Field defining the actual sate of definition of zones
 	 */
 	public static int state;
@@ -167,7 +172,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		case IMAGE_CREATION:
 			switch(v.getId()){
 			case R.id.zone_button_back:
-				zone.deletePoint(zone.getPoints().size()-2);
+				if(!zone.back()){
+					Toast.makeText(getActivity(), "Rien à annuler", Toast.LENGTH_SHORT).show();//TODO move string to string file
+				}
 				refreshCreate();
 				break;
 			case R.id.zone_button_cancel:
@@ -180,7 +187,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
 				break;
 			case R.id.zone_button_validate:
-				scf.validation();
+				/*scf.validation();
 				ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
 				for (PixelGeom pg : MainActivity.pixelGeom) {
 					lpg.add(pg);
@@ -201,6 +208,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					}
 					geomCache=pg;
 					exitAction();
+					zone.cleanBacks();
 				} catch(TopologyException e) {
 					MainActivity.pixelGeom = lpg;
 					MainActivity.element = le;
@@ -211,7 +219,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					e.printStackTrace();
 				}
 				state = IMAGE_SELECTION;
-				exitAction();
+				exitAction();*/
+				validateCreation();//it's also possible to create a zone by looping polygon, use this method !
 				break;
 			}
 			break;
@@ -243,6 +252,10 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				}
 				break;
 			case R.id.zone_button_back:
+				if(!zone.back()){
+					Toast.makeText(getActivity(), "Rien à annuler", Toast.LENGTH_SHORT).show();//TODO move string to string file
+				}
+	            refreshEdit();
 				break;
 			case R.id.zone_button_cancel:
 				scf.resetAffichage();
@@ -271,6 +284,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
 						UtilCharacteristicsZone.addInMainActivityZones(pg, null);
 						exitAction();
+						zone.clearBacks();//remove list of actions backs
 					} catch(TopologyException e) {
 						MainActivity.pixelGeom = lpg;
 						MainActivity.element = le;
@@ -285,7 +299,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				}
 				state = IMAGE_SELECTION;
 				exitAction();
-				validate();
 				break;
 			}
 			break;
@@ -297,8 +310,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					}
 					selected.set(0,0);//no selected point anymore
 					//myImage.invalidate();
-					refreshCreate();
-					state = IMAGE_CREATION; drawzoneview.onCreateMode();
+					refreshEdit();
+					state = IMAGE_EDITION; drawzoneview.onEditMode();
 					delete.setEnabled(false);
 					//exitAction();
 			}
@@ -390,32 +403,36 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		rcf.refresh();
 	}
 	
-	private void validate(){
-		if(!zone.getPoints().isEmpty()){
-			ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
-			for (PixelGeom pg : MainActivity.pixelGeom) {
-				lpg.add(pg);
-			}
-			ArrayList<Element> le = new ArrayList<Element>();
-			for (Element elt : MainActivity.element) {
-				le.add(elt);
-			}
-			try {
-				//MainActivity.zones.remove(zoneCache); //delete original
-				MainActivity.pixelGeom.remove(geomCache);
-				PixelGeom pg = new PixelGeom();
-				pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
+	private void validateCreation(){
+		scf.validation();
+		ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
+		for (PixelGeom pg : MainActivity.pixelGeom) {
+			lpg.add(pg);
+		}
+		ArrayList<Element> le = new ArrayList<Element>();
+		for (Element elt : MainActivity.element) {
+			le.add(elt);
+		}
+		try {
+			PixelGeom pg = new PixelGeom();
+			pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
+			if(elementTemp.getElementType_id()==0 && elementTemp.getMaterial_id()==0){
 				UtilCharacteristicsZone.addInMainActivityZones(pg, null);
-				exitAction();
-			} catch(TopologyException e) {
-				MainActivity.pixelGeom = lpg;
-				MainActivity.element = le;
-				TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
-				diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+			else{
+				UtilCharacteristicsZone.addInMainActivityZones(pg, elementTemp);
+				//MainActivity.element.add(elementTemp);
+			}
+			exitAction();
+			zone.clearBacks();
+		} catch(TopologyException e) {
+			MainActivity.pixelGeom = lpg;
+			MainActivity.element = le;
+			TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
+			diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		state = IMAGE_SELECTION;
 		exitAction();
@@ -535,17 +552,18 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						}
 					}
 					else{
-						if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<150){
+						if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<REFERENCE_TIME){
 							float dx=Math.abs(zone.getPoints().get(0).x-selected.x);//TODO there is a math problem no ?
 							float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
 							if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
-								validate();
+								validateCreation();
 								break;
 							}
 						}
 						Point touch = getTouchedPoint(event);
 						if(moving > 5){//TODO if the app count so few ACTION_MOVE action should not be a movement, but instead of moving times we should be check distance
 							zone.updatePoint(selected, touch);
+							zone.endMove(touch);
 							selected.set(0, 0);//No selected point anymore
 						}
 						else{
@@ -561,9 +579,16 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					if(selected.x!=0 || selected.y!=0){
 						Point touch = getTouchedPoint(event);
 						if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
-							zone.updateMiddle(selected, touch);	//If not it's a "middle" point, and it's upgraded to normal
-																//So in the first move the middle point becomes a real one
+							zone.updateMiddle(selected, touch);//If not it's a "middle" point, and it's upgraded to normal
+							if(moving<2){
+								zone.startMove(null);	
+							}																
 							//TODO transfer to zone
+						}
+						else{
+							if(moving<2){
+								zone.startMove(selected);
+							}
 						}
 						selected.set(touch.x,touch.y);
 					}
@@ -578,12 +603,14 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					
 					boolean flag=false;
 					Zone z=null;
-					for(PixelGeom pg: MainActivity.pixelGeom){
-						if(ConvertGeom.pixelGeomToZone(pg).containPoint(touch)){
-							flag=true;
-							z=ConvertGeom.pixelGeomToZone(pg);
-							scf.setAffichage(pg);
-							break;
+					if(event.getEventTime()-event.getDownTime()>REFERENCE_TIME){
+						for(PixelGeom pg: MainActivity.pixelGeom){
+							if(ConvertGeom.pixelGeomToZone(pg).containPoint(touch)){
+								flag=true;
+								z=ConvertGeom.pixelGeomToZone(pg);
+								scf.setAffichage(pg);
+								break;
+							}
 						}
 					}
 					if(flag){
