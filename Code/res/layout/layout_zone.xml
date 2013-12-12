@@ -24,7 +24,7 @@
 		
 		<Button
 			android:id="@+id/zone_button_back"
-			android:layout_width="100dp"
+			android:layout_width="130dp"
 			android:layout_height="fill_parent"
 			android:layout_alignParentLeft="true"
 			android:layout_alignParentTop="true"
@@ -32,7 +32,7 @@
 	
 		<Button
 			android:id="@+id/zone_button_cancel"
-			android:layout_width="100dp"
+			android:layout_width="130dp"
 			android:layout_height="fill_parent"
 			android:layout_alignParentTop="true"
 			android:layout_toRightOf="@+id/zone_button_back"
@@ -40,18 +40,18 @@
 	
 		<Button
 			android:id="@+id/zone_button_validate"
-			android:layout_width="100dp"
+			android:layout_width="130dp"
 			android:layout_height="fill_parent"
 			android:layout_alignParentTop="true"
 			android:layout_toRightOf="@+id/zone_button_cancel"
 			android:text="@string/validate" />
 		<Button
 			android:id="@+id/zone_button_delete"
-			android:layout_width="100dp"
+			android:layout_width="130dp"
 			android:layout_height="fill_parent"
 			android:layout_alignParentTop="true"
 			android:layout_toRightOf="@+id/zone_button_validate"
-			android:text="delete" />
+			android:text="@string/delete_zone" />
 	</RelativeLayout>	
 
 	<RelativeLayout 

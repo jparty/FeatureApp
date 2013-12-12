@@ -92,5 +92,6 @@
 	<string name="progress_dialog_title_uploading">progress_dialog_title_uploading</string>
 	<string name="no_back">Rien à annuler</string>
 	<string name="point_deleting_impossible">Impossible de supprimer le point</string>
+	<string name="delete_zone">Supprimer</string>
 	
 </resources>

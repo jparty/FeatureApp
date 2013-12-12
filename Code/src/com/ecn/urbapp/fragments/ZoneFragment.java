@@ -174,7 +174,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				if(!zone.back()){
 					Toast.makeText(getActivity(), R.string.no_back, Toast.LENGTH_SHORT).show();
 				}
-				refreshCreate();
+				refreshDisplay();
 				break;
 			case R.id.zone_button_cancel:
 				//scf.resetAffichage();
@@ -187,11 +187,11 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						Toast.makeText(getActivity(), R.string.point_deleting_impossible, Toast.LENGTH_SHORT).show();
 					}
 					selected.set(0,0);//no selected point anymore
-					refreshCreate();
+					refreshDisplay();
 					delete.setEnabled(false);
 					POINT_SELECTED = false;
 				}
-				
+				break;
 			/*case R.id.zone_button_fusion:
 				UnionDialogFragment summarydialog = new UnionDialogFragment();
 				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
@@ -209,7 +209,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						Toast.makeText(getActivity(), "Impossible de supprimer ce point", Toast.LENGTH_SHORT).show();
 					}
 					selected.set(0,0);//no selected point anymore
-					refreshEdit();
+					refreshDisplay();
 					delete.setEnabled(false);
 					POINT_SELECTED = false;
 				}
@@ -236,7 +236,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				if(!zone.back()){
 					Toast.makeText(getActivity(), R.string.no_back, Toast.LENGTH_SHORT).show();
 				}
-	            refreshEdit();
+	            refreshDisplay();
 				break;
 			case R.id.zone_button_cancel:
 				//scf.resetAffichage();
@@ -433,28 +433,27 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		myImage.getImageMatrix().invert(matrix);
 	}
 	
-	public void refreshCreate(){
+	public void refreshDisplay(){
 		Vector<Point> points = zone.getPoints();
 		if(! points.isEmpty()){
-			back.setEnabled(false);
-			if(points.size()>1){							
-				validate.setEnabled(false);
+			back.setEnabled(false);							
+			validate.setEnabled(false);
+			if(points.size()>1+1){
 				back.setEnabled(true);
 				if(points.size()>2+1){
 					validate.setEnabled(true);
-					if(points.size()>2+1){//cannot be intersections with less than 3 points but needed for refreshing displaying
-						Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting());
-						if(!intersections.isEmpty()){
-							validate.setEnabled(false);
-						}
-						drawzoneview.setIntersections(intersections);
+					//cannot be intersections with less than 3 points but needed for refreshing displaying
+					Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting());
+					if(!intersections.isEmpty()){
+						validate.setEnabled(false);
 					}
+					drawzoneview.setIntersections(intersections);
 				}
 			}
 		}
 		myImage.invalidate();
 	}
-    public void refreshEdit(){
+    /*public void refreshDisplay(){
 		Vector<Point> points = zone.getPoints();
 		if(points.size()<3+1){//+1 corresponds to the ending point closing polygon 
 			validate.setEnabled(false);
@@ -472,8 +471,11 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			}
 		}
 		myImage.invalidate();
-	}
+	}*/
 
+    /**
+     * All touches handling method. Override Android API method.
+     */
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 			switch(state){
@@ -520,11 +522,13 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						}
 						else{
 							if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<REFERENCE_TIME){
-								float dx=Math.abs(zone.getPoints().get(0).x-selected.x);
-								float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
-								if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
-									validateCreation();
-									break;
+								if(zone.getPoints().size()>2+1){
+									float dx=Math.abs(zone.getPoints().get(0).x-selected.x);
+									float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
+									if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
+										validateCreation();
+										break;
+									}
 								}
 							}
 							Point touch = getTouchedPoint(event);
@@ -535,7 +539,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 							}
 							else{
 								POINT_SELECTED = true; delete.setEnabled(true);
-								//zone.endMove(touch); zone.back();
 								moving=0;
 							}
 						}
@@ -563,7 +566,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						}
 					}
 				}
-				refreshCreate();//display new point, refresh buttons' availabilities	
+				refreshDisplay();//display new point, refresh buttons' availabilities	
 				break;
 
 			case IMAGE_SELECTION:
@@ -571,7 +574,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					if(!hasZoneSelected(event)){
 			    		getMatrix();
 						zone.addPoint2(getTouchedPoint(event));
-						refreshCreate();
+						refreshDisplay();
 						state = IMAGE_CREATION; drawzoneview.onCreateMode();
 						validate.setEnabled(false);
 						back.setEnabled(false);
@@ -624,7 +627,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			cancel.setEnabled(true);
 			//fusion.setEnabled(true);
 			delete.setEnabled(true);
-			refreshEdit();
+			refreshDisplay();
 			//scf.setAffichage(geomCache);
 	}
 
@@ -669,7 +672,12 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			e.printStackTrace();
 		}
 	}
-		
+	
+	/**
+	 * Is user selecting a zone ?
+	 * @param event : the user action object
+	 * @return yes if zone selected, no otherwise. The selected zone is saved in a fragment's attribute.
+	 */
 	private boolean hasZoneSelected(MotionEvent event){
 		getMatrix();
 		Point touch = getTouchedPoint(event);
@@ -702,7 +710,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			cancel.setEnabled(true);
 			//fusion.setEnabled(true);
 			delete.setEnabled(true);
-			refreshEdit();
+			refreshDisplay();
 			return true;
 			}
 		else{
