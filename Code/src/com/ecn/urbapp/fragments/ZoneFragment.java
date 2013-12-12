@@ -148,9 +148,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	public static final int IMAGE_SELECTION= 1;
 	
 	/**
-	 * Constant value
+	 * Point selection indicator, works in both creation and edition modes
 	 */
-	private final int POINT_SELECTED = 4;
+	private boolean POINT_SELECTED = false;
 	
 	private int moving;
 
@@ -181,6 +181,18 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				state = IMAGE_SELECTION;
 				exitAction();
 				break;
+			case R.id.zone_button_delete:
+				if(POINT_SELECTED){
+					if (!zone.deletePoint(selected)){
+						Toast.makeText(getActivity(), "Impossible de supprimer ce point", Toast.LENGTH_SHORT).show();
+					}
+					selected.set(0,0);//no selected point anymore
+					//myImage.invalidate();
+					refreshCreate();
+					delete.setEnabled(false);
+					POINT_SELECTED = false;
+				}
+				
 			/*case R.id.zone_button_fusion:
 				UnionDialogFragment summarydialog = new UnionDialogFragment();
 				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
@@ -226,10 +238,15 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		case IMAGE_EDITION:
 			switch(v.getId()){
 			case R.id.zone_button_delete:
-				if(selected.x!=0 || selected.y!=0){
-					zone.deletePoint(selected);
+				if(POINT_SELECTED){
+					if (!zone.deletePoint(selected)){
+						Toast.makeText(getActivity(), "Impossible de supprimer ce point", Toast.LENGTH_SHORT).show();
+					}
 					selected.set(0,0);//no selected point anymore
-					myImage.invalidate();//refresh image
+					//myImage.invalidate();
+					refreshEdit();
+					delete.setEnabled(false);
+					POINT_SELECTED = false;
 				}
 				else{
 					int pos;
@@ -301,7 +318,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				break;
 			}
 			break;
-		case POINT_SELECTED://TODO other buttons behavior when a point is selected 
+		/*case POINT_SELECTED://TODO other buttons behavior when a point is selected 
 			switch(v.getId()){
 				case R.id.zone_button_delete:
 					if (!zone.deletePoint(selected)){
@@ -314,7 +331,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					delete.setEnabled(false);
 					//exitAction();
 			}
-			break;
+			break;*/
 		}
 	}
 
@@ -354,7 +371,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				getResources(),
 				BitmapLoader.decodeSampledBitmapFromFile(
 						Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(), metrics.widthPixels, metrics.heightPixels - 174)), drawzoneview
-				};
+		};//TODO 174 corresponds to menu bar + buttons bar. Calculate this value ! Maybe by charging a small picture before to know ImageView size
+
 				
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		myImage.setOnTouchListener(this);
@@ -515,7 +533,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				refreshCreate();
 				break;*/
 				Log.d("Move","Moving:"+moving);
-				if(event.getAction() == MotionEvent.ACTION_DOWN){
+				if(event.getAction() == MotionEvent.ACTION_DOWN && !POINT_SELECTED){
 					moving = 0;//ACTION_MOVE occurrences
 					Log.d("Move","Action Down");
 					selected.set(0, 0);
@@ -539,55 +557,63 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				}
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					Log.d("Move","Action Up, down time:"+(event.getEventTime()-event.getDownTime()));
-					if(selected.x==0 && selected.y==0){
-						if(state == IMAGE_CREATION){
-							zone.addPoint2(getTouchedPoint(event));				
-						}else{
-							//TODO behavior in IMAGE_EDITION when user touch out of the selected zone intentionally
-							state = IMAGE_SELECTION;
-							exitAction();
-						}
+					if(POINT_SELECTED){
+						selected.set(0, 0);
+						POINT_SELECTED = false; delete.setEnabled(false);
 					}
 					else{
-						if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<REFERENCE_TIME){
-							float dx=Math.abs(zone.getPoints().get(0).x-selected.x);//TODO there is a math problem no ?
-							float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
-							if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
-								validateCreation();
-								break;
+						if(selected.x==0 && selected.y==0){
+							if(state == IMAGE_CREATION){
+								zone.addPoint2(getTouchedPoint(event));				
+							}else{
+								//TODO behavior in IMAGE_EDITION when user touch out of the selected zone intentionally
+								state = IMAGE_SELECTION;
+								exitAction();
 							}
 						}
-						Point touch = getTouchedPoint(event);
-						if(moving > 2){//TODO if the app count so few ACTION_MOVE action should not be a movement, but instead of moving times we should be check distance
-							zone.updatePoint(selected, touch);
-							zone.endMove(touch);
-							selected.set(0, 0);//No selected point anymore
-						}
 						else{
-							state = POINT_SELECTED;
-							delete.setEnabled(true);
-							moving=0;
+							if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<REFERENCE_TIME){
+								float dx=Math.abs(zone.getPoints().get(0).x-selected.x);
+								float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
+								if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
+									validateCreation();
+									break;
+								}
+							}
+							Point touch = getTouchedPoint(event);
+							if(moving > 2){//TODO if the app count so few ACTION_MOVE action should not be a movement, but instead of moving times we should be check distance
+								zone.updatePoint(selected, touch);
+								zone.endMove(touch);
+								selected.set(0, 0);//No selected point anymore
+							}
+							else{
+								POINT_SELECTED = true; delete.setEnabled(true);
+								//zone.endMove(touch); zone.back();
+								moving=0;
+							}
 						}
 					}
 				}
-				if (event.getAction() == MotionEvent.ACTION_MOVE) {
+				if (event.getAction() == MotionEvent.ACTION_MOVE && !POINT_SELECTED) {
 					moving ++;
 					Log.d("Move","Action Move");
 					if(selected.x!=0 || selected.y!=0){
 						Point touch = getTouchedPoint(event);
-						if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
-							zone.updateMiddle(selected, touch);//If not it's a "middle" point, and it's upgraded to normal
-							if(moving<2){
+						if (moving==3){
+							if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
+								zone.updateMiddle(selected, touch);//If not it's a "middle" point, and it's upgraded to normal
 								zone.startMove(null);	
-							}																
-							//TODO transfer to zone
-						}
-						else{
-							if(moving<2){
+							}else{
 								zone.startMove(selected);
 							}
+							selected.set(touch.x,touch.y);
 						}
-						selected.set(touch.x,touch.y);
+						else{
+							if(moving>3){
+								zone.updatePoint(selected, touch);
+								selected.set(touch.x,touch.y);
+							}
+						}
 					}
 				}
 				refreshCreate();//display new point, refresh buttons' availabilities	
@@ -646,10 +672,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					}
 				}
 				break;
-			case POINT_SELECTED ://TODO check behavior
-				state=IMAGE_CREATION; drawzoneview.onCreateMode();
-				selected.set(0,0);
-				break;
 			}
 		return true;
 	}
@@ -657,8 +679,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	@Override
 	public void onStop(){
 		super.onStop();
-		//getFragmentManager().beginTransaction().remove(scf).commit();
-		//getFragmentManager().beginTransaction().remove(rcf).commit();
 	}
 	
 	public void selectGeom(long i){
