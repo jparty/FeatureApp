@@ -152,16 +152,7 @@ public class DrawZoneView extends Drawable {
 		paintFillZone.setColor(Color.BLUE);
 		paintFillZone.setStyle(Paint.Style.FILL);
 		paintFillZone.setAlpha(20);
-		
-		for(Element e : MainActivity.element){
-			if(ZoneFragment.geomCache!=null){
-				if(e.getPixelGeom_id()==ZoneFragment.geomCache.getPixelGeomId()){
-					if(e.getElement_color()!=null)
-						paintFillZone.setColor(Integer.parseInt(e.getElement_color()));
-				}
-			}
-		}
-		
+
 		Paint paintBorderZone = new Paint();
 		paintBorderZone.setColor(Color.WHITE);
 		paintBorderZone.setStyle(Paint.Style.STROKE);
@@ -211,19 +202,31 @@ public class DrawZoneView extends Drawable {
 		}
 		try {
 		// Create a closed path for the polygon
+			
 				for(PixelGeom pgeom : MainActivity.pixelGeom){
-					paintNormal.setColor(Color.RED);
-					Path polyPath = new Path();
-					WKTReader wktr = new WKTReader();
-					Coordinate[] points2 = ((Polygon) wktr.read(pgeom.getPixelGeom_the_geom())).getExteriorRing().getCoordinates();
-					if(points2.length != 0){
-						polyPath.moveTo((float) points2[0].x, (float) points2[0].y);
-						for(int i=1; i<points2.length; i++){
-							polyPath.lineTo((float) points2[i].x, (float) points2[i].y);
+					for(Element e : MainActivity.element){
+						if(e.getPixelGeom_id()==pgeom.getPixelGeomId()){
+							if(e.getElement_color()!=null){
+								paintFillZone.setColor(Integer.parseInt(e.getElement_color()));
+								paintFillZone.setAlpha(120);//setting color seems to erase alpha
+							}
+							else{
+								paintFillZone.setColor(Color.GRAY);
+								paintFillZone.setAlpha(30);
+							}
+							Path polyPath = new Path();
+							WKTReader wktr = new WKTReader();
+							Coordinate[] points2 = ((Polygon) wktr.read(pgeom.getPixelGeom_the_geom())).getExteriorRing().getCoordinates();
+							if(points2.length != 0){
+								polyPath.moveTo((float) points2[0].x, (float) points2[0].y);
+								for(int i=1; i<points2.length; i++){
+									polyPath.lineTo((float) points2[i].x, (float) points2[i].y);
+								}
+							// Draw the polygon
+							canvas.drawPath(polyPath, paintFillZone);
+							canvas.drawPath(polyPath, paintBorderZone);
+							}
 						}
-					// Draw the polygon
-					canvas.drawPath(polyPath, paintFillZone);
-					canvas.drawPath(polyPath, paintBorderZone);
 					}
 				}
 		} catch (ParseException e) {

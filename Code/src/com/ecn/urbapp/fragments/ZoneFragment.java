@@ -559,7 +559,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 							}
 						}
 						Point touch = getTouchedPoint(event);
-						if(moving > 5){//TODO if the app count so few ACTION_MOVE action should not be a movement, but instead of moving times we should be check distance
+						if(moving > 2){//TODO if the app count so few ACTION_MOVE action should not be a movement, but instead of moving times we should be check distance
 							zone.updatePoint(selected, touch);
 							zone.endMove(touch);
 							selected.set(0, 0);//No selected point anymore
