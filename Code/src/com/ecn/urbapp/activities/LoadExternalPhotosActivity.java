@@ -17,9 +17,7 @@ import android.widget.Toast;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.GpsGeom;
-import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Photo;
-import com.ecn.urbapp.activities.GeoActivity;
 import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.CustomListViewAdapter;

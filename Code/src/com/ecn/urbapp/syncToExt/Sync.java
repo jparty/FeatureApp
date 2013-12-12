@@ -127,14 +127,16 @@ public class Sync
 	 * @return Hashmap of all max id
 	 */
 	public static HashMap<String, Integer> getMaxId() {
-		try {
-			maxId = new BackTastMaxId().execute().get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(maxId.isEmpty()) {
+			try {
+				maxId = new BackTastMaxId().execute().get();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return maxId;
 	}
