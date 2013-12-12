@@ -52,51 +52,21 @@
 			android:layout_alignParentTop="true"
 			android:layout_toRightOf="@+id/zone_button_validate"
 			android:text="delete" />
-	
-		<Button
-			android:id="@+id/zone_button_fusion"
-			android:layout_width="100dp"
-			android:layout_height="fill_parent"
-			android:layout_alignParentTop="true"
-			android:layout_toRightOf="@+id/zone_button_delete"
-			android:text="fusion" />
-	</RelativeLayout>
-	
-	
-	<ScrollView 
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent"
-		android:layout_below="@+id/zone_button" >
-	
-	
-		<RelativeLayout 
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginBottom="30dp">
-			
-			
-	
-			<fragment android:name="com.ecn.urbapp.fragments.SetCharactFragment"
-				android:id="@+id/fragmentCaract"
-				android:layout_width="300dp"
-				android:layout_height="wrap_content"/>
-			
-			<fragment android:name="com.ecn.urbapp.fragments.RecapCharactFragment"
-				android:id="@+id/fragmentRecap"
-				android:layout_width="300dp"
-				android:layout_height="wrap_content"
-				android:layout_below="@+id/fragmentCaract"/>
-			
-			
-			<ImageView
-				android:id="@+id/image_zone"
-				android:layout_width="wrap_content"
-				android:layout_height="fill_parent"
-	            android:layout_centerInParent="true"
-	            android:layout_toRightOf="@+id/fragmentCaract"
-				android:src="@drawable/image" />
-		</RelativeLayout>
+	</RelativeLayout>	
+
+	<RelativeLayout 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="30dp"
+		android:layout_below="@+id/zone_button">
 		
-	</ScrollView>
+		
+		<ImageView
+			android:id="@+id/image_zone"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+			android:src="@drawable/image" />
+	</RelativeLayout>
 	
 </RelativeLayout>

@@ -5,7 +5,6 @@ import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
@@ -32,17 +31,13 @@ public class MyTabListener implements TabListener{
 	 * It's the fragment concerned by the listener
 	 */
 	private Fragment f;
-
-	//TODO Adddescription for javadoc
-	private Activity a;
 	
 	/**
 	 * Main constructor
 	 * @param f is the fragment concerned by the listener
 	 */
-	public MyTabListener(Fragment f, Activity a){
+	public MyTabListener(Fragment f){
 		this.f=f;
-		this.a=a;
 	}
 
 	//TODO Adddescription for javadoc
