@@ -1,12 +1,13 @@
 package com.ecn.urbapp.utils;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,7 +21,6 @@ import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.ImageView;
 
 /**
  * Download a picture from the web and prints it on screen
@@ -29,11 +29,10 @@ import android.widget.ImageView;
  */
 public class ImageDownloader {
 	/** Path of the directory where image is going to be registered	 */
-	private final String path=Environment.getExternalStorageDirectory()+"/featureapp/";
+	private final static String path=Environment.getExternalStorageDirectory()+"/featureapp/";
 	/** Name of the file to be registered */
-	private String name;
+	private static String name;
 
-	//TODO Adddescription for javadoc
 	/**
 	 * Method to launch the download of picture from an url
 	 * @param url
@@ -46,12 +45,16 @@ public class ImageDownloader {
             
             //check if file already exists. If so, displays it !
             File imgFile = new  File(path+name);
-        	if(imgFile.exists()){
-
-        	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        	}
-        	else
-        		task.execute(url+name); //download image !
+        	if(!imgFile.exists())
+				try {
+					task.execute(url+name).get();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} //download image !
             return path+name;
         }
 
@@ -99,7 +102,7 @@ public class ImageDownloader {
 	 * @param url
 	 * @return
 	 */
-static Bitmap downloadBitmap(String url) {
+static void downloadBitmap(String url) {
     final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
     final HttpGet getRequest = new HttpGet(url);
 
@@ -108,16 +111,32 @@ static Bitmap downloadBitmap(String url) {
         final int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode != HttpStatus.SC_OK) { 
             Log.w("ImageDownloader", "Error " + statusCode + " while retrieving bitmap from " + url); 
-            return null;
         }
         
         final HttpEntity entity = response.getEntity();
         if (entity != null) {
+        	
+        	File file = new File(path, name);
+            file.createNewFile();
+            
             InputStream inputStream = null;
             try {
                 inputStream = entity.getContent(); 
-                final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                return bitmap;
+                /*
+                 * Read bytes to the Buffer until there is nothing more to read(-1) and write on the fly in the file.
+                 */
+                FileOutputStream fos = new FileOutputStream(file);
+                final int BUFFER_SIZE = 5 * 1024;
+                BufferedInputStream bis = new BufferedInputStream(inputStream, BUFFER_SIZE);
+                byte[] baf = new byte[BUFFER_SIZE];
+                int actual = 0;
+                while (actual != -1) {
+                    fos.write(baf, 0, actual);
+                    actual = bis.read(baf, 0, BUFFER_SIZE);
+                }
+
+                fos.close();
+                
             } finally {
                 if (inputStream != null) {
                     inputStream.close();  
@@ -134,7 +153,6 @@ static Bitmap downloadBitmap(String url) {
             client.close();
         }
     }
-    return null;
 }
 
 /**
@@ -142,26 +160,25 @@ static Bitmap downloadBitmap(String url) {
  * @author Sebastien
  *
  */
-	class BitmapDownloaderTask extends AsyncTask<String, Void, Bitmap> {
+	class BitmapDownloaderTask extends AsyncTask<String, Void, Void> {
 	
 	    public BitmapDownloaderTask() {
 	    }
 	
 	    @Override
 	    // Actual download method, run in the task thread
-	    protected Bitmap doInBackground(String... params) {
+	    protected Void doInBackground(String... params) {
 	         // params comes from the execute() call: params[0] is the url.
-	         return downloadBitmap(params[0]);
+	          downloadBitmap(params[0]);
+	          return null;
 	    }
 	
-	    @Override
+	    
 	    // Once the image is download, associates it to the imageView
-	    protected void onPostExecute(Bitmap bitmap) {
-	    	if (isCancelled()) {
-	    		bitmap = null;
-	    	}               
+	    protected void onPostExecute() {
+	    	            
 	    	//save file on cache data of the app
-	    	BitmapToFile(bitmap);
+	    	//BitmapToFile(bitmap);
 
 	    }
 	}

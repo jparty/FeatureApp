@@ -100,7 +100,7 @@ public class GpsGeom extends DataObject{
 			if(!cursor.isAfterLast()){
 				long old_id = this.getGpsGeomsId();
 				//long new_id = 1+cursor.getLong(0);
-				long new_id = this.gpsGeom_id+Sync.getMaxId().get("GpsGeom");
+				long new_id = Sync.getMaxId().get("GpsGeom")+1;
 				this.setGpsGeomId(new_id);
 				this.trigger(old_id, new_id, MainActivity.photo, MainActivity.project, MainActivity.element);
 			}

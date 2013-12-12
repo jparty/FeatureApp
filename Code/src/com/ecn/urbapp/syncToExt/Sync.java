@@ -663,7 +663,8 @@ public class Sync
 					String photo_author = photo.getString("photo_author");
 					long gpsgeom_id = photo.getLong("gpsGeom_id");
 					int photo_nbr = photo.getInt("photo_nbrPoint");
-					int photo_date = photo.getInt("photo_date");
+					String photo_adresse = photo.getString("photo_adresse");
+					int photo_date = photo.getInt("photo_derniereModif");
 					
 					Photo photoEnCours = new Photo();
 					photoEnCours.setPhoto_id(photo_id);
@@ -672,6 +673,7 @@ public class Sync
 					photoEnCours.setPhoto_url(photo_url);
 					photoEnCours.setGpsGeom_id(gpsgeom_id);
 					photoEnCours.setPhoto_nbrPoints(photo_nbr);
+					photoEnCours.setPhoto_adresse(photo_adresse);
 					photoEnCours.setPhoto_derniereModif(photo_date);
 					
 					refreshedValuesPhoto.add(photoEnCours);
