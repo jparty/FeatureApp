@@ -368,7 +368,7 @@ public class LocalDataSource {
 	    p1.setPhoto_url(cursor.getString(3)); 
 	    p1.setPhoto_adresse(cursor.getString(4)); 
 	    p1.setPhoto_nbrPoints(cursor.getLong(5)); 
-	    p1.setPhoto_derniereModif(cursor.getString(6)); 
+	    p1.setPhoto_derniereModif(cursor.getInt(6)); 
 	    p1.setGpsGeom_id(cursor.getLong(7)); 
 	    //TODO créer 2 fonctions, une pour l'instanciation du projet, une pour la recopie des gpsgeom
 	    try{
