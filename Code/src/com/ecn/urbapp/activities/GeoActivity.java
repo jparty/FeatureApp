@@ -105,9 +105,9 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	private int nbPoints=2;
 	
 	/**
-	 * Centrale Nantes GPS centered
+	 * France GPS centered
 	 */
-	public static final LatLng defaultPos=new LatLng(47.249069, -1.54820);
+	public static final LatLng defaultPos=new LatLng(46.52863469527167,2.00896484375);
 	
 	/**
 	 * For the localisation of tablets
@@ -361,7 +361,11 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 
     	//check
     	map.setMyLocationEnabled(true);
-    	map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15));
+    	
+    	if (pos == defaultPos)
+    		map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 6));
+    	else
+    		map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
     }
     
     /**

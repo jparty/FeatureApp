@@ -42,9 +42,9 @@ public class ConvertGeom{
 	public static ArrayList<LatLng> gpsGeomToLatLng(GpsGeom the_geom){
 		ArrayList<LatLng> list = new ArrayList<LatLng>();
 
-		String s = the_geom.getGpsGeomCord().replace("LINESTRING (", "");
+		String s = the_geom.getGpsGeomCord().replace("LINESTRING(", "");
 		s = s.replace(")", "");
-		ArrayList<String> tab = new ArrayList<String>(Arrays.asList(s.split(", ")));
+		ArrayList<String> tab = new ArrayList<String>(Arrays.asList(s.split(",")));
 		for(String str : tab){
 			//TODO debug
 			list.add(new LatLng(Double.parseDouble(str.split(" ")[0]), Double.parseDouble(str.split(" ")[1])));
@@ -53,13 +53,13 @@ public class ConvertGeom{
 	}
 	
 	public static String latLngToGpsGeom(ArrayList<LatLng> list){
-		String ret="LINESTRING (";
+		String ret="LINESTRING(";
 		
 		String s="";
 		for(LatLng ll : list){
 			s+=ll.latitude+" "+ll.longitude;
 			if(list.get(list.size()-1)!=ll){
-				s+=", ";
+				s+=",";
 			}
 		}
 		ret+=s;
