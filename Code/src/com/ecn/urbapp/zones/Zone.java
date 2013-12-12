@@ -233,7 +233,15 @@ public class Zone {
 	 * @param newPoint
 	 */
 	public void updateMiddle(Point oldMiddle, Point newPoint){
-		points.insertElementAt(newPoint, middles.indexOf(oldMiddle)+1);
+		//points.insertElementAt(newPoint, middles.indexOf(oldMiddle)+1);
+		for (int i=0;i<points.size()-1;i++) {
+			if (oldMiddle.equals(new Point(
+					(int) (points.get(i).x + points.get(i+1).x) / 2,
+					(int) (points.get(i).y + points.get(i+1).y) / 2))) {
+				points.insertElementAt(newPoint, i+1);
+				break;
+			}
+		}
 	}
 
 	/**
@@ -312,16 +320,28 @@ public class Zone {
 	/**
 	 * Create edition points between normal 
 	 */
-	public void buildMiddles(){
-		middles=new Vector<Point>();//points.size());
-		if(points.size()>2){
-			for(int i=0;i<points.size()-1; i++){
-				middles.add(
-					new Point(
-						(points.get(i).x + points.get(i+1).x)/2,
-						(points.get(i).y + points.get(i+1).y)/2)
-				);
+	public void buildMiddles() {
+		middles = new Vector<Point>();// points.size());
+		if (points.size() > 3) {
+			actualizePolygon();
+			Coordinate[] coords = poly.getExteriorRing().getCoordinates();
+			for (int i = 0; i < coords.length - 1; i++) {
+				middles.add(new Point(
+						(int) (coords[i].x + coords[i + 1].x) / 2,
+						(int) (coords[i].y + coords[i + 1].y) / 2));
 			}
+			for (int j = 0; j < poly.getNumInteriorRing(); j++) {
+				coords = poly.getInteriorRingN(j).getCoordinates();
+				for (int i = 0; i < coords.length - 1; i++) {
+					middles.add(new Point(
+							(int) (coords[i].x + coords[i + 1].x) / 2,
+							(int) (coords[i].y + coords[i + 1].y) / 2));
+				}
+			}
+		} else if (points.size() > 2) {
+			middles.add(new Point(
+					(int) (points.get(0).x + points.get(1).x) / 2,
+					(int) (points.get(0).y + points.get(1).y) / 2));
 		}
 		/*
 		if(points.size()>1){

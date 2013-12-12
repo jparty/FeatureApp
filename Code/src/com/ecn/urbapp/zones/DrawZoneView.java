@@ -67,6 +67,7 @@ public class DrawZoneView extends Drawable {
 	private Zone zone; private Point selected; private Vector<Point> intersections;
 	private boolean edit; private boolean create; private Paint paintLastPoint; private Paint paintProjection;
 	float ratio = 1;
+	WKTReader wktr = new WKTReader();
 	
 	//TODO Add description for javadoc
 	public DrawZoneView() {
@@ -153,82 +154,121 @@ public class DrawZoneView extends Drawable {
 		paintFillZone.setStyle(Paint.Style.FILL);
 		paintFillZone.setAlpha(20);
 
+		for(Element e : MainActivity.element){
+			if(ZoneFragment.geomCache!=null){
+				if(e.getPixelGeom_id()==ZoneFragment.geomCache.getPixelGeomId()){
+					if(e.getElement_color()!=null)
+						paintFillZone.setColor(Integer.parseInt(e.getElement_color()));
+				}
+			}
+		}
+
 		Paint paintBorderZone = new Paint();
 		paintBorderZone.setColor(Color.WHITE);
 		paintBorderZone.setStyle(Paint.Style.STROKE);
 		paintBorderZone.setAlpha(255);
-		
-		Vector<Point> points = new Vector<Point>(zone.getPoints());//copying the points to display
+		//copying the points to display
+		Vector<Point> points = new Vector<Point>(zone.getPoints());
 		Vector<Point> middles = zone.getMiddles();
-		
-		if(! points.isEmpty()){
-			canvas.drawCircle(points.get(0).x, points.get(0).y, 13/ratio, paintNormal);
-			if(points.size()>2){
-				points.remove(points.size()-1);
-				canvas.drawCircle(points.lastElement().x, points.lastElement().y, 13/ratio, paintLastPoint);
-				canvas.drawLine(points.get(points.size()-2).x, points.get(points.size()-2).y, points.lastElement().x, points.lastElement().y, paintNormal);
-				//if(edit){
-					canvas.drawCircle(middles.get(0).x, middles.get(0).y, 6/ratio, paintNormal);
-				//}
-				if(points.size()>2){
-					for(int i=1; i<points.size()-1; i++){
-						canvas.drawCircle(points.get(i).x, points.get(i).y, 13/ratio, paintNormal);
-						canvas.drawLine(points.get(i-1).x, points.get(i-1).y, points.get(i).x, points.get(i).y, paintNormal);
-						//if(edit){
-							canvas.drawCircle(middles.get(i).x, middles.get(i).y, 6/ratio, paintNormal);
-						//}
-					}
-					if(edit){
-						canvas.drawCircle(middles.lastElement().x, middles.lastElement().y, 6/ratio, paintLastPoint);
-					}
-					//canvas.drawLine(points.get(points.size()-1).x, points.get(points.size()-1).y, points.get(0).x, points.get(0).y, paintLastPoint);
-					Path projection = new Path();
-					projection.moveTo(points.get(points.size()-1).x, points.get(points.size()-1).y);
-					projection.lineTo(points.get(0).x, points.get(0).y);
-					canvas.drawPath(projection, paintProjection);
-				}			
-			try{if(selected.x != 0 || selected.y != 0){
-				canvas.drawCircle(selected.x, selected.y, 33/ratio, paintNormal);
-			}}catch(Exception e){}
-			}
+
+		for (int i = 0; i < points.size() - 2; i++) {
+			canvas.drawCircle(points.get(i).x, points.get(i).y, 13 / ratio, paintNormal);
 		}
-		try{Log.d("Intersection",intersections.toString());}catch(Exception e){}
-		if(intersections != null && !intersections.isEmpty()){
-			for(int i=0;i<intersections.size();i=i+2){
-				canvas.drawCircle(intersections.get(i).x, intersections.get(i).y, 13/ratio, paintIntersections);
-				canvas.drawLine(intersections.get(i).x, intersections.get(i).y, intersections.get(i+1).x, intersections.get(i+1).y, paintIntersections);
-				canvas.drawCircle(intersections.get(i+1).x, intersections.get(i+1).y, 13/ratio, paintIntersections);
+		for (int i = 0; i < middles.size() - 1; i++) {
+			canvas.drawCircle(middles.get(i).x, middles.get(i).y, 6 / ratio, paintNormal);
+		}
+		if (edit || points.size() == 3) {
+			canvas.drawCircle(middles.lastElement().x, middles.lastElement().y, 6 / ratio, paintNormal);
+		}
+		if (points.size() > 1) {
+			canvas.drawCircle(points.get(points.size() - 2).x,
+					points.get(points.size() - 2).y, 13 / ratio, paintLastPoint);
+		}
+		if (points.size() == 3) {
+			canvas.drawLine((int) points.get(0).x, (int) points.get(0).y,
+					(int) points.get(1).x, (int) points.get(1).y, paintNormal);
+		} else if (points.size() > 3) {
+			int modMaxIter = 0;
+			if (create) {
+				Path projection = new Path();
+				projection.moveTo(points.get(points.size() - 2).x,
+						points.get(points.size() - 2).y);
+				projection.lineTo(points.get(0).x, points.get(0).y);
+				canvas.drawPath(projection, paintProjection);
+				modMaxIter--;
+			}
+			try {
+				PixelGeom pgeom = new PixelGeom();
+				zone.closePolygon();
+				zone.actualizePolygon();
+				pgeom.setPixelGeom_the_geom(zone.getPolygon().toText());
+				Polygon poly = (Polygon) wktr.read(pgeom
+						.getPixelGeom_the_geom());
+				Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
+				for (int j = 0; j < points2.length - 1 + modMaxIter; j++) {
+					canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+							(int) points2[j + 1].x, (int) points2[j + 1].y, paintNormal);
+				}
+				for (int k = 0; k < poly.getNumInteriorRing(); k++) {
+					points2 = poly.getInteriorRingN(k).getCoordinates();
+					for (int j = 0; j < points2.length - 1; j++) {
+						canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+								(int) points2[j + 1].x, (int) points2[j + 1].y, paintNormal);
+					}
+				}
+			} catch (ParseException e) {
 			}
 		}
 		try {
-		// Create a closed path for the polygon
-			
-				for(PixelGeom pgeom : MainActivity.pixelGeom){
-					for(Element e : MainActivity.element){
-						if(e.getPixelGeom_id()==pgeom.getPixelGeomId()){
-							if(e.getElement_color()!=null){
-								paintFillZone.setColor(Integer.parseInt(e.getElement_color()));
-								paintFillZone.setAlpha(120);//setting color seems to erase alpha
-							}
-							else{
-								paintFillZone.setColor(Color.GRAY);
-								paintFillZone.setAlpha(30);
-							}
-							Path polyPath = new Path();
-							WKTReader wktr = new WKTReader();
-							Coordinate[] points2 = ((Polygon) wktr.read(pgeom.getPixelGeom_the_geom())).getExteriorRing().getCoordinates();
-							if(points2.length != 0){
-								polyPath.moveTo((float) points2[0].x, (float) points2[0].y);
-								for(int i=1; i<points2.length; i++){
-									polyPath.lineTo((float) points2[i].x, (float) points2[i].y);
-								}
-							// Draw the polygon
-							canvas.drawPath(polyPath, paintFillZone);
-							canvas.drawPath(polyPath, paintBorderZone);
-							}
+			if (selected.x != 0 || selected.y != 0) {
+				canvas.drawCircle(selected.x, selected.y, 33 / ratio, paintNormal);
+			}
+		} catch (Exception e) {
+		}
+		try {
+			Log.d("Intersection", intersections.toString());
+		} catch (Exception e) {
+		}
+		if (intersections != null && !intersections.isEmpty()) {
+			for (int i = 0; i < intersections.size(); i = i + 2) {
+				canvas.drawCircle(intersections.get(i).x, intersections.get(i).y, 13 / ratio, paintIntersections);
+				canvas.drawLine(intersections.get(i).x, intersections.get(i).y,
+						intersections.get(i + 1).x, intersections.get(i + 1).y, paintIntersections);
+				canvas.drawCircle(intersections.get(i + 1).x, intersections.get(i + 1).y, 13 / ratio, paintIntersections);
+			}
+		}
+		try {
+			// Create a closed path for the polygon
+			for (PixelGeom pgeom : MainActivity.pixelGeom) {
+				paintNormal.setColor(Color.RED);
+				Path polyPath = new Path();
+				Polygon poly = (Polygon) wktr.read(pgeom
+						.getPixelGeom_the_geom());
+				Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
+				polyPath.moveTo((float) points2[0].x, (float) points2[0].y);
+				for (int j = 0; j < points2.length; j++) {
+					polyPath.lineTo((float) points2[j].x, (float) points2[j].y);
+					if (j != points2.length - 1) {
+						canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+								(int) points2[j + 1].x, (int) points2[j + 1].y,
+								paintBorderZone);
+					}
+				}
+				for (int k = 0; k < poly.getNumInteriorRing(); k++) {
+					polyPath.close();
+					points2 = poly.getInteriorRingN(k).getCoordinates();
+					for (int j = 0; j < points2.length; j++) {
+						polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
+						if (j != points2.length - 1) {
+							canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+									(int) points2[j + 1].x, (int) points2[j + 1].y,
+									paintBorderZone);
 						}
 					}
 				}
+				// Draw the polygon
+				canvas.drawPath(polyPath, paintFillZone);
+			}
 		} catch (ParseException e) {
 		}
 	}
