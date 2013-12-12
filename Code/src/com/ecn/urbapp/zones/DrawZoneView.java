@@ -167,8 +167,9 @@ public class DrawZoneView extends Drawable {
 		paintBorderZone.setColor(Color.WHITE);
 		paintBorderZone.setStyle(Paint.Style.STROKE);
 		paintBorderZone.setAlpha(255);
-		//copying the points to display
-		Vector<Point> points = new Vector<Point>(zone.getPoints());
+		paintBorderZone.setStrokeWidth(1/ratio);
+		
+		Vector<Point> points = new Vector<Point>(zone.getPoints());//copying the points to display
 		Vector<Point> middles = zone.getMiddles();
 
 		for (int i = 0; i < points.size() - 2; i++) {
