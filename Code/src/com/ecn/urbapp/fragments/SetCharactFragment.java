@@ -71,7 +71,7 @@ public class SetCharactFragment extends Fragment{
 		
 		spinType = (Spinner) v.findViewById(R.id.typeZone);
 		spinMaterial = (Spinner) v.findViewById(R.id.materialZone);
-		colorView = (Button)v.findViewById(R.id.definition_button_color);
+		//colorView = (Button)v.findViewById(R.id.definition_button_color);
 		if (UtilCharacteristicsZone.getColorForSelectedZones() != 0) {
 			colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());
 		}

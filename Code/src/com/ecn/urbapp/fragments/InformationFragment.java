@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
@@ -16,7 +15,6 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.GeoActivity;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Composed;
-import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.utils.GetId;
 
@@ -36,8 +34,14 @@ import com.ecn.urbapp.utils.GetId;
 
 public class InformationFragment extends Fragment implements OnClickListener{
 
+	/**
+	 * Button launching the geolocalisation activity. It change of state once the photo is linked with a GpsGeom.
+	 */
 	private ToggleButton geo;
 	
+	/**
+	 * Button launching the next fragment. It only displyed when the photo is linked with a GpsGeom.
+	 */
 	private Button next;
 	
 	@Override
@@ -61,6 +65,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		public void onClick(View v) {
 			switch(v.getId()){
 				case R.id.info_button_geo:
+					//to cancel the automatic toggle action on click
 					if(MainActivity.photo.getGpsGeom_id()==0){
 						geo.setChecked(false);
 						next.setVisibility(View.GONE);
@@ -84,6 +89,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		@Override
 		public void onStop(){
 			super.onStop();
+	    	//save of the information set
 		    if(!MainActivity.project.isEmpty()){
 		    	Project pro = MainActivity.project.get(MainActivity.project.size()-1);
 		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
@@ -122,6 +128,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		public void onStart(){
 			super.onStart();
 			
+			//setting the state of buttons
 			if(MainActivity.photo.getGpsGeom_id()==0){
 				geo.setChecked(false);
 				next.setVisibility(View.GONE);
@@ -131,6 +138,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 				next.setVisibility(View.VISIBLE);
 			}
 			
+			//loading project information already set
 			if(!MainActivity.project.isEmpty()){
 				EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
 				txt.setText(MainActivity.photo.getPhoto_author());

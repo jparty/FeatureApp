@@ -176,7 +176,7 @@ public class MainActivity extends Activity {
 		Tab tabHome =  bar.newTab();
 		tabHome.setText(R.string.homeFragment);
 		HomeFragment home = new HomeFragment();
-		tabHome.setTabListener(new MyTabListener(home, this));
+		tabHome.setTabListener(new MyTabListener(home));
 		bar.addTab(tabHome);
 		fragments.add(home);
 		
@@ -184,7 +184,7 @@ public class MainActivity extends Activity {
 		Tab tabInformation =  bar.newTab();
 		tabInformation.setText(R.string.informationFragment);
 		InformationFragment information = new InformationFragment();
-		tabInformation.setTabListener((new MyTabListener(information, this)));
+		tabInformation.setTabListener((new MyTabListener(information)));
 		bar.addTab(tabInformation);
 		fragments.add(information);
 		
@@ -192,7 +192,7 @@ public class MainActivity extends Activity {
 		Tab tabZone =  bar.newTab();
 		tabZone.setText(R.string.zoneFragment);
 		zone = new ZoneFragment();
-		tabZone.setTabListener(new MyTabListener(zone, this));
+		tabZone.setTabListener(new MyTabListener(zone));
 		bar.addTab(tabZone);
 		fragments.add(zone);
 		
@@ -200,7 +200,7 @@ public class MainActivity extends Activity {
 		Tab tabDefinition =  bar.newTab();
 		tabDefinition.setText(R.string.definitionFragment);
 		CharacteristicsFragment definition = new CharacteristicsFragment();
-		tabDefinition.setTabListener(new MyTabListener(definition, this));
+		tabDefinition.setTabListener(new MyTabListener(definition));
 		bar.addTab(tabDefinition);
 		fragments.add(definition);
 		
@@ -208,7 +208,7 @@ public class MainActivity extends Activity {
 		Tab tabSave =  bar.newTab();
 		tabSave.setText(R.string.saveFragment);
 		SaveFragment save = new SaveFragment();
-		tabSave.setTabListener(new MyTabListener(save, this));
+		tabSave.setTabListener(new MyTabListener(save));
 		bar.addTab(tabSave);
 		fragments.add(save);
 		
@@ -241,6 +241,7 @@ public class MainActivity extends Activity {
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	//TODO transfert to Utils.COnnexionChecked
 	/**
 	 * Method to check if internet is available (and no portal !)
 	 */
@@ -260,6 +261,7 @@ public class MainActivity extends Activity {
 			new ConnexionCheck().Connectivity();
 	}
 
+	//TODO transfert to Utils.COnnexionChecked
 	/**
 	 * Method if no internet connectivity to print a Dialog.
 	 */

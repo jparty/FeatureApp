@@ -28,7 +28,6 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
-import com.ecn.urbapp.dialogs.AddZoneDialogFragment;
 import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
 import com.ecn.urbapp.dialogs.UnionDialogFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
@@ -87,7 +86,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	/**
 	 * Button fusion
 	 */
-	private Button fusion;
+	//private Button fusion;
 	/**
 	 * Button back
 	 */
@@ -155,8 +154,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	
 	private int moving;
 
-	private SetCharactFragment scf;
-	private RecapCharactFragment rcf;
+	//private SetCharactFragment scf;
+	//private RecapCharactFragment rcf;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
@@ -178,14 +177,14 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				refreshCreate();
 				break;
 			case R.id.zone_button_cancel:
-				scf.resetAffichage();
+				//scf.resetAffichage();
 				state = IMAGE_SELECTION;
 				exitAction();
 				break;
-			case R.id.zone_button_fusion:
+			/*case R.id.zone_button_fusion:
 				UnionDialogFragment summarydialog = new UnionDialogFragment();
 				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
-				break;
+				break;*/
 			case R.id.zone_button_validate:
 				/*scf.validation();
 				ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
@@ -239,7 +238,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 							for(int i=0; i<MainActivity.element.size(); i++){
 								if(MainActivity.element.get(i).getPixelGeom_id()==MainActivity.pixelGeom.get(pos).getPixelGeomId()){
 									MainActivity.element.remove(i);
-									scf.resetAffichage();
+									//scf.resetAffichage();
 									break;
 								}
 							}
@@ -258,17 +257,17 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	            refreshEdit();
 				break;
 			case R.id.zone_button_cancel:
-				scf.resetAffichage();
+				//scf.resetAffichage();
 	            exitAction();
 				state = IMAGE_SELECTION;
 				break;
-			case R.id.zone_button_fusion:
+			/*case R.id.zone_button_fusion:
 				UnionDialogFragment summarydialog = new UnionDialogFragment();
 				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
-				break;
+				break;*/
 			case R.id.zone_button_validate:
 				if(!zone.getPoints().isEmpty()){
-					scf.validation();
+					//scf.validation();
 					ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
 					for (PixelGeom pg : MainActivity.pixelGeom) {
 						lpg.add(pg);
@@ -324,7 +323,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		View v = inflater.inflate(R.layout.layout_zone, null);
 
 		back = (Button) v.findViewById(R.id.zone_button_back);
-		fusion = (Button) v.findViewById(R.id.zone_button_fusion);
+		//fusion = (Button) v.findViewById(R.id.zone_button_fusion);
 		cancel = (Button) v.findViewById(R.id.zone_button_cancel);
 		validate = (Button) v.findViewById(R.id.zone_button_validate);
 		delete = (Button) v.findViewById(R.id.zone_button_delete);
@@ -333,12 +332,12 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		cancel.setOnClickListener(this);
 		validate.setOnClickListener(this);
 		delete.setOnClickListener(this);
-		fusion.setOnClickListener(this);
+		//fusion.setOnClickListener(this);
 		
 		validate.setEnabled(false);
 		back.setEnabled(false);
 		cancel.setEnabled(false);
-		fusion.setEnabled(false);
+		//fusion.setEnabled(false);
 		delete.setEnabled(false);
 
 		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
@@ -360,9 +359,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		myImage.setOnTouchListener(this);
 
-		scf = (SetCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentCaract);
-		rcf = (RecapCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentRecap);
-		rcf.setZoneFragment(this);
+		//scf = (SetCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentCaract);
+		//rcf = (RecapCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentRecap);
+		//rcf.setZoneFragment(this);
 		
 		
 		return v;
@@ -393,18 +392,18 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		validate.setEnabled(false);
 		back.setEnabled(false);
 		cancel.setEnabled(false);
-		fusion.setEnabled(false);
+		//fusion.setEnabled(false);
 		delete.setEnabled(false);
 		
 		zone.setZone(new Zone());
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
 		myImage.invalidate();
-		rcf.refresh();
+		//rcf.refresh();
 	}
 	
 	private void validateCreation(){
-		scf.validation();
+		//scf.validation();
 		ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
 		for (PixelGeom pg : MainActivity.pixelGeom) {
 			lpg.add(pg);
@@ -559,7 +558,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 							}
 						}
 						Point touch = getTouchedPoint(event);
-						if(moving > 5){//TODO if the app count so few ACTION_MOVE action should not be a movement, but instead of moving times we should be check distance
+						if(moving > 2){//TODO if the app count so few ACTION_MOVE action should not be a movement, but instead of moving times we should be check distance
 							zone.updatePoint(selected, touch);
 							zone.endMove(touch);
 							selected.set(0, 0);//No selected point anymore
@@ -606,7 +605,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 							if(ConvertGeom.pixelGeomToZone(pg).containPoint(touch)){
 								flag=true;
 								z=ConvertGeom.pixelGeomToZone(pg);
-								scf.setAffichage(pg);
+								//scf.setAffichage(pg);
 								break;
 							}
 						}
@@ -625,7 +624,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						validate.setEnabled(true);
 						back.setEnabled(false);
 						cancel.setEnabled(true);
-						fusion.setEnabled(true);
+						//fusion.setEnabled(true);
 						delete.setEnabled(true);
 						refreshEdit();
 					}
@@ -637,7 +636,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						validate.setEnabled(false);
 						back.setEnabled(false);
 						cancel.setEnabled(true);
-						fusion.setEnabled(true);
+						//fusion.setEnabled(true);
 						
 						elementTemp = new Element();
 						elementTemp.setElement_id(GetId.Element());
@@ -658,18 +657,18 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	@Override
 	public void onStop(){
 		super.onStop();
-		getFragmentManager().beginTransaction().remove(scf).commit();
-		getFragmentManager().beginTransaction().remove(rcf).commit();
+		//getFragmentManager().beginTransaction().remove(scf).commit();
+		//getFragmentManager().beginTransaction().remove(rcf).commit();
 	}
 	
 	public void selectGeom(long i){
 		if(state==IMAGE_CREATION){
-			scf.resetAffichage();
+			//scf.resetAffichage();
 			state = IMAGE_SELECTION;
 			exitAction();
 		}
 		else if(state==IMAGE_EDITION){
-			scf.resetAffichage();
+			//scf.resetAffichage();
             exitAction();
 		}
 			Zone z=null;
@@ -689,10 +688,10 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			validate.setEnabled(true);
 			back.setEnabled(false);
 			cancel.setEnabled(true);
-			fusion.setEnabled(true);
+			//fusion.setEnabled(true);
 			delete.setEnabled(true);
 			refreshEdit();
-			scf.setAffichage(geomCache);
+			//scf.setAffichage(geomCache);
 	}
 
 	public static ImageView getMyImage(){
