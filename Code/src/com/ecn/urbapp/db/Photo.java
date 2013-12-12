@@ -26,7 +26,7 @@ public class Photo extends DataObject  {
 	
 	private String photo_adresse;
 	private long photo_nbrPoints=2;
-	private int photo_derniereModif;
+	private int photo_derniereModif=0;
 	
 	
 	private String photo_urlTemp;

@@ -64,13 +64,13 @@ public class Sync
 	 * Launch the sync to external DB (export mode)
 	 * @return Boolean if success of not
 	 */
-	public Boolean doSyncToExt()
+	public Boolean doSyncToExt(Boolean upload_photo)
 	{
 		Boolean success = false;
 		
 			try
 			{
-				new BackTaskExportToExt().execute();
+				new BackTaskExportToExt(upload_photo).execute();
 				success = true;
 			}
 			catch (Exception e)
@@ -151,14 +151,16 @@ public class Sync
 	public class BackTaskExportToExt extends AsyncTask<Void, String, String> {
 		
 		private Context mContext;
+		protected Boolean upload_photo=true;
 		
 		/**
 		 * Constructor
 		 * @param json
 		 */
-		public BackTaskExportToExt(){
+		public BackTaskExportToExt(Boolean upload_photo){
 			super();			
 			this.mContext = MainActivity.baseContext;
+			this.upload_photo = upload_photo;
 		}
 
 		/**
@@ -195,13 +197,14 @@ public class Sync
 			dataJson = gson.toJson(MainActivity.element);
 			jSonComplete += "{\"element\":"+dataJson+"}]";
 
-			/**
-			 * File upload request
-			 */
-			File mImage = new File(Environment.getExternalStorageDirectory(), "featureapp/"+MainActivity.photo.getPhoto_url());
-			
-			//TODO make the upload only when necessary !
-			doFileUpload(mImage);
+			if (upload_photo){
+				/**
+				 * File upload request
+				 */
+				File mImage = new File(Environment.getExternalStorageDirectory(), "featureapp/"+MainActivity.photo.getPhoto_url());
+
+				doFileUpload(mImage);
+			}
 
 			return postData(jSonComplete);
 		}
@@ -694,6 +697,7 @@ public class Sync
 					
 					allGpsGeom.add(gpsGeomEnCours);
 				}
+				
 				
 				
                  

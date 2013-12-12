@@ -60,13 +60,6 @@ public class SaveFragment extends Fragment{
 		saveToLocal = (Button)v.findViewById(R.id.save_button_ync);
 		saveToLocal.setOnClickListener(OnClickSaveToLocal);
 		
-		saveToExt = (Button)v.findViewById(R.id.save_button_ext);
-		saveToExt.setOnClickListener(OnClickSaveToExt);
-		
-		maxID = (Button)v.findViewById(R.id.max_id);
-		maxID.setOnClickListener(OnClickMaxID);
-		
-		
 		return v;
 	}
 	
@@ -78,11 +71,26 @@ public class SaveFragment extends Fragment{
 			 */
     		if(verificationBeforeSave()){
         		MainActivity.datasource.open();
+        		
+        		Boolean upload_photo = false;
+    			if(MainActivity.photo.getPhoto_derniereModif() == 0) //new photo
+    				upload_photo = true;
+    			
         		Sync.getMaxId();
     			/**
     			 * first we need to put the date in Photo
     			 */
     			MainActivity.photo.setPhoto_derniereModif(Sync.maxId.get("date"));
+    			
+    			/**
+    			 * Sync to server
+    			 */
+    			Sync synchroExt = new Sync();
+        		synchroExt.doSyncToExt(upload_photo);
+        		
+        		/**
+        		 * Sync local
+        		 */
         		saveGpsGeomListToLocal(MainActivity.gpsGeom);
         		savePixelGeomListToLocal(MainActivity.pixelGeom);
         		MainActivity.photo.saveToLocal(MainActivity.datasource);
@@ -96,8 +104,7 @@ public class SaveFragment extends Fragment{
     			int duration = Toast.LENGTH_SHORT;
     			Toast toast = Toast.makeText(context, text, duration);
     			toast.show();
-        		Sync synchroExt = new Sync();
-        		synchroExt.doSyncToExt();
+        		
     		}
     		else{
     			Context context = MainActivity.baseContext;
@@ -110,24 +117,6 @@ public class SaveFragment extends Fragment{
     	}
     };
     	
-    private OnClickListener OnClickSaveToExt = new OnClickListener(){
-    	public void onClick(View view){
-    		//TODO add date
-    		Sync synchroExt = new Sync();
-    		synchroExt.doSyncToExt();
-    		
-    	}
-    };
-    
-    /**
-     * Debug method to show the maxID is working
-     */
-    private OnClickListener OnClickMaxID = new OnClickListener(){
-    	public void onClick(View view){
-    		Sync.getMaxId();
-    	}
-    };
-	
 	//TODO pour la photo il faut appeler direct la liste car on n'a pas de list de photo vu qu'ion bosse avecu ne seule.
 	
 	public void saveProjectListToLocal(ArrayList<Project> l1){
