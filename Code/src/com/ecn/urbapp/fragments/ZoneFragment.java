@@ -36,6 +36,7 @@ import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.ecn.urbapp.zones.Zone;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -280,7 +281,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						//MainActivity.zones.remove(zoneCache); //delete original
 						MainActivity.pixelGeom.remove(geomCache);
 						PixelGeom pg = new PixelGeom();
-						pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
+						pg.setPixelGeom_the_geom(zone.getPolygon().toText());
 						UtilCharacteristicsZone.addInMainActivityZones(pg, null);
 						exitAction();
 						zone.clearBacks();//remove list of actions backs
@@ -475,11 +476,18 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				if(points.size()>2+1){
 					validate.setEnabled(true);
 					if(points.size()>2+1){//cannot be intersections with less than 3 points but needed for refreshing displaying
-						Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting());
-						if(!intersections.isEmpty()){
-							validate.setEnabled(false);
+						zone.actualizePolygon();
+						MultiPolygon poly = zone.getPolygon();
+						for (int i=0; i<poly.getNumGeometries(); i++) {
+							PixelGeom pgeom = new PixelGeom();
+							pgeom.setPixelGeom_the_geom(poly.getGeometryN(i).toText());
+							Zone zone = ConvertGeom.pixelGeomToZone(pgeom);
+							Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting(zone.getPoints()));
+							if(!intersections.isEmpty()){
+								validate.setEnabled(false);
+							}
+							drawzoneview.setIntersections(intersections);
 						}
-						drawzoneview.setIntersections(intersections);
 					}
 				}
 			}
@@ -495,11 +503,17 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			if(points.size()>2+1){
 				validate.setEnabled(true);
 				if(points.size()>3+1){
-					Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting());
-					if(!intersections.isEmpty()){
-						validate.setEnabled(false);
+					MultiPolygon poly = zone.getPolygon();
+					for (int i=0; i<poly.getNumGeometries(); i++) {
+						PixelGeom pgeom = new PixelGeom();
+						pgeom.setPixelGeom_the_geom(poly.getGeometryN(i).toText());
+						Zone zone = ConvertGeom.pixelGeomToZone(pgeom);
+						Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting(zone.getPoints()));
+						if(!intersections.isEmpty()){
+							validate.setEnabled(false);
+						}
+						drawzoneview.setIntersections(intersections);
 					}
-					drawzoneview.setIntersections(intersections);
 				}
 			}
 		}
@@ -604,6 +618,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						for(PixelGeom pg: MainActivity.pixelGeom){
 							if(ConvertGeom.pixelGeomToZone(pg).containPoint(touch)){
 								flag=true;
+								geomCache = pg;
 								z=ConvertGeom.pixelGeomToZone(pg);
 								//scf.setAffichage(pg);
 								break;
@@ -613,13 +628,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					if(flag){
 						zoneCache = z;
 						zone.setZone(z);
-	
-						for(int i=0; i<MainActivity.pixelGeom.size(); i++){
-							if(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
-								geomCache = MainActivity.pixelGeom.get(i);
-								MainActivity.pixelGeom.get(i).selected=true;
-							}
-						}
 						state = IMAGE_EDITION;	drawzoneview.onEditMode();
 						validate.setEnabled(true);
 						back.setEnabled(false);

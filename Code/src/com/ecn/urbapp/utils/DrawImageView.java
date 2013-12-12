@@ -103,7 +103,7 @@ public class DrawImageView extends Drawable {
 				WKTReader wktr = new WKTReader();
 				for (PixelGeom pg : UtilCharacteristicsZone
 						.getPixelGeomsFromGeom(wktr.read(MainActivity.pixelGeom
-								.get(i).getPixelGeom_the_geom()))) {
+								.get(i).getPixelGeom_the_geom()), false)) {
 					Polygon poly = (Polygon) wktr.read(pg
 							.getPixelGeom_the_geom());
 					Coordinate[] points2 = poly.getExteriorRing()

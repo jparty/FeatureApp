@@ -1,6 +1,8 @@
 package com.ecn.urbapp.zones;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import android.graphics.Point;
@@ -9,6 +11,7 @@ import android.util.Log;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 //TODO Check if it's possible to supress the commented code
@@ -24,8 +27,8 @@ public class Zone {
 	/** List of small points displayed between normal points in zone edition mode **/
 	protected Vector<Point> middles;//useful for updateMiddles only, otherwise it's built everytime its getter is used
 
-	/** JTS Polygon representation of the zone. */
-	private Polygon poly;
+	/** JTS (Multi)Polygon representation of the zone. */
+	private MultiPolygon polys;
 
 	/** The geometry factory used to create geometries. */
 	GeometryFactory gf = new GeometryFactory();
@@ -53,7 +56,7 @@ public class Zone {
 		for (Point p : zone.getPoints()) {
 			points.add(new Point(p));
 		}
-		this.poly = zone.getPolygon();
+		this.polys = zone.getPolygon();
 	}
 
 	/**
@@ -91,6 +94,7 @@ public class Zone {
 		} else {
 			coordinates = new Coordinate[nbrPoints + 1];
 		}
+		List<Polygon> polygons = new ArrayList<Polygon>();
 		LinearRing shell = null;
 		LinearRing[] holes = null;
 		int index;
@@ -102,7 +106,7 @@ public class Zone {
 				if (holeSize == -1) {
 					shell = gf.createLinearRing(Arrays.copyOf(coordinates, index + 1));
 					holeSize++;
-				} else {
+				} else if (gf.createPolygon(shell, null).contains(gf.createPoint((coordinates[index])))) {
 					if (holeSize == 0) {
 						holes = new LinearRing[1];
 					} else {
@@ -110,13 +114,17 @@ public class Zone {
 					}
 					holes[holeSize] = gf.createLinearRing(Arrays.copyOfRange(coordinates, startIndex, index + 1));
 					holeSize++;
+				} else {
+					polygons.add(gf.createPolygon(shell, holes));
+					holeSize = 0;
+					shell = gf.createLinearRing(Arrays.copyOfRange(coordinates, startIndex, index + 1));
+					holes = null;
 				}
 				startIndex = index + 1;
 			}
 		}
-		
-		poly = gf.createPolygon(shell, holes);
-		
+		polygons.add(gf.createPolygon(shell, holes));
+		polys = gf.createMultiPolygon(polygons.toArray(new Polygon[polygons.size()]));
 	}
 
 	//TODO Add description for javadoc
@@ -131,10 +139,10 @@ public class Zone {
 	}
 
 	 /**
-	  * Return the jts-polygon representing the zone.
+	  * Return the jts-multipolygons representing the zone.
 	  */
-	 public Polygon getPolygon() {
-		 return poly;
+	 public MultiPolygon getPolygon() {
+		 return polys;
 	 }
 	
 	/**
@@ -144,10 +152,22 @@ public class Zone {
 	 * @return
 	 */
 	public boolean updatePoint(Point oldPoint, Point newPoint){
-		if(points.get(0).equals(oldPoint) || points.lastElement().equals(oldPoint)){
+		int ptr1 = -1;
+		int ptr2 = -1;
+		for (int i=0;i<points.size();i++) {
+			if (points.get(i).equals(oldPoint)) {
+				if (ptr1 == -1) {
+					ptr1 = i;
+				} else if (ptr2==-1) {
+					ptr2 = i;
+					break;
+				}
+			}
+		}
+		if(ptr2 != -1){
 			try{
-				points.setElementAt(newPoint,0);
-				points.setElementAt(newPoint,points.size()-1);
+				points.setElementAt(newPoint,ptr1);
+				points.setElementAt(newPoint,ptr2);
 				return true;
 			}catch(Exception e){
 				return false;
@@ -155,7 +175,7 @@ public class Zone {
 		}
 		else{
 			try{
-				points.setElementAt(newPoint,points.indexOf(oldPoint));
+				points.setElementAt(newPoint,ptr1);
 				return true;
 			}catch(Exception e){
 				return false;
@@ -324,18 +344,21 @@ public class Zone {
 		middles = new Vector<Point>();// points.size());
 		if (points.size() > 3) {
 			actualizePolygon();
-			Coordinate[] coords = poly.getExteriorRing().getCoordinates();
-			for (int i = 0; i < coords.length - 1; i++) {
-				middles.add(new Point(
-						(int) (coords[i].x + coords[i + 1].x) / 2,
-						(int) (coords[i].y + coords[i + 1].y) / 2));
-			}
-			for (int j = 0; j < poly.getNumInteriorRing(); j++) {
-				coords = poly.getInteriorRingN(j).getCoordinates();
+			for (int k = 0; k < polys.getNumGeometries(); k++) {
+				Polygon poly = (Polygon) polys.getGeometryN(k);
+				Coordinate[] coords = poly.getExteriorRing().getCoordinates();
 				for (int i = 0; i < coords.length - 1; i++) {
 					middles.add(new Point(
 							(int) (coords[i].x + coords[i + 1].x) / 2,
 							(int) (coords[i].y + coords[i + 1].y) / 2));
+				}
+				for (int j = 0; j < poly.getNumInteriorRing(); j++) {
+					coords = poly.getInteriorRingN(j).getCoordinates();
+					for (int i = 0; i < coords.length - 1; i++) {
+						middles.add(new Point(
+								(int) (coords[i].x + coords[i + 1].x) / 2,
+								(int) (coords[i].y + coords[i + 1].y) / 2));
+					}
 				}
 			}
 		} else if (points.size() > 2) {
@@ -353,21 +376,22 @@ public class Zone {
 		}
 		*/
 	}
+
 	/**
 	 * Check if zone's polygon is self intersecting, segment by segment.
 	 * @return List of points involved in intersections, 4 points (2 segments) per intersection
 	 */
-	public Vector<Point> isSelfIntersecting(){
+	public Vector<Point> isSelfIntersecting(Vector<Point> pointsToCheck){
 		Vector<Point> result = new Vector<Point>();
 		//points.add(points.get(0));//temporarily copying the first point at the end to avoid bounds' problems
-		for(int i=0; i<points.size()-2 ; i++){
-			for(int j=i+2; j<points.size()-1 ; j++){
+		for(int i=0; i<pointsToCheck.size()-2 ; i++){
+			for(int j=i+2; j<pointsToCheck.size()-1 ; j++){
 				Log.d("Intersection : test","("+i+","+(i+1)+");("+j+","+(j+1)+")");
-					if(intersect(points.get(i),points.get(i+1),points.get(j),points.get(j+1))){
-						result.add(points.get(i));
-						result.add(points.get(i+1));
-						result.add(points.get(j));
-						result.add(points.get(j+1));
+					if(intersect(pointsToCheck.get(i),pointsToCheck.get(i+1),pointsToCheck.get(j),pointsToCheck.get(j+1))){
+						result.add(pointsToCheck.get(i));
+						result.add(pointsToCheck.get(i+1));
+						result.add(pointsToCheck.get(j));
+						result.add(pointsToCheck.get(j+1));
 						Log.d("Intersection","oui");
 					}
 				}

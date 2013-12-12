@@ -202,18 +202,20 @@ public class DrawZoneView extends Drawable {
 				zone.closePolygon();
 				zone.actualizePolygon();
 				pgeom.setPixelGeom_the_geom(zone.getPolygon().toText());
-				Polygon poly = (Polygon) wktr.read(pgeom
-						.getPixelGeom_the_geom());
-				Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
-				for (int j = 0; j < points2.length - 1 + modMaxIter; j++) {
-					canvas.drawLine((int) points2[j].x, (int) points2[j].y,
-							(int) points2[j + 1].x, (int) points2[j + 1].y, paintNormal);
-				}
-				for (int k = 0; k < poly.getNumInteriorRing(); k++) {
-					points2 = poly.getInteriorRingN(k).getCoordinates();
-					for (int j = 0; j < points2.length - 1; j++) {
+				for (PixelGeom pg : UtilCharacteristicsZone
+						.getPixelGeomsFromGeom(wktr.read(pgeom.getPixelGeom_the_geom()), false)) {
+					Polygon poly = (Polygon) wktr.read(pg.getPixelGeom_the_geom());
+					Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
+					for (int j = 0; j < points2.length - 1 + modMaxIter; j++) {
 						canvas.drawLine((int) points2[j].x, (int) points2[j].y,
 								(int) points2[j + 1].x, (int) points2[j + 1].y, paintNormal);
+					}
+					for (int k = 0; k < poly.getNumInteriorRing(); k++) {
+						points2 = poly.getInteriorRingN(k).getCoordinates();
+						for (int j = 0; j < points2.length - 1; j++) {
+							canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+									(int) points2[j + 1].x, (int) points2[j + 1].y, paintNormal);
+						}
 					}
 				}
 			} catch (ParseException e) {
@@ -241,33 +243,33 @@ public class DrawZoneView extends Drawable {
 			// Create a closed path for the polygon
 			for (PixelGeom pgeom : MainActivity.pixelGeom) {
 				paintNormal.setColor(Color.RED);
-				Path polyPath = new Path();
-				Polygon poly = (Polygon) wktr.read(pgeom
-						.getPixelGeom_the_geom());
-				Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
-				polyPath.moveTo((float) points2[0].x, (float) points2[0].y);
-				for (int j = 0; j < points2.length; j++) {
-					polyPath.lineTo((float) points2[j].x, (float) points2[j].y);
-					if (j != points2.length - 1) {
-						canvas.drawLine((int) points2[j].x, (int) points2[j].y,
-								(int) points2[j + 1].x, (int) points2[j + 1].y,
-								paintBorderZone);
-					}
-				}
-				for (int k = 0; k < poly.getNumInteriorRing(); k++) {
-					polyPath.close();
-					points2 = poly.getInteriorRingN(k).getCoordinates();
+				for (PixelGeom pg : UtilCharacteristicsZone
+						.getPixelGeomsFromGeom(wktr.read(pgeom.getPixelGeom_the_geom()), false)) {
+					Path polyPath = new Path();
+					Polygon poly = (Polygon) wktr.read(pg.getPixelGeom_the_geom());
+					Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
+					polyPath.moveTo((float) points2[0].x, (float) points2[0].y);
 					for (int j = 0; j < points2.length; j++) {
-						polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
+						polyPath.lineTo((float) points2[j].x, (float) points2[j].y);
 						if (j != points2.length - 1) {
 							canvas.drawLine((int) points2[j].x, (int) points2[j].y,
-									(int) points2[j + 1].x, (int) points2[j + 1].y,
-									paintBorderZone);
+									(int) points2[j + 1].x, (int) points2[j + 1].y, paintBorderZone);
 						}
 					}
+					for (int k = 0; k < poly.getNumInteriorRing(); k++) {
+						polyPath.close();
+						points2 = poly.getInteriorRingN(k).getCoordinates();
+						for (int j = 0; j < points2.length; j++) {
+							polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
+							if (j != points2.length - 1) {
+								canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+										(int) points2[j + 1].x, (int) points2[j + 1].y, paintBorderZone);
+							}
+						}
+					}
+					// Draw the polygon
+					canvas.drawPath(polyPath, paintFillZone);
 				}
-				// Draw the polygon
-				canvas.drawPath(polyPath, paintFillZone);
 			}
 		} catch (ParseException e) {
 		}

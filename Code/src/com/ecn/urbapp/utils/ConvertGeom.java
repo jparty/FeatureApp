@@ -2,14 +2,17 @@ package com.ecn.urbapp.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import android.graphics.Point;
 
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.ecn.urbapp.zones.Zone;
 import com.google.android.gms.maps.model.LatLng;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -23,14 +26,18 @@ public class ConvertGeom{
 			Zone temp = new Zone();
 			Coordinate[] coords;
 			try {
-				coords = ((Polygon) wktr.read(the_geom.getPixelGeom_the_geom())).getCoordinates();
-				for (Coordinate coord : coords) {
-					temp.addPoint(new Point((int) coord.x, (int) coord.y));
+				Geometry geom = wktr.read(the_geom.getPixelGeom_the_geom());
+				for (PixelGeom pg : UtilCharacteristicsZone.getPixelGeomsFromGeom(geom, false)) {
+					Polygon poly = (Polygon) wktr.read(pg.getPixelGeom_the_geom());
+					coords = poly.getCoordinates();
+					for (Coordinate coord : coords) {
+						temp.addPoint(new Point((int) coord.x, (int) coord.y));
+					}
 				}
+				temp.actualizePolygon();
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			temp.actualizePolygon();
 			return temp;
 	}
 	
