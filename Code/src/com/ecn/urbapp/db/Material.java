@@ -52,7 +52,6 @@ public class Material extends DataObject  {
 				+ material_name + "]";
 	}
 
-
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
 		ContentValues values = new ContentValues(); 
