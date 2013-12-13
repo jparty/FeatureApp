@@ -59,45 +59,6 @@ public class ImageDownloader {
         }
 
 	/**
-	 * Convert a bitmap image to a file (more convenient to manipule)
-	 * Maybe temporally method !
-	 * @param image
-	 * @return the file
-	 */
-	public File BitmapToFile(Bitmap image){
-		//create a file to write bitmap data
-		File f = new File(path, name);
-		try {
-			f.createNewFile();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//Convert bitmap to byte array
-		Bitmap bitmap = image;
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		bitmap.compress(CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-		byte[] bitmapdata = bos.toByteArray();
-
-		//write the bytes in file
-		FileOutputStream fos;
-		try {
-			fos = new FileOutputStream(f);
-			fos.write(bitmapdata);
-			fos.flush();
-			fos.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return f;
-	}
-
-	/**
 	 * The task which get the picture on web and save it on memory
 	 * @param url
 	 * @return

@@ -131,10 +131,8 @@ public class LoadExternalPhotosActivity extends Activity{
 			public void onInfoWindowClick(Marker marker) {
 				Toast.makeText(MainActivity.baseContext, refreshedValues.get(photosMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
 				
-				//TODO Sebastien has to make it more readable
-				MainActivity.datasource.instanciatePhoto(refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_id());
+				MainActivity.photo = Sync.refreshedValuesPhoto.get((int) refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_id());
 				
-				//TODO do a better way to have the path !
 				MainActivity.photo.setUrlTemp(Environment.getExternalStorageDirectory()+"/featureapp/"+refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_url());
 				
 				finish();
@@ -166,19 +164,20 @@ public class LoadExternalPhotosActivity extends Activity{
     	}
     	
 		rowItems = new ArrayList<RowItem>();
-		for (Photo image:refreshedValues) {
-			/**
-			 * Download each photo and register it on tablet
-			 */
-			String imageStoredUrl = imageDownloader.download(MainActivity.serverURL+"images/", image.getPhoto_url());
-			
-			
-			//TODO ajouter date
-			RowItem item = new RowItem(imageStoredUrl,imageStoredUrl, image.getPhoto_description());
-			rowItems.add(item);
-		}
+		
+		synchronized (refreshedValues) {
+			for (Photo image:refreshedValues) {
+				/**
+				 * Download each photo and register it on tablet
+				 */
+				String imageStoredUrl = imageDownloader.download(MainActivity.serverURL+"images/", image.getPhoto_url());
 
-		//TODO Force to wait that all pictures are loaded !
+				//TODO ajouter date
+				RowItem item = new RowItem(imageStoredUrl,imageStoredUrl, image.getPhoto_description());
+				rowItems.add(item);
+			}
+		}
+		
 		CustomListViewAdapter adapter = new CustomListViewAdapter(this,
 				R.layout.layout_photolistview, rowItems);
 		listePhotos.setAdapter(adapter);

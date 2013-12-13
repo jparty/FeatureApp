@@ -116,7 +116,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 				break;
 			case R.id.home_image_loadDistantProject:
             	 i = new Intent(this.getActivity(), LoadExternalProjectsActivity.class);
-                 getActivity().startActivityForResult(i,Cst.CODE_LOAD_LOCAL_PROJECT);
+                 getActivity().startActivityForResult(i,Cst.CODE_LOAD_EXTERNAL_PROJECT);
                  break;
 
 		}	

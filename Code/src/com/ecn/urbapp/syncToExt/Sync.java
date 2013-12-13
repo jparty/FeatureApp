@@ -31,8 +31,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Composed;
+import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Photo;
+import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
 import com.google.android.gms.internal.n;
 import com.google.gson.Gson;
@@ -59,6 +62,21 @@ public class Sync
 	 */
 	public static List<GpsGeom> allGpsGeom = new ArrayList<GpsGeom>();
 
+	/**
+	 * Contains all Composed from Server
+	 */
+	public static List<Composed> allComposed = new ArrayList<Composed>();
+	
+	/**
+	 * Contains all Elements from Server
+	 */
+	public static List<Element> allElement = new ArrayList<Element>();
+	
+	/**
+	 * Contains all PixelGeom from Server
+	 */
+	public static List<PixelGeom> allPixelGeom = new ArrayList<PixelGeom>();
+	
 	
 	/**
 	 * Launch the sync to external DB (export mode)
@@ -682,6 +700,22 @@ public class Sync
 					refreshedValuesPhoto.add(photoEnCours);
 				}
 				
+				JSONObject composeds = jArr.getJSONObject(2);
+				JSONArray composedInner = composeds.getJSONArray("Composed");
+				
+				for(int i=0;i<composedInner.length();i++)
+				{
+					JSONObject composed = composedInner.getJSONObject(i);
+					long project_id = composed.getLong("project_id");
+					long photo_id = composed.getLong("photo_id");
+					
+					Composed composedEnCours = new Composed();
+					composedEnCours.setProject_id(project_id);
+					composedEnCours.setPhoto_id(photo_id);
+					
+					allComposed.add(composedEnCours);
+				}
+				
 				JSONObject gpsGeom = jArr.getJSONObject(3);
 				JSONArray gpsGeomInner = gpsGeom.getJSONArray("GpsGeom");
 				
@@ -697,10 +731,49 @@ public class Sync
 					
 					allGpsGeom.add(gpsGeomEnCours);
 				}
+								
+				JSONObject elements = jArr.getJSONObject(4);
+				JSONArray elementInner = elements.getJSONArray("Element");
 				
+				for(int i=0;i<elementInner.length();i++)
+				{
+					JSONObject element = elementInner.getJSONObject(i);
+					long element_id = element.getLong("element_id");
+					long photo_id = element.getLong("photo_id");
+					long material_id = element.getLong("material_id");
+					long gpsGeom_id = element.getLong("gpsGeom_id");
+					long pixelGeom_id = element.getLong("pixelGeom_id");
+					long elementType_id = element.getLong("ElementType_id");
+					String element_color = element.getString("element_color");
+					
+					Element elementEnCours = new Element();
+					elementEnCours.setElement_id(element_id);
+					elementEnCours.setPhoto_id(photo_id);
+					elementEnCours.setMaterial_id(material_id);
+					elementEnCours.setGpsGeom_id(gpsGeom_id);
+					elementEnCours.setPixelGeom_id(pixelGeom_id);
+					elementEnCours.setElementType_id(elementType_id);
+					elementEnCours.setElement_color(element_color);
+					
+					allElement.add(elementEnCours);
+				}
 				
+				JSONObject pixelGeom = jArr.getJSONObject(3);
+				JSONArray pixelInner = pixelGeom.getJSONArray("pixelGeom");
 				
-                 
+				for(int i=0;i<pixelInner.length();i++)
+				{
+					JSONObject pixel = pixelInner.getJSONObject(i);
+					long pixelGeom_id = pixel.getLong("pixel_id");
+					String pixelGeom_the_geom = pixel.getString("pixel_the_geom");
+					
+					PixelGeom pixelEnCours = new PixelGeom();
+					pixelEnCours.setPixelGeomId(pixelGeom_id);
+					pixelEnCours.setPixelGeom_the_geom(pixelGeom_the_geom);
+					
+					allPixelGeom.add(pixelEnCours);
+				}
+				
              } catch (JSONException e) {
                 Log.e("JSON Parser", "Error parsing data " + e.toString());
              }

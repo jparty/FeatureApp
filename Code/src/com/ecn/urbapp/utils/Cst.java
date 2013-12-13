@@ -15,4 +15,9 @@ public class Cst{
 	 */
 	public final static int CODE_LOAD_PICTURE = 2;
 	
+	/**
+	 * Code for the activity result from the load external project application
+	 */
+	public final static int CODE_LOAD_EXTERNAL_PROJECT = 3;
+	
 }

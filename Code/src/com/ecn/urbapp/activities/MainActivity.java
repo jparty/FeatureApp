@@ -298,6 +298,19 @@ public class MainActivity extends Activity {
 						getActionBar().setSelectedNavigationItem(2);
 					}
 				break;
+				case Cst.CODE_LOAD_EXTERNAL_PROJECT:
+					if(MainActivity.project.isEmpty()){
+						datasource.instanciateAllElement();
+						datasource.instanciateAllGpsGeom();
+						datasource.instanciateAllProject();
+						datasource.instanciateAllpixelGeom();
+						
+						MainActivity.photo.setRegistredInLocal(true);
+						MainActivity.photo.setUrlTemp(null);
+						
+						getActionBar().setSelectedNavigationItem(2);
+					}
+				break;
 				case Cst.CODE_LOAD_PICTURE:
 					Utils.confirm(getFragmentManager());
 	
