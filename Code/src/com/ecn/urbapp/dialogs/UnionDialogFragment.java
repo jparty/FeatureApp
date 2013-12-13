@@ -103,7 +103,7 @@ public class UnionDialogFragment extends DialogFragment {
 				e.printStackTrace();
 			}
 			box.dismiss();
-			ZoneFragment.getMyImage().invalidate();
+			CharacteristicsFragment.getMyImage().invalidate();
 		}
 	};
 
@@ -123,7 +123,7 @@ public class UnionDialogFragment extends DialogFragment {
 				}
 			}
 			box.dismiss();
-			ZoneFragment.getMyImage().invalidate();
+			CharacteristicsFragment.getMyImage().invalidate();
 		}
 	};
 

@@ -13,89 +13,143 @@ public class Element extends DataObject {
 	 * long id of the object element
 	 */
 	private long element_id;
-	//TODO Adddescription for javadoc
+	/**
+	 * long id of the photo to which the element belongs
+	 */
 	private long photo_id;
-	//TODO Adddescription for javadoc
+	/**
+	 * long id of the material of the element
+	 */
 	private long material_id;
-	//TODO Adddescription for javadoc
+	/**
+	 * long id of the type of the element
+	 */
 	private long elementType_id;
-	//TODO Adddescription for javadoc
+	/**
+	 * long id of the pixel_geom which represents the element
+	 */
 	private long pixelGeom_id;
-	//TODO Adddescription for javadoc
+	/**
+	 * long id of the gps_geom which represents the element
+	 */
 	private long gpsGeom_id;
-	//TODO Adddescription for javadoc
+	/**
+	 * element_color of the element
+	 */
 	private String element_color;
 	
 
 	//Getters
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the element_id
+	 * @return long element_id
+	 */
 	public long getElement_id() {
 		return element_id;
 	}
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the photo_id
+	 * @return long photo_id
+	 */
 	public long getPhoto_id() {
 		return photo_id;
 	}
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the material_id
+	 * @return long matterial_id
+	 */
 	public long getMaterial_id() {
 		return material_id;
 	}
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the elementType_id
+	 * @return long elementType_id
+	 */
 	public long getElementType_id() {
 		return elementType_id;
 	}
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the pixelGeom_id
+	 * @return long pixelGeom_id
+	 */
 	public long getPixelGeom_id() {
 		return pixelGeom_id;
 	}
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the gpsGeom_id
+	 * @return long gpsGeom_id
+	 */
 	public long getGpsGeom_id() {
 		return gpsGeom_id;
 	}
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the element_color
+	 * @return String element_color
+	 */
 	public String getElement_color() {
 		return element_color;
 	}
 	
 
 	//Setters
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the element_id
+	 * @param long element_id
+	 */
 	public void setElement_id(long element_id) {
 		this.element_id = element_id;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the photo_id
+	 * @param long photo_id
+	 */
 	public void setPhoto_id(long photo_id) {
 		this.photo_id = photo_id;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the material_id
+	 * @param long material_id
+	 */
 	public void setMaterial_id(long material_id) {
 		this.material_id = material_id;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the elementType_id
+	 * @param long elementType_id
+	 */
 	public void setElementType_id(long elementType_id) {
 		this.elementType_id = elementType_id;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the pixelGeom_id
+	 * @param long pixelGeom_id
+	 */
 	public void setPixelGeom_id(long pixelGeom_id) {
 		this.pixelGeom_id = pixelGeom_id;
 	}
 	
-	//TODO Generate javadoc
+	/**
+	 * setter for the gpsGeom_id
+	 * @param long gpsGeom_id
+	 */
 	public void setGpsGeom_id(long gpsGeom_id) {
 		this.gpsGeom_id = gpsGeom_id;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the element_color
+	 * @param String element_color
+	 */
 	public void setElement_color(String element_color) {
 		this.element_color = element_color;
 	}
@@ -104,7 +158,7 @@ public class Element extends DataObject {
 	
 	
 	//Abstract methods
-	//TODO Adddescription for javadoc
+	
 	@Override
 	public String toString() {
 		return "Element [element_id=" + element_id + ", photo_id=" + photo_id
@@ -114,17 +168,6 @@ public class Element extends DataObject {
 				+ element_color + "]";
 	}
 
-	@Override
-	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long setId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {

@@ -87,11 +87,6 @@ public class SummaryDialogFragment extends DialogFragment {
 						}
 						CharacteristicsFragment.getMyImage().invalidate();
 						box.dismiss();
-						// Show the dialog to choose the characteristics
-						CharacteristicsDialogFragment typedialog = new CharacteristicsDialogFragment();
-						// Say the charasteristics dialog to re-open the summary dialog when exit
-						typedialog.setFromSummary();
-						typedialog.show(getFragmentManager(), "CharacteristicsDialogFragment");
 					}
 				});
 				recapList.addView(button);

@@ -149,25 +149,12 @@ public class Photo extends DataObject  {
 	
 
 	//Override methods
-	//TODO Adddescription for javadoc
 	@Override
 	public String toString() {
 		return "Photo [photo_id=" + photo_id + ", photo_description="
 				+ photo_description + ", photo_author=" + photo_author
 				+ ", photo_url=" + photo_url + ", gps_Geom_id=" + gpsGeom_id +"&" + "  position =" + this.Ext_GpsGeomCoord
 				+ "]";
-	}
-
-	@Override
-	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long setId() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override

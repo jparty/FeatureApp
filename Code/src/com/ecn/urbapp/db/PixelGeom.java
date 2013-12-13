@@ -64,24 +64,10 @@ public class PixelGeom extends DataObject  {
 	
 	
 	//Override methods
-	//TODO Adddescription for javadoc
-	//will be used by the ArayAdapter in the ListView
 	@Override
 	public String toString() {
 		return "pixelGeom_id =" + this.pixelGeom_id + "&" + "\ncoord =" + this.pixelGeom_the_geom ;
 		
-	}
-
-	@Override
-	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long setId() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override

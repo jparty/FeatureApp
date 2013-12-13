@@ -1,6 +1,7 @@
 package com.ecn.urbapp.fragments;
 
 import android.app.Fragment;
+import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -8,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -80,12 +82,14 @@ public class CharacteristicsFragment extends Fragment {
 
 		DrawImageView view = new DrawImageView();
 	
+		DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+		
 		Drawable[] drawables = {
 				new BitmapDrawable(
 					getResources(),
 					BitmapLoader.decodeSampledBitmapFromFile(
-							Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(), 1000, 1000)), view
-		};
+							Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(), metrics.widthPixels, metrics.heightPixels - 174)), view
+		};//TODO 174 corresponds to menu bar + buttons bar. Calculate this value ! Maybe by charging a small picture before to know ImageView size
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		
 		myImage.setOnTouchListener(touchListenerSelectImage);

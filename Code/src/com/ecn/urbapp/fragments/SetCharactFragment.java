@@ -1,4 +1,4 @@
-package com.ecn.urbapp.fragments;
+/*package com.ecn.urbapp.fragments;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,33 +28,33 @@ import com.ecn.urbapp.utils.colorpicker.AmbilWarnaDialog.OnAmbilWarnaListener;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 
 public class SetCharactFragment extends Fragment{
-	/**
+	*//**
 	 * The Spinner instance used to select the type of the Element(s) to characterize.
-	 */
+	 *//*
 	private Spinner spinType;
-	/**
+	*//**
 	 * The Spinner instance used to select the material of the Element(s) to characterize.
-	 */
+	 *//*
 	private Spinner spinMaterial;
-	/**
+	*//**
 	 * The View instance used to show the color of the Element(s) to characterize.
-	 */
+	 *//*
 	private Button colorView;
-	/**
+	*//**
 	 * Dialog used to choose a color.
-	 */
+	 *//*
 	private AmbilWarnaDialog colorDialog;
-	/**
+	*//**
 	 * The Color chosen in the colorView.
-	 */
+	 *//*
 	private int chosenColor;
-	/**
+	*//**
 	 * Should be set to true if this dialog has been opened from a SummaryDialodFragment
-	 */
+	 *//*
 	private boolean fromRecap = false;
-	/**
+	*//**
 	 * True if a new color has been chosen
-	 */
+	 *//*
 	private boolean newColor = false;
 
 
@@ -124,10 +124,10 @@ public class SetCharactFragment extends Fragment{
 		return v;
 	}
 
-	/**
+	*//**
 	 * Listener that add the chosen characteristics to all the selected elements
 	 * and close the dialog.
-	 */
+	 *//*
 	public void validation(){
 		String selection;
 		if(ZoneFragment.state==ZoneFragment.IMAGE_CREATION){
@@ -135,7 +135,7 @@ public class SetCharactFragment extends Fragment{
 			if (!selection.equals("")) {
 				for(ElementType et : MainActivity.elementType){
 					if(et.getElementType_name().equals(selection)){
-						ZoneFragment.elementTemp.setElementType_id(et.getElementType_id());
+//						ZoneFragment.elementTemp.setElementType_id(et.getElementType_id());
 					}
 				}
 			}
@@ -151,10 +151,10 @@ public class SetCharactFragment extends Fragment{
 				ZoneFragment.elementTemp.setElement_color(""+chosenColor);
 			}
 			//CharacteristicsFragment.getMyImage().invalidate();
-			/*if (fromRecap) {
+			if (fromRecap) {
 				SummaryDialogFragment summarydialog = new SummaryDialogFragment();
 				summarydialog.show(getFragmentManager(), "TypeFragment");
-			}*/
+			}
 		}
 		else if(ZoneFragment.state==ZoneFragment.IMAGE_EDITION){
 			selection = (String) spinType.getSelectedItem();
@@ -177,9 +177,9 @@ public class SetCharactFragment extends Fragment{
 		resetAffichage();
 	};
 
-	/**
+	*//**
 	 * Listener that open an AmbilWarnaDialog to chose a color.
-	 */
+	 *//*
 	private OnClickListener openColorDialog = new OnClickListener() {
 		
 		@Override
@@ -195,9 +195,9 @@ public class SetCharactFragment extends Fragment{
 		}
 	};
 	
-	/**
+	*//**
 	 * Listener for AmbilWarnaListener that save the chosen color in the attribute chosenColor and change the color of the colorView.
-	 */
+	 *//*
 	OnAmbilWarnaListener colorListener = new OnAmbilWarnaListener() {
 		@Override
 		public void onOk(AmbilWarnaDialog dialog, int color) {
@@ -212,11 +212,11 @@ public class SetCharactFragment extends Fragment{
 		}
 	};
 
-	/**
+	*//**
 	 * Set the fromRecap attribute to true. It means that this box is opened
 	 * from a SummaryDialogFragment, and thus that a SummaryDialogFragment
 	 * should be opened again when this Dialog is closed.
-	 */
+	 *//*
 	public void setFromSummary() {
 		fromRecap = true;
 	}
@@ -239,4 +239,4 @@ public class SetCharactFragment extends Fragment{
 		spinType.setSelection(0);
 		colorView.setBackgroundColor(Color.GRAY);
 	}
-}
+}*/

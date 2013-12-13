@@ -57,6 +57,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.io.ParseException;
@@ -346,7 +347,7 @@ public final class UtilCharacteristicsZone {
 		for (PixelGeom oldPixelGeom : MainActivity.pixelGeom) {
 			if (wktr.read(pixelGeom.getPixelGeom_the_geom()).within(wktr.read(oldPixelGeom.getPixelGeom_the_geom()))) {
 				pixelGeomIdToRemove.add(oldPixelGeom.getPixelGeomId());
-				oldPixelGeom = createHole(oldPixelGeom, pixelGeom);
+				oldPixelGeom = createHoleForPixelGeomToAdd(oldPixelGeom, wktr.read(pixelGeom.getPixelGeom_the_geom()));
 				pixelGeomToAdd.add(oldPixelGeom);
 				pixelGeomToAdd.add(pixelGeom);
 				break;
@@ -355,17 +356,17 @@ public final class UtilCharacteristicsZone {
 				pixelGeomIdToRemove.add(oldPixelGeom.getPixelGeomId());
 				Element elt = getElementFromPixelGeomId(oldPixelGeom.getPixelGeomId());
 				geom = wktr.read(pixelGeom.getPixelGeom_the_geom()).intersection(wktr.read(oldPixelGeom.getPixelGeom_the_geom()));
-				for (PixelGeom pg : getPixelGeomsFromGeom(geom)) {
+				for (PixelGeom pg : getPixelGeomsFromGeom(geom, true)) {
 					linkedElements.put(pg, elt);
 					pixelGeomToAdd.add(pg);
 				}
 				geom = wktr.read(pixelGeom.getPixelGeom_the_geom()).difference(wktr.read(oldPixelGeom.getPixelGeom_the_geom()));
-				for (PixelGeom pg : getPixelGeomsFromGeom(geom)) {
+				for (PixelGeom pg : getPixelGeomsFromGeom(geom, true)) {
 					linkedElements.put(pg, ref);
 					pixelGeomToAdd.add(pg);
 				}
 				geom = wktr.read(oldPixelGeom.getPixelGeom_the_geom()).difference(wktr.read(pixelGeom.getPixelGeom_the_geom()));
-				for (PixelGeom pg : getPixelGeomsFromGeom(geom)) {
+				for (PixelGeom pg : getPixelGeomsFromGeom(geom, true)) {
 					linkedElements.put(pg, elt);
 					pixelGeomToAdd.add(pg);
 				}
@@ -412,8 +413,8 @@ public final class UtilCharacteristicsZone {
 			GeometryCollection geomColl = (GeometryCollection) hole;
 			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
 				if (geomColl.getGeometryN(i) instanceof Polygon) {
-					PixelGeom pg = getPixelGeomFromGeom(geomColl.getGeometryN(i), true);
-					return createHole(pgeom, pg);
+					//PixelGeom pg = getPixelGeomFromGeom(geomColl.getGeometryN(i), true);
+					return createHoleForPixelGeomToAdd(pgeom, geomColl.getGeometryN(i));
 				}
 			}
 		} else if (hole instanceof Polygon) {
@@ -533,32 +534,20 @@ public final class UtilCharacteristicsZone {
 	 * 
 	 * @param geom
 	 *            the Geometry to convert into PixelGeom(s)
+	 * @param checkPoint true if the value of Coordinates must be checked and convert from double to int
 	 * @return the equivalent PixelGeom 
 	 */
-	public static List<PixelGeom> getPixelGeomsFromGeom(Geometry geom) {
+	public static List<PixelGeom> getPixelGeomsFromGeom(Geometry geom, boolean checkPoint) {
 		List<PixelGeom> result = new ArrayList<PixelGeom>();
 		if (geom instanceof GeometryCollection) {
 			GeometryCollection geomColl = (GeometryCollection) geom;
 			for (int i = 0; i < geomColl.getNumGeometries(); i++) {
-				result.addAll(getPixelGeomsFromGeom(geomColl.getGeometryN(i)));
+				result.addAll(getPixelGeomsFromGeom(geomColl.getGeometryN(i), checkPoint));
 			}
 		} else if (geom instanceof Polygon) {
-			result.add(getPixelGeomFromGeom(geom));
+			result.add(getPixelGeomFromGeom(geom, checkPoint));
 		}
 		return result;
-	}
-
-	/**
-	 * Transform the Geometry in parameter into a PixelGeom by directly
-	 * transform it into its WKT representation.
-	 * 
-	 * @param geom
-	 *            the Geometry to convert into PixelGeom
-	 * @param checkPoint true if the value of Coordinates must be checked and convert from double to int
-	 * @return the equivalent PixelGeom
-	 */
-	private static PixelGeom getPixelGeomFromGeom(Geometry geom) {
-		return getPixelGeomFromGeom(geom, true);
 	}
 
 	/**
@@ -632,7 +621,8 @@ public final class UtilCharacteristicsZone {
 	 */
 	public static PixelGeom createHole(PixelGeom pgeomShell, PixelGeom pgeomHole)
 			throws ParseException {
-		Polygon polyShell = (Polygon) wktr.read(pgeomShell.getPixelGeom_the_geom());
+		MultiPolygon mpolyShell = (MultiPolygon) wktr.read(pgeomShell.getPixelGeom_the_geom());
+		Polygon polyShell = (Polygon) mpolyShell.getGeometryN(0);
 		Polygon polyHole = (Polygon) wktr.read(pgeomHole.getPixelGeom_the_geom());
 		LinearRing shell = gf.createLinearRing(polyShell.getExteriorRing()
 				.getCoordinates());
