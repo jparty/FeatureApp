@@ -34,6 +34,7 @@ import com.ecn.urbapp.fragments.InformationFragment;
 import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
+import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.ConnexionCheck;
 import com.ecn.urbapp.utils.Cst;
 import com.ecn.urbapp.utils.Utils;
@@ -214,22 +215,8 @@ public class MainActivity extends Activity {
 		
 		//TODO coordinate with the remote database
 		datasource.open();
-		datasource.createElementTypeInDB("Toit");
-		datasource.createElementTypeInDB("Façade");
-		datasource.createElementTypeInDB("Sol");
-		datasource.getAllElementType();
-		datasource.createMaterialInDB("Acier");
-		datasource.createMaterialInDB("Ardoises");
-		datasource.createMaterialInDB("Bois");
-		datasource.createMaterialInDB("Béton");
-		datasource.createMaterialInDB("Cuivre");
-		datasource.createMaterialInDB("Enrobé");
-		datasource.createMaterialInDB("Goudron");
-		datasource.createMaterialInDB("Herbe");
-		datasource.createMaterialInDB("Terre");
-		datasource.createMaterialInDB("Tuiles");
-		datasource.createMaterialInDB("Verre");
-		datasource.getAllMaterial();
+		Sync s = new Sync();
+		s.getTypeAndMaterialsFromExt();
 		datasource.close();
 	}
 

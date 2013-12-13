@@ -31,7 +31,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.GpsGeom;
+import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.Project;
 import com.google.android.gms.internal.n;
@@ -122,6 +124,28 @@ public class Sync
 		
 		return success;
 	}
+	
+	/**
+	 * 
+	 * @return Boolean if success of not
+	 */
+	public boolean getTypeAndMaterialsFromExt()
+	{
+		Boolean success = false;
+			try
+			{
+				BackTaskImportTypeMaterial BaTypeMaterialSync = new BackTaskImportTypeMaterial();
+				BaTypeMaterialSync.execute().get();
+				success = true;
+			}
+			catch (Exception e)
+			{
+				
+			}
+		
+		return success;
+	}
+	
 	/**
 	 * Get the max id of each critical tables in external DB AND get current timestamp from database
 	 * @return Hashmap of all max id
@@ -744,4 +768,127 @@ public class Sync
 	    }
 
 	}
+	
+	
+	/**
+	 * The additional threat to get projects and gpsgeom data from server
+	 * @author Sebastien
+	 *
+	 */
+	public static class BackTaskImportTypeMaterial extends AsyncTask<Void, Void, Void> {
+			
+		private Context mContext;
+		
+		/**
+		 * Default constructor
+		 */
+		public BackTaskImportTypeMaterial(){			
+			this.mContext = MainActivity.baseContext;
+		}
+
+		/**
+		 * Pre Execution orders
+		 */
+		protected void onPreExecute(){
+			super.onPreExecute();
+			Toast.makeText(MainActivity.baseContext,  "Début de la synchro", Toast.LENGTH_SHORT).show();
+		}
+
+		/**
+		 * Ask the server and save all data on the specific var
+		 * @return 
+		 */
+		protected Void doInBackground(Void... params) { 
+//TODO faire le parsage
+			String JSON = getData();
+			try {
+				JSONArray jArr = new JSONArray(JSON); 
+				
+
+				JSONObject materials = jArr.getJSONObject(0);
+				JSONArray materialsInner = materials.getJSONArray("Material");
+
+				for(int i=0;i<materialsInner.length();i++)
+				{
+					JSONObject project = materialsInner.getJSONObject(i);
+					long material_id = project.getLong("material_id");
+					String material_name = project.getString("material_name");
+					
+					Material materialEnCours = new Material();
+					materialEnCours.setMaterial_id(material_id);
+					materialEnCours.setMaterial_name(material_name);
+			
+					
+					MainActivity.material.add(materialEnCours);
+				}
+				
+				JSONObject types = jArr.getJSONObject(1);
+				JSONArray typeInner = types.getJSONArray("ElementType");
+
+				for(int i=0;i<typeInner.length();i++)
+				{
+					JSONObject photo = typeInner.getJSONObject(i);
+					long elementType_id = photo.getLong("elementType_id");
+					String elementType_name = photo.getString("elementType_name");
+
+					
+					ElementType elmtTypeEnCours = new ElementType();
+					elmtTypeEnCours.setElementType_id(elementType_id );
+					elmtTypeEnCours.setElementType_name(elementType_name);
+
+					
+					MainActivity.elementType.add(elmtTypeEnCours);
+				}
+				
+                 
+             } catch (JSONException e) {
+                Log.e("JSON Parser", "Error parsing data " + e.toString());
+             }
+			return null;
+		}
+	 
+
+		/**
+		 * The request method to server
+		 * @return the string of the server response
+		 */
+	    public String getData() {
+		    HttpClient httpclient = new DefaultHttpClient();
+		    // specify the URL you want to post to
+		    HttpPost httppost = new HttpPost(MainActivity.serverURL+"importMaterial.php");
+		    try {
+		    	
+		    	// create a list to store HTTP variables and their values
+			    List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
+			    // add an HTTP variable and value pair
+			    nameValuePairs.add(new BasicNameValuePair("material", "coincoin"));
+			    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+			    // send the variable and value, in other words post, to the URL
+			    HttpResponse response = httpclient.execute(httppost);
+			    
+			    StringBuilder sb = new StringBuilder();
+			    try {
+			    	BufferedReader reader = 
+			    			new BufferedReader(new InputStreamReader(response.getEntity().getContent()), 65728);
+			    	String line = null;
+
+			    	while ((line = reader.readLine()) != null) {
+			    		sb.append(line);
+			    	}
+			    }
+			    catch (IOException e) { e.printStackTrace(); }
+			    catch (Exception e) { e.printStackTrace(); }
+			    
+			    return sb.toString();
+				
+	        } catch (ClientProtocolException e) {
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        } ;
+	        return "error";
+	    }
+
+	}
+	
 }
