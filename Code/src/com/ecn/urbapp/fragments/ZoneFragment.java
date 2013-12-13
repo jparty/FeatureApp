@@ -28,6 +28,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.dialogs.AddZoneDialogFragment;
 import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
 import com.ecn.urbapp.dialogs.UnionDialogFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
@@ -257,36 +258,16 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			case R.id.zone_button_validate:
 				if(!zone.getPoints().isEmpty()){
 					//scf.validation();
-					ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
-					for (PixelGeom pg : MainActivity.pixelGeom) {
-						lpg.add(pg);
-					}
-					ArrayList<Element> le = new ArrayList<Element>();
-					for (Element elt : MainActivity.element) {
-						le.add(elt);
-					}
-					try {
-						//MainActivity.zones.remove(zoneCache); //delete original
-						MainActivity.pixelGeom.remove(geomCache);
-						PixelGeom pg = new PixelGeom();
-						pg.setPixelGeom_the_geom(zone.getPolygon().toText());
-						UtilCharacteristicsZone.addInMainActivityZones(pg, null);
-						exitAction();
-						zone.clearBacks();//remove list of actions backs
-					} catch(TopologyException e) {
-						MainActivity.pixelGeom = lpg;
-						MainActivity.element = le;
-						TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
-						diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
+					MainActivity.pixelGeom.remove(geomCache);
+					AddZoneDialogFragment azdf = new AddZoneDialogFragment();
+					azdf.show(getFragmentManager(), "AddZoneDialogFragment");
+				} else {
+					state = IMAGE_SELECTION;
+					exitAction();
 				}
 				for(PixelGeom pg : MainActivity.pixelGeom){
 					pg.selected=false;
 				}
-				state = IMAGE_SELECTION;
-				exitAction();
 				break;
 			}
 			break;
@@ -315,8 +296,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		//fusion.setEnabled(false);
 		delete.setEnabled(false);
 
-		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
-		
 		zone = new Zone(); selected = new Point(0,0); 
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 		
@@ -380,36 +359,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	
 	private void validateCreation(){
 		//scf.validation();
-		ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
-		for (PixelGeom pg : MainActivity.pixelGeom) {
-			lpg.add(pg);
-		}
-		ArrayList<Element> le = new ArrayList<Element>();
-		for (Element elt : MainActivity.element) {
-			le.add(elt);
-		}
-		try {
-			PixelGeom pg = new PixelGeom();
-			pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
-			if(elementTemp.getElementType_id()==0 && elementTemp.getMaterial_id()==0){
-				UtilCharacteristicsZone.addInMainActivityZones(pg, null);
-			}
-			else{
-				UtilCharacteristicsZone.addInMainActivityZones(pg, elementTemp);
-				//MainActivity.element.add(elementTemp);
-			}
-			exitAction();
-			zone.clearBacks();
-		} catch(TopologyException e) {
-			MainActivity.pixelGeom = lpg;
-			MainActivity.element = le;
-			TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
-			diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		state = IMAGE_SELECTION;
-		exitAction();
+		AddZoneDialogFragment azdf = new AddZoneDialogFragment();
+		azdf.show(getFragmentManager(), "AddZoneDialogFragment");
 	}
 	public Point getTouchedPoint(MotionEvent event){
 		float[] coord = {event.getX(),event.getY()};//get touched point coord
@@ -677,7 +628,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				}
 				try {
 					UtilCharacteristicsZone.addInMainActivityZones(pgeom, null);
+					state = IMAGE_SELECTION;
 					exitAction();
+					zone.clearBacks();//remove list of actions backs
 				} catch(TopologyException e) {
 					MainActivity.pixelGeom = lpg;
 					MainActivity.element = le;
@@ -686,7 +639,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				}
 			} else {
 				UtilCharacteristicsZone.addPixelGeom(pgeom, null);
+				state = IMAGE_SELECTION;
 				exitAction();
+				zone.clearBacks();//remove list of actions backs
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();

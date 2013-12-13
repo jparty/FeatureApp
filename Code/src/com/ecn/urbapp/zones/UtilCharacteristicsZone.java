@@ -170,8 +170,8 @@ public final class UtilCharacteristicsZone {
 				if (geomPoint.within(wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom()))) {
 					if (result == -1) {
 						result = i;
-					} else if (gf.createPolygon(gf.createLinearRing(((Polygon) wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom())).getExteriorRing().getCoordinates()), null).getArea()
-							< gf.createPolygon(gf.createLinearRing(((Polygon) wktr.read(MainActivity.pixelGeom.get(result).getPixelGeom_the_geom())).getExteriorRing().getCoordinates()), null).getArea()) {
+					} else  if (wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom()).getArea()
+							< wktr.read(MainActivity.pixelGeom.get(result).getPixelGeom_the_geom()).getArea()) {
 						result = i;
 					}
 				}
