@@ -47,10 +47,7 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
-
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -109,13 +106,13 @@ public class DrawImageView extends Drawable {
 					Coordinate[] points2 = poly.getExteriorRing()
 							.getCoordinates();
 
-					if (el.getElement_color() != null
+					/*if (el.getElement_color() != null
 							&& Integer.parseInt(el.getElement_color()) != 0) {
 						finishedPaint.setColor(Integer.parseInt(el
 								.getElement_color()));
 					} else {
 						finishedPaint.setColor(Color.RED);
-					}
+					}*/
 
 					// Create a closed path for the polygon
 					Path polyPath = new Path();
