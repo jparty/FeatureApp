@@ -123,8 +123,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 				getActivity().startActivityForResult(i,Cst.CODE_LOAD_LOCAL_PROJECT);
 				break;
 			case R.id.home_image_loadDistantProject:
-				//TODO transfert this piece of code
-				//imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "img"+((int)(Math.random()*3+1))+".png");
+				
 			break;
 		}	
 	}

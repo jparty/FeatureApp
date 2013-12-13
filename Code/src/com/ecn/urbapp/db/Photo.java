@@ -25,15 +25,12 @@ public class Photo extends DataObject  {
 	private String photo_url;
 	
 	private String photo_adresse;
-	private long photo_nbrPoints;
-	private String photo_derniereModif;
+	private long photo_nbrPoints=2;
+	private int photo_derniereModif;
 	
 	
 	private String photo_urlTemp;
 	private long gpsGeom_id;
-
-	
-	
 	
 	
 	//Getters
@@ -87,7 +84,7 @@ public class Photo extends DataObject  {
 		
 		
 		//TODO Adddescription for javadoc
-		public String getPhoto_derniereModif() {
+		public int getPhoto_derniereModif() {
 			return photo_derniereModif;
 		}
 		
@@ -132,7 +129,7 @@ public class Photo extends DataObject  {
 	}
 	
 	//TODO Adddescription for javadoc
-	public void setPhoto_derniereModif(String d) {
+	public void setPhoto_derniereModif(int d) {
 		this.photo_derniereModif=d;
 	}
 	
