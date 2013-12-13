@@ -46,24 +46,12 @@ public class Material extends DataObject  {
 	
 	
 	//Override Methods
-	//TODO Adddescription for javadoc
 	@Override
 	public String toString() {
 		return "Material [material_id=" + material_id + ", material_name="
 				+ material_name + "]";
 	}
 
-	@Override
-	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long setId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {

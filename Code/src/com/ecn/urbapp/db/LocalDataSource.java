@@ -111,7 +111,7 @@ public class LocalDataSource {
         
         if(exist == true){
         	Project existProject = getProjectWithId(id);
-        	Project updatedProject = updateProject(id, existProject, str);
+        	Project updatedProject = updateProject(existProject, str);
             return updatedProject;
         }
         else {
@@ -129,6 +129,20 @@ public class LocalDataSource {
             return p2;
         }
     }
+	
+	/**
+	 * update a project
+	 * @param id 
+	 * @param project we ant to update
+	 * @param descr we want to change for
+	 * @return project updated
+	 */
+	public Project updateProject(Project project, String descr){
+		ContentValues values = new ContentValues();
+		values.put(MySQLiteHelper.COLUMN_PROJECTNAME, descr);
+		database.update(MySQLiteHelper.TABLE_PROJECT, values, MySQLiteHelper.COLUMN_PROJECTID + " = " +project.getProjectId(), null);
+		return getProjectWithId(project.getProjectId());
+ }
 
 
 	/**
@@ -300,7 +314,10 @@ public class LocalDataSource {
 	
 	
 
-	//TODO Adddescription for javadoc
+	/**
+	 * call the query to get all photos
+	 * @return a list of every photo
+	 */
 	public List<Photo> getAllPhotos(){
 		List<Photo> photosList = new ArrayList<Photo>();
 		
@@ -315,23 +332,13 @@ public class LocalDataSource {
 		cursor.close();
 		return photosList;
 	}
-
-	
-	//TODO Adddescription for javadoc
-	//TODO unused in local way
-	public void getmaxPhotoId(){
-		long maxPhotoId = 0;
-		
-		Cursor cursor = database.rawQuery(GETMAXPHOTOID,null);
-		
-		cursor.moveToFirst();
-		maxPhotoId=cursor.getLong(0);
-		cursor.close();
-		//MainActivity.maxPhotoIdLocal=maxPhotoId;
-	}
 	
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * we want every photos linked to a project knowing its id
+	 * @param project_id 
+	 * @return photosList found by the query
+	 */
 	public List<Photo> getAllPhotolinkedtoProject(long project_id){
 		List<Photo> photosList = new ArrayList<Photo>();
 		
@@ -348,14 +355,23 @@ public class LocalDataSource {
 	}
 	
 
-	//TODO Adddescription for javadoc
+	/**
+	 * delete a photo
+	 * @param p1 is a photo
+	 */
 	public void deletePhoto(Photo p1){
 		long id = p1.getPhoto_id();
 		System.out.println("Photo deleted with id: "+ id);
 		database.delete(MySQLiteHelper.TABLE_PHOTO, MySQLiteHelper.COLUMN_PHOTOID+" = "+ id, null);
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * create a photo with the following attributes
+	 * @param descr
+	 * @param author
+	 * @param url is the name of the pohot with its extension
+	 * @return the created photo
+	 */
 	public Photo createPhoto (String descr, String author, String url){
 		ContentValues values = new ContentValues(); 
 		values.put(MySQLiteHelper.COLUMN_PHOTODESCRIPTION, descr);
@@ -375,7 +391,11 @@ public class LocalDataSource {
 		return newPhoto;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * translate a cursor to a photo
+	 * @param cursor
+	 * @return the photo created
+	 */
 	private Photo cursorToPhoto(Cursor cursor) {
 	    Photo p1 = new Photo();
 	    p1.setPhoto_id(cursor.getLong(0));
@@ -395,6 +415,11 @@ public class LocalDataSource {
 		
 	}
   
+	/**
+	 * knowing an id we want to get the related photo
+	 * @param id of the photo
+	 * @return p1 is the photo with this id
+	 */
 	public Photo  getPhotoWithID(long id)
 	{
 		Cursor c = database.query(MySQLiteHelper.TABLE_PHOTO, allColumnsPhoto, MySQLiteHelper.COLUMN_PHOTOID + " = \"" + id +"\"", null, null, null, null);
@@ -406,10 +431,9 @@ public class LocalDataSource {
   
   // GPS GEOM METHODS
 
-	//TODO Adddescription for javadoc
 	/**
 	 * create a GPSGeom in the database and update the photo tuple where photo_id = id with this gpsgeom_id
-	 * @param str
+	 * @param str 
 	 * @param id
 	 * @return
 	 */
@@ -430,13 +454,12 @@ public class LocalDataSource {
         c.close();
         return g1;
 	}
-
-
-	//TODO Adddescription for javadoc
+	
 	/**
 	 * create a GPSGeom in the database and update the project tuple where project_id = id with this gpsgeom_id
-	 * @param str
-	 * @return
+	 * @param str need to use convertion method of utils package
+	 * @param id is the project_id were we need to update the gpsGeom_id foreign key
+	 * @return gs1 is the gpsGeom created
 	 */
 	public GpsGeom createGPSGeomToProject (String str, long id){
 		GpsGeom gps1 = createGPSGeom(str);
@@ -444,15 +467,13 @@ public class LocalDataSource {
 		ContentValues args = new ContentValues();
 		args.put(MySQLiteHelper.COLUMN_GPSGEOMID, gps1.getGpsGeomsId());
 		int d = database.update(MySQLiteHelper.TABLE_PROJECT, args, MySQLiteHelper.COLUMN_PROJECTID +"=" + id, null);
-		
 		return gps1;
 	}
 
-	//TODO Adddescription for javadoc
 	/**
 	 * create a GPSGeom with the gpsgeom_coord str
 	 * @param str
-	 * @return
+	 * @return GpsGeom
 	 */
 	public GpsGeom createGPSGeom (String str){
 		ContentValues values = new ContentValues(); 
@@ -470,7 +491,6 @@ public class LocalDataSource {
 		return newGpsGeom;
 	}
 
-	//TODO Adddescription for javadoc
 	/**
 	 * convert the cursor to the object gpsGeom
 	 * @param cursor
@@ -483,8 +503,13 @@ public class LocalDataSource {
 	    return p1;
 	}
 
-	//TODO Adddescription for javadoc
 	// methods related to Composed.java that represents the link between Photos and projects
+	/**
+	 * create an object Composed that link a photo and a project
+	 * @param proj_id of the project
+	 * @param photo_id of the photo
+	 * @return Composed object that links both elements
+	 */
 	public Composed createLink (long proj_id, long photo_id){
 		ContentValues values = new ContentValues(); 
 		values.put(MySQLiteHelper.COLUMN_PROJECTID, proj_id);
@@ -502,7 +527,11 @@ public class LocalDataSource {
 		return link1;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * translate a cursor to a composed
+	 * @param cursor
+	 * @return
+	 */
 	private Composed cursorToComposed(Cursor cursor) {
 	    Composed link1 = new Composed();
 	    link1.setProject_id(cursor.getLong(0));
@@ -511,6 +540,11 @@ public class LocalDataSource {
 	}
 
 	// OTHER METHODS TO GET LOCAL ITEMS FROM ID. ADDED FOR USE IN THE SYNC CLASS
+	/**
+	 * knowing an id, we find the related element
+	 * @param id
+	 * @return element
+	 */
 	public Element getElementWithID(long id)
 	{
 		Cursor c = database.query(MySQLiteHelper.TABLE_ELEMENT, allColumnsElement, 
@@ -521,6 +555,11 @@ public class LocalDataSource {
         return e;
 	}
 	
+	/**
+	 * translate a cursor to an element
+	 * @param cursor
+	 * @return element created
+	 */
 	public Element cursorToElement(Cursor cursor)
 	{
 		Element e = new Element();
@@ -534,6 +573,11 @@ public class LocalDataSource {
 	    return e;
 	}
 	
+	/**
+	 * knowing an id, we find the pixelGeom
+	 * @param id
+	 * @return pixelGeom
+	 */
 	public PixelGeom getPixelGeomWithID(long id)
 	{
 		Cursor c = database.query(MySQLiteHelper.TABLE_PIXELGEOM, allColumnsPixelGeom, 
@@ -544,6 +588,11 @@ public class LocalDataSource {
 		return p;
 	}
 	
+	/**
+	 * translate a cursor to a pixelGeom
+	 * @param cursor
+	 * @return pixelGeom
+	 */
 	public PixelGeom cursorToPixelGeom(Cursor cursor)
 	{
 		PixelGeom p = new PixelGeom();
@@ -552,6 +601,11 @@ public class LocalDataSource {
 		return p;
 	}
 	
+	/**
+	 * knowing an id we find the related material
+	 * @param id
+	 * @return material
+	 */
 	public Material getMaterialWithID(long id)
 	{
 		Cursor c = database.query(MySQLiteHelper.TABLE_MATERIAL, allColumnsMaterial,
@@ -561,7 +615,11 @@ public class LocalDataSource {
 		c.close();
 		return m;
 	}
-	
+	/**
+	 * translate a cursor to a Material
+	 * @param cursor
+	 * @return material created
+	 */
 	public Material cursorToMaterial(Cursor cursor)
 	{
 		Material m = new Material();
@@ -570,6 +628,11 @@ public class LocalDataSource {
 		return m;
 	}
 	
+	/**
+	 * knowing an id we want to find the related lementType
+	 * @param id
+	 * @return ElementType
+	 */
 	public ElementType getElementTypeWithID(long id)
 	{
 		Cursor c = database.query(MySQLiteHelper.TABLE_ELEMENTTYPE, allColumnsElementType, 
@@ -580,6 +643,11 @@ public class LocalDataSource {
 		return e;
 	}
 	
+	/**
+	 * translate a cursor to an elementtype
+	 * @param cursor
+	 * @return ElementType
+	 */
 	public ElementType cursorToElementType(Cursor cursor)
 	{
 		ElementType e = new ElementType();
@@ -623,6 +691,9 @@ public class LocalDataSource {
 		+";"
 	;
 	
+	/**
+	 * execute the query and update elementType list
+	 */
 	public void getAllElementType(){
 		List<ElementType> elementTypeList = new ArrayList<ElementType>();
 		Cursor cursor = database.rawQuery(GETALLELEMENTTYPEID,null);
@@ -675,7 +746,9 @@ public class LocalDataSource {
 		+";"
 	;
 	
-	
+	/**
+	 * use the query to get all material from the db and updating static field
+	 */
 	public void getAllMaterial(){
 		List<Material> materialList = new ArrayList<Material>();
 		Cursor cursor = database.rawQuery(GETALLMATERIALID,null);
