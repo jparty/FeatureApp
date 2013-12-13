@@ -657,7 +657,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 */
 	public void addZone(boolean tryIntersect) {
 		PixelGeom pgeom = new PixelGeom();
-		zone.closePolygon();
 		zone.actualizePolygon();
 		pgeom.setPixelGeom_the_geom(zone.getPolygon().toText());
 		try {

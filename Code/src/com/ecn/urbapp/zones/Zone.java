@@ -77,12 +77,6 @@ public class Zone {
 		actualizePolygon();
 	}
 
-	public void closePolygon() {
-		if (!points.get(0).equals(points.get(points.size() - 1))) {
-			points.add(points.get(0));
-		}
-	}
-
 	/**
 	 * Actualize the polygon representation of the zone from its list of points. 
 	 */

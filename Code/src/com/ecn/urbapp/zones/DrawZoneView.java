@@ -200,7 +200,6 @@ public class DrawZoneView extends Drawable {
 			}
 			try {
 				PixelGeom pgeom = new PixelGeom();
-				zone.closePolygon();
 				zone.actualizePolygon();
 				pgeom.setPixelGeom_the_geom(zone.getPolygon().toText());
 				for (PixelGeom pg : UtilCharacteristicsZone
