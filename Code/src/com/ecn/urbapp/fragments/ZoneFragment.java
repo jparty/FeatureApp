@@ -58,7 +58,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	/**
 	 * Field defining the radius tolerance on touch
 	 */
-	private int TOUCH_RADIUS_TOLERANCE = 30;//only for catching points in edit mode
+	private final int REFERENCE_TOUCH_RADIUS_TOLERANCE = 30;//only for catching points in edit mode
 	
 	/**
 	 * Constant field defining the reference height to correct the size of point for the zone creation
@@ -131,6 +131,12 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 * Point selected
 	 */
 	private Point selected;
+	
+	/**
+	 * Tolerance range on selection
+	 */
+	private float touchRadiusTolerance;
+	
 	public static Element elementTemp;
 	private DrawZoneView drawzoneview;
 	private int imageHeight; private int imageWidth;
@@ -351,7 +357,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		float ratio = ratioW < ratioH ? ratioW : ratioH ;
 			
 		drawzoneview.setRatio(ratio);
-		TOUCH_RADIUS_TOLERANCE/=ratio;
+		touchRadiusTolerance = REFERENCE_TOUCH_RADIUS_TOLERANCE/ratio;
 	}
 	
 	/**
@@ -504,7 +510,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					for(Point p : zone.getPoints()){//is the touched point a normal point ?
 						float dx=Math.abs(p.x-touch.x);
 						float dy=Math.abs(p.y-touch.y);
-						if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
+						if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){//10 radius tolerance
 							selected.set(p.x,p.y);
 						}
 					}
@@ -512,7 +518,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						for(Point p : zone.getMiddles()){
 							float dx=Math.abs(p.x-touch.x);
 							float dy=Math.abs(p.y-touch.y);
-							if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){
+							if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){
 								selected.set(p.x,p.y);
 							}
 						}
@@ -540,7 +546,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 								if(zone.getPoints().size()>2+1){
 									float dx=Math.abs(zone.getPoints().get(0).x-selected.x);
 									float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
-									if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
+									if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){//10 radius tolerance
 										validateCreation();
 										break;
 									}
