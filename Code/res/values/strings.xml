@@ -56,7 +56,6 @@
     
     <string name="save_textStatus">None</string>
     <string name="save_buttonSync">Synchroniser</string>
-    <string name="save_buttonSyncExt">Synchroniser vers DB extérieur</string>
     <string name="back">Annuler dernière action</string>
     <string name="cancel">Quitter</string>
     <string name="help">Aide</string>

@@ -26,7 +26,9 @@ $maxElement = pg_fetch_row($maxElement);
   
  $dateTime = pg_fetch_row($dateTime);
   $JSONArray['date'] = $dateTime['0'];
-
+if (empty($dateTime))
+	$dateTime = 1;
+	
 	$resultatsJSON = json_encode($JSONArray);
 	echo $resultatsJSON;
 ?>

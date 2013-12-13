@@ -16,8 +16,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.Composed;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Photo;
+import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.CustomListViewAdapter;
@@ -31,6 +33,11 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+/**
+ * Selection of the photo in the current project from server
+ * @author Sebastien
+ *
+ */
 public class LoadExternalPhotosActivity extends Activity{
 	/**
 	 * Contains all the projects attributes
@@ -127,16 +134,27 @@ public class LoadExternalPhotosActivity extends Activity{
 
 		listePhotos.setOnItemClickListener(selectedPhoto);
 		map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+			@SuppressWarnings("null")
 			@Override
 			public void onInfoWindowClick(Marker marker) {
-				Toast.makeText(MainActivity.baseContext, refreshedValues.get(photosMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
 				
-				//TODO Sebastien has to make it more readable
-				MainActivity.datasource.instanciatePhoto(refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_id());
+				MainActivity.project = new ArrayList<Project>();
+				for (Project actualProjet:Sync.refreshedValues){
+					if (actualProjet.getProjectId() == project_id)
+						MainActivity.project.add(actualProjet);
+				}
 				
-				//TODO do a better way to have the path !
-				MainActivity.photo.setUrlTemp(Environment.getExternalStorageDirectory()+"/featureapp/"+refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_url());
+				Toast.makeText(MainActivity.baseContext, MainActivity.project.get(0).toString(), Toast.LENGTH_LONG).show();
+
+				//TODO factorize the for in a separated class !
+				for (Photo actualPhoto:Sync.refreshedValuesPhoto) {
+					if ((int)actualPhoto.getPhoto_id() == photosMarkers.get(marker.getId()))
+						MainActivity.photo = actualPhoto;
+				}
+
+				MainActivity.photo.setUrlTemp(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());
 				
+				setResult(RESULT_OK);
 				finish();
 
 			}
@@ -166,19 +184,20 @@ public class LoadExternalPhotosActivity extends Activity{
     	}
     	
 		rowItems = new ArrayList<RowItem>();
-		for (Photo image:refreshedValues) {
-			/**
-			 * Download each photo and register it on tablet
-			 */
-			String imageStoredUrl = imageDownloader.download(MainActivity.serverURL+"images/", image.getPhoto_url());
-			
-			
-			//TODO ajouter date
-			RowItem item = new RowItem(imageStoredUrl,imageStoredUrl, image.getPhoto_description());
-			rowItems.add(item);
-		}
+		
+		synchronized (refreshedValues) {
+			for (Photo image:refreshedValues) {
+				/**
+				 * Download each photo and register it on tablet
+				 */
+				String imageStoredUrl = imageDownloader.download(MainActivity.serverURL+"images/", image.getPhoto_url());
 
-		//TODO Force to wait that all pictures are loaded !
+				//TODO ajouter date
+				RowItem item = new RowItem(imageStoredUrl,imageStoredUrl, image.getPhoto_description());
+				rowItems.add(item);
+			}
+		}
+		
 		CustomListViewAdapter adapter = new CustomListViewAdapter(this,
 				R.layout.layout_photolistview, rowItems);
 		listePhotos.setAdapter(adapter);
@@ -208,7 +227,7 @@ public class LoadExternalPhotosActivity extends Activity{
 			
 			displayedMap.drawPolygon(photoGPS, false);
 
-			photosMarkers.put(marker.getId(), i);
+			photosMarkers.put(marker.getId(), (int) enCours.getPhoto_id());
 			i++;
 		}
 	}    

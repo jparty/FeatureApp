@@ -26,8 +26,6 @@ public class PixelGeom extends DataObject  {
 	
 
 
-
-
 	//Getters
 	//TODO Adddescription for javadoc
 	public long getPixelGeomId(){
@@ -93,7 +91,7 @@ public class PixelGeom extends DataObject  {
 			if(!cursor.isAfterLast()){
 				long old_id = this.getPixelGeomId();
 				//long new_id = 1+cursor.getLong(0);
-				long new_id = this.pixelGeom_id+Sync.getMaxId().get("PixelGeom");
+				long new_id = 1+this.pixelGeom_id+Sync.getMaxId().get("PixelGeom");
 				this.setPixelGeomId(new_id);
 				this.trigger(old_id, new_id, MainActivity.element);
 				

@@ -285,6 +285,17 @@ public class MainActivity extends Activity {
 						getActionBar().setSelectedNavigationItem(2);
 					}
 				break;
+				case Cst.CODE_LOAD_EXTERNAL_PROJECT:
+					element = Sync.allElement;
+					gpsGeom = Sync.allGpsGeom;
+					project = Sync.refreshedValues;
+					pixelGeom = Sync.allPixelGeom;
+
+					MainActivity.photo.setRegistredInLocal(true);
+					MainActivity.photo.setUrlTemp(null);
+
+					getActionBar().setSelectedNavigationItem(2);
+				break;
 				case Cst.CODE_LOAD_PICTURE:
 					Utils.confirm(getFragmentManager());
 	

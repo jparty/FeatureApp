@@ -190,7 +190,7 @@ public class Element extends DataObject {
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
 				//this.setElement_id(1+cursor.getLong(0));
-				this.setElement_id(this.element_id+Sync.getMaxId().get("Photo"));
+				this.setElement_id(1+this.element_id+Sync.getMaxId().get("Element"));
 			}
 			values.put(MySQLiteHelper.COLUMN_ELEMENTID, this.element_id);
 			values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);

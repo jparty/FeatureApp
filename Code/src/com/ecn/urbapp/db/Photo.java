@@ -26,7 +26,7 @@ public class Photo extends DataObject  {
 	
 	private String photo_adresse;
 	private long photo_nbrPoints=2;
-	private int photo_derniereModif;
+	private int photo_derniereModif=0;
 	
 	
 	private String photo_urlTemp;
@@ -178,7 +178,7 @@ public class Photo extends DataObject  {
 			if(!cursor.isAfterLast()){
 				long old_id = this.getPhoto_id();
 				//long new_id = 1+cursor.getLong(0);
-				long new_id = this.photo_id+Sync.getMaxId().get("Photo");
+				long new_id = 1+Sync.getMaxId().get("Photo")+this.gpsGeom_id;
 				this.setPhoto_id(new_id);
 				this.trigger(old_id, new_id, MainActivity.element, MainActivity.composed);
 			}
