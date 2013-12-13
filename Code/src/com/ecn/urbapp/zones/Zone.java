@@ -104,7 +104,7 @@ public class Zone {
 					if (holeSize == 0) {
 						holes = new LinearRing[1];
 					} else {
-						holes = Arrays.copyOf(holes, holeSize);
+						holes = Arrays.copyOf(holes, holeSize + 1);
 					}
 					holes[holeSize] = gf.createLinearRing(Arrays.copyOfRange(coordinates, startIndex, index + 1));
 					holeSize++;
@@ -375,7 +375,7 @@ public class Zone {
 	 * Check if zone's polygon is self intersecting, segment by segment.
 	 * @return List of points involved in intersections, 4 points (2 segments) per intersection
 	 */
-	public Vector<Point> isSelfIntersecting(Vector<Point> pointsToCheck){
+	public static Vector<Point> isSelfIntersecting(Vector<Point> pointsToCheck){
 		Vector<Point> result = new Vector<Point>();
 		//points.add(points.get(0));//temporarily copying the first point at the end to avoid bounds' problems
 		for(int i=0; i<pointsToCheck.size()-2 ; i++){
@@ -403,7 +403,7 @@ public class Zone {
 	 * @return intersection flag
 	 */
 	// méthode d'un forum Google
-	private boolean intersect(Point start1,
+	private static boolean intersect(Point start1,
 			Point end1, Point start2, Point end2) {
 
 			// First find Ax+By=C values for the two lines

@@ -37,7 +37,9 @@ import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.ecn.urbapp.zones.Zone;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -402,14 +404,29 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					validate.setEnabled(true);
 					if(points.size()>2+1){//cannot be intersections with less than 3 points but needed for refreshing displaying
 						zone.actualizePolygon();
-						MultiPolygon poly = zone.getPolygon();
-						for (int i=0; i<poly.getNumGeometries(); i++) {
-							PixelGeom pgeom = new PixelGeom();
-							pgeom.setPixelGeom_the_geom(poly.getGeometryN(i).toText());
-							Zone zone = ConvertGeom.pixelGeomToZone(pgeom);
-							Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting(zone.getPoints()));
+						MultiPolygon polys = zone.getPolygon();
+						for (int i=0; i<polys.getNumGeometries(); i++) {
+							Vector<Point> toCheck = new Vector<Point>();
+							Polygon poly = (Polygon) polys.getGeometryN(i);
+							for (Coordinate c : poly.getExteriorRing().getCoordinates()) {
+								toCheck.add(new Point((int) c.x, (int) c.y));
+							}
+							Vector<Point> intersections = new Vector<Point>(Zone.isSelfIntersecting(toCheck));
+
 							if(!intersections.isEmpty()){
 								validate.setEnabled(false);
+							} else {
+								for (int j = 0; j<poly.getNumInteriorRing(); j++) {
+									toCheck = new Vector<Point>();
+									for (Coordinate c : poly.getInteriorRingN(j).getCoordinates()) {
+										toCheck.add(new Point((int) c.x, (int) c.y));
+									}
+									intersections = new Vector<Point>(Zone.isSelfIntersecting(toCheck));
+									if (!intersections.isEmpty()) {
+										validate.setEnabled(false);
+										break;
+									}
+								}
 							}
 							drawzoneview.setIntersections(intersections);
 						}
