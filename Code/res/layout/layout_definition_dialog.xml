@@ -84,6 +84,8 @@
             android:id="@+id/definition_button_validate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/definition_color_linear_layout"
+            android:layout_alignRight="@+id/definition_color_linear_layout"
             android:text="@string/validate" />
 
 </RelativeLayout>
