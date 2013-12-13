@@ -209,6 +209,7 @@ public class LoadLocalProjectsActivity extends Activity {
         if (requestCode == 1) {
         	if(MainActivity.photo.getUrlTemp() != null){
             //TODO vérifier que l'activité s'est bien terminée
+        		setResult(RESULT_OK);
             	finish();
         	}
         }

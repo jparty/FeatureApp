@@ -108,7 +108,7 @@ public class Project extends DataObject {
 			if(!cursor.isAfterLast()){
 				long old_id = this.getProjectId();
 				//long new_id = 1+cursor.getLong(0);
-				long new_id = this.project_id+Sync.getMaxId().get("Project");
+				long new_id = 1+this.project_id+Sync.getMaxId().get("Project");
 				this.setProjectId(new_id);
 				this.trigger(old_id, new_id, MainActivity.composed);
 			}

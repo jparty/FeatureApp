@@ -37,9 +37,13 @@ import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
-import com.google.android.gms.internal.n;
 import com.google.gson.Gson;
 
+/**
+ * All the maters of 
+ * @author Sebastien
+ *
+ */
 public class Sync
 {
 	/**
@@ -50,32 +54,32 @@ public class Sync
 	/**
 	 * Contains all the projects on server
 	 */
-	public static List<Project> refreshedValues = new ArrayList<Project>();
+	public static ArrayList<Project> refreshedValues = new ArrayList<Project>();
 	
 	/**
 	 * Contains all the relative photos on server of a project type
 	 */
-	public static List<Photo> refreshedValuesPhoto;
+	public static ArrayList<Photo> refreshedValuesPhoto;
 	
 	/**
 	 * Contains all the GpsGeom from Server
 	 */
-	public static List<GpsGeom> allGpsGeom = new ArrayList<GpsGeom>();
+	public static ArrayList<GpsGeom> allGpsGeom = new ArrayList<GpsGeom>();
 
 	/**
 	 * Contains all Composed from Server
 	 */
-	public static List<Composed> allComposed = new ArrayList<Composed>();
+	public static ArrayList<Composed> allComposed = new ArrayList<Composed>();
 	
 	/**
 	 * Contains all Elements from Server
 	 */
-	public static List<Element> allElement = new ArrayList<Element>();
+	public static ArrayList<Element> allElement = new ArrayList<Element>();
 	
 	/**
 	 * Contains all PixelGeom from Server
 	 */
-	public static List<PixelGeom> allPixelGeom = new ArrayList<PixelGeom>();
+	public static ArrayList<PixelGeom> allPixelGeom = new ArrayList<PixelGeom>();
 	
 	
 	/**
@@ -649,135 +653,159 @@ public class Sync
 		protected Void doInBackground(Void... params) { 
 
 			String JSON = getData();
-			try {
+			try{
 				JSONArray jArr = new JSONArray(JSON); 
 				refreshedValues = new ArrayList<Project>();
 				allGpsGeom = new ArrayList<GpsGeom>();
+				try {
+					JSONObject projects = jArr.getJSONObject(0);
+					JSONArray projectsInner = projects.getJSONArray("Project");
 
-				JSONObject projects = jArr.getJSONObject(0);
-				JSONArray projectsInner = projects.getJSONArray("Project");
+					for(int i=0;i<projectsInner.length();i++)
+					{
+						JSONObject project = projectsInner.getJSONObject(i);
+						long project_id = project.getLong("project_id");
+						String project_name = project.getString("project_name");
+						long gpsgeom_id = project.getLong("gpsgeom_id");
 
-				for(int i=0;i<projectsInner.length();i++)
-				{
-					JSONObject project = projectsInner.getJSONObject(i);
-					long project_id = project.getLong("project_id");
-					String project_name = project.getString("project_name");
-					long gpsgeom_id = project.getLong("gpsgeom_id");
-					
-					Project projectEnCours = new Project();
-					projectEnCours.setProjectId(project_id);
-					projectEnCours.setProjectName(project_name);
-					projectEnCours.setGpsGeom_id(gpsgeom_id);
-					
-					refreshedValues.add(projectEnCours);
-				}
-				
-				JSONObject photos = jArr.getJSONObject(1);
-				JSONArray photoInner = photos.getJSONArray("Photo");
+						Project projectEnCours = new Project();
+						projectEnCours.setProjectId(project_id);
+						projectEnCours.setProjectName(project_name);
+						projectEnCours.setGpsGeom_id(gpsgeom_id);
 
-				for(int i=0;i<photoInner.length();i++)
-				{
-					JSONObject photo = photoInner.getJSONObject(i);
-					long photo_id = photo.getLong("photo_id");
-					String photo_descript = photo.getString("photo_description");
-					String photo_url = photo.getString("photo_url");
-					String photo_author = photo.getString("photo_author");
-					long gpsgeom_id = photo.getLong("gpsGeom_id");
-					int photo_nbr = photo.getInt("photo_nbrPoint");
-					String photo_adresse = photo.getString("photo_adresse");
-					int photo_date = photo.getInt("photo_derniereModif");
-					
-					Photo photoEnCours = new Photo();
-					photoEnCours.setPhoto_id(photo_id);
-					photoEnCours.setPhoto_author(photo_author);
-					photoEnCours.setPhoto_description(photo_descript);
-					photoEnCours.setPhoto_url(photo_url);
-					photoEnCours.setGpsGeom_id(gpsgeom_id);
-					photoEnCours.setPhoto_nbrPoints(photo_nbr);
-					photoEnCours.setPhoto_adresse(photo_adresse);
-					photoEnCours.setPhoto_derniereModif(photo_date);
-					
-					refreshedValuesPhoto.add(photoEnCours);
+						refreshedValues.add(projectEnCours);
+					} 
+				} catch (JSONException e) {
+					Log.e("JSON Parser", "Error parsing data " + e.toString());
 				}
-				
-				JSONObject composeds = jArr.getJSONObject(2);
-				JSONArray composedInner = composeds.getJSONArray("Composed");
-				
-				for(int i=0;i<composedInner.length();i++)
-				{
-					JSONObject composed = composedInner.getJSONObject(i);
-					long project_id = composed.getLong("project_id");
-					long photo_id = composed.getLong("photo_id");
-					
-					Composed composedEnCours = new Composed();
-					composedEnCours.setProject_id(project_id);
-					composedEnCours.setPhoto_id(photo_id);
-					
-					allComposed.add(composedEnCours);
+
+				try{
+					JSONObject photos = jArr.getJSONObject(1);
+					JSONArray photoInner = photos.getJSONArray("Photo");
+
+					for(int i=0;i<photoInner.length();i++)
+					{
+						JSONObject photo = photoInner.getJSONObject(i);
+						long photo_id = photo.getLong("photo_id");
+						String photo_descript = photo.getString("photo_description");
+						String photo_url = photo.getString("photo_url");
+						String photo_author = photo.getString("photo_author");
+						long gpsgeom_id = photo.getLong("gpsGeom_id");
+						int photo_nbr = photo.getInt("photo_nbrPoint");
+						String photo_adresse = photo.getString("photo_adresse");
+						int photo_date = photo.getInt("photo_derniereModif");
+
+						Photo photoEnCours = new Photo();
+						photoEnCours.setPhoto_id(photo_id);
+						photoEnCours.setPhoto_author(photo_author);
+						photoEnCours.setPhoto_description(photo_descript);
+						photoEnCours.setPhoto_url(photo_url);
+						photoEnCours.setGpsGeom_id(gpsgeom_id);
+						photoEnCours.setPhoto_nbrPoints(photo_nbr);
+						photoEnCours.setPhoto_adresse(photo_adresse);
+						photoEnCours.setPhoto_derniereModif(photo_date);
+
+						refreshedValuesPhoto.add(photoEnCours);
+					}
+				} catch (JSONException e) {
+					Log.e("JSON Parser", "Error parsing data " + e.toString());
 				}
-				
-				JSONObject gpsGeom = jArr.getJSONObject(3);
-				JSONArray gpsGeomInner = gpsGeom.getJSONArray("GpsGeom");
-				
-				for(int i=0;i<gpsGeomInner.length();i++)
-				{
-					JSONObject gpsgeom = gpsGeomInner.getJSONObject(i);
-					long gpsGeom_id = gpsgeom.getLong("gpsGeom_id");
-					String gpsGeom_the_geom = gpsgeom.getString("gpsGeom_the_geom");
-					
-					GpsGeom gpsGeomEnCours = new GpsGeom();
-					gpsGeomEnCours.setGpsGeomId(gpsGeom_id);
-					gpsGeomEnCours.setGpsGeomCoord(gpsGeom_the_geom);
-					
-					allGpsGeom.add(gpsGeomEnCours);
+
+				try{
+					JSONObject composeds = jArr.getJSONObject(2);
+					JSONArray composedInner = composeds.getJSONArray("Composed");
+
+					for(int i=0;i<composedInner.length();i++)
+					{
+						JSONObject composed = composedInner.getJSONObject(i);
+						long project_id = composed.getLong("project_id");
+						long photo_id = composed.getLong("photo_id");
+
+						Composed composedEnCours = new Composed();
+						composedEnCours.setProject_id(project_id);
+						composedEnCours.setPhoto_id(photo_id);
+
+						allComposed.add(composedEnCours);
+					}
+				} catch (JSONException e) {
+					Log.e("JSON Parser", "Error parsing data " + e.toString());
 				}
-								
-				JSONObject elements = jArr.getJSONObject(4);
-				JSONArray elementInner = elements.getJSONArray("Element");
-				
-				for(int i=0;i<elementInner.length();i++)
-				{
-					JSONObject element = elementInner.getJSONObject(i);
-					long element_id = element.getLong("element_id");
-					long photo_id = element.getLong("photo_id");
-					long material_id = element.getLong("material_id");
-					long gpsGeom_id = element.getLong("gpsGeom_id");
-					long pixelGeom_id = element.getLong("pixelGeom_id");
-					long elementType_id = element.getLong("ElementType_id");
-					String element_color = element.getString("element_color");
-					
-					Element elementEnCours = new Element();
-					elementEnCours.setElement_id(element_id);
-					elementEnCours.setPhoto_id(photo_id);
-					elementEnCours.setMaterial_id(material_id);
-					elementEnCours.setGpsGeom_id(gpsGeom_id);
-					elementEnCours.setPixelGeom_id(pixelGeom_id);
-					elementEnCours.setElementType_id(elementType_id);
-					elementEnCours.setElement_color(element_color);
-					
-					allElement.add(elementEnCours);
+
+				try{
+					JSONObject gpsGeom = jArr.getJSONObject(3);
+					JSONArray gpsGeomInner = gpsGeom.getJSONArray("GpsGeom");
+
+					for(int i=0;i<gpsGeomInner.length();i++)
+					{
+						JSONObject gpsgeom = gpsGeomInner.getJSONObject(i);
+						long gpsGeom_id = gpsgeom.getLong("gpsGeom_id");
+						String gpsGeom_the_geom = gpsgeom.getString("gpsGeom_the_geom");
+
+						GpsGeom gpsGeomEnCours = new GpsGeom();
+						gpsGeomEnCours.setGpsGeomId(gpsGeom_id);
+						gpsGeomEnCours.setGpsGeomCoord(gpsGeom_the_geom);
+
+						allGpsGeom.add(gpsGeomEnCours);
+					}
+				} catch (JSONException e) {
+					Log.e("JSON Parser", "Error parsing data " + e.toString());
 				}
-				
-				JSONObject pixelGeom = jArr.getJSONObject(3);
-				JSONArray pixelInner = pixelGeom.getJSONArray("pixelGeom");
-				
-				for(int i=0;i<pixelInner.length();i++)
-				{
-					JSONObject pixel = pixelInner.getJSONObject(i);
-					long pixelGeom_id = pixel.getLong("pixel_id");
-					String pixelGeom_the_geom = pixel.getString("pixel_the_geom");
-					
-					PixelGeom pixelEnCours = new PixelGeom();
-					pixelEnCours.setPixelGeomId(pixelGeom_id);
-					pixelEnCours.setPixelGeom_the_geom(pixelGeom_the_geom);
-					
-					allPixelGeom.add(pixelEnCours);
+
+				try{			
+					JSONObject elements = jArr.getJSONObject(4);
+					JSONArray elementInner = elements.getJSONArray("Element");
+
+					for(int i=0;i<elementInner.length();i++)
+					{
+						JSONObject element = elementInner.getJSONObject(i);
+						long element_id = element.getLong("element_id");
+						long photo_id = element.getLong("photo_id");
+						long material_id = element.getLong("material_id");
+						long gpsGeom_id = element.getLong("gpsGeom_id");
+						long pixelGeom_id = element.getLong("pixelGeom_id");
+						long elementType_id = element.getLong("elementType_id");
+						String element_color = element.getString("element_color");
+
+						Element elementEnCours = new Element();
+						elementEnCours.setElement_id(element_id);
+						elementEnCours.setPhoto_id(photo_id);
+						elementEnCours.setMaterial_id(material_id);
+						elementEnCours.setGpsGeom_id(gpsGeom_id);
+						elementEnCours.setPixelGeom_id(pixelGeom_id);
+						elementEnCours.setElementType_id(elementType_id);
+						elementEnCours.setElement_color(element_color);
+
+						allElement.add(elementEnCours);
+					}
+				} catch (JSONException e) {
+					Log.e("JSON Parser", "Error parsing data " + e.toString());
 				}
-				
-             } catch (JSONException e) {
-                Log.e("JSON Parser", "Error parsing data " + e.toString());
-             }
-			return null;
+
+				try{			
+					JSONObject pixelGeom = jArr.getJSONObject(5);
+					JSONArray pixelInner = pixelGeom.getJSONArray("PixelGeom");
+
+					for(int i=0;i<pixelInner.length();i++)
+					{
+						JSONObject pixel = pixelInner.getJSONObject(i);
+						long pixelGeom_id = pixel.getLong("pixelGeom_id");
+						String pixelGeom_the_geom = pixel.getString("pixelGeom_the_geom");
+
+						PixelGeom pixelEnCours = new PixelGeom();
+						pixelEnCours.setPixelGeomId(pixelGeom_id);
+						pixelEnCours.setPixelGeom_the_geom(pixelGeom_the_geom);
+
+						allPixelGeom.add(pixelEnCours);
+					}
+
+				} catch (JSONException e) {
+					Log.e("JSON Parser", "Error parsing data " + e.toString());
+				}
+			} catch (Exception e) {
+
+			}
+		
+		return null;
 		}
 	 
 

@@ -130,6 +130,7 @@ public class LoadLocalPhotosActivity extends Activity{
 				//TODO do a better way to have the path !
 				MainActivity.photo.setUrlTemp(Environment.getExternalStorageDirectory()+"/featureapp/"+refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_url());
 				
+				setResult(RESULT_OK);
 				finish();
 
 			}

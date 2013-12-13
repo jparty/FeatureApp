@@ -34,6 +34,7 @@ import com.ecn.urbapp.fragments.InformationFragment;
 import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
+import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.ConnexionCheck;
 import com.ecn.urbapp.utils.Cst;
 import com.ecn.urbapp.utils.Utils;
@@ -299,17 +300,15 @@ public class MainActivity extends Activity {
 					}
 				break;
 				case Cst.CODE_LOAD_EXTERNAL_PROJECT:
-					if(MainActivity.project.isEmpty()){
-						datasource.instanciateAllElement();
-						datasource.instanciateAllGpsGeom();
-						datasource.instanciateAllProject();
-						datasource.instanciateAllpixelGeom();
-						
-						MainActivity.photo.setRegistredInLocal(true);
-						MainActivity.photo.setUrlTemp(null);
-						
-						getActionBar().setSelectedNavigationItem(2);
-					}
+					element = Sync.allElement;
+					gpsGeom = Sync.allGpsGeom;
+					project = Sync.refreshedValues;
+					pixelGeom = Sync.allPixelGeom;
+
+					MainActivity.photo.setRegistredInLocal(true);
+					MainActivity.photo.setUrlTemp(null);
+
+					getActionBar().setSelectedNavigationItem(2);
 				break;
 				case Cst.CODE_LOAD_PICTURE:
 					Utils.confirm(getFragmentManager());
