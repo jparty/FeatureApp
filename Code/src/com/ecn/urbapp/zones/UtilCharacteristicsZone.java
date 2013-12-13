@@ -170,8 +170,8 @@ public final class UtilCharacteristicsZone {
 				if (geomPoint.within(wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom()))) {
 					if (result == -1) {
 						result = i;
-					} else if (gf.createPolygon(gf.createLinearRing(((Polygon) wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom())).getExteriorRing().getCoordinates()), null).getArea()
-							< gf.createPolygon(gf.createLinearRing(((Polygon) wktr.read(MainActivity.pixelGeom.get(result).getPixelGeom_the_geom())).getExteriorRing().getCoordinates()), null).getArea()) {
+					} else  if (wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom()).getArea()
+							< wktr.read(MainActivity.pixelGeom.get(result).getPixelGeom_the_geom()).getArea()) {
 						result = i;
 					}
 				}
@@ -621,8 +621,13 @@ public final class UtilCharacteristicsZone {
 	 */
 	public static PixelGeom createHole(PixelGeom pgeomShell, PixelGeom pgeomHole)
 			throws ParseException {
-		MultiPolygon mpolyShell = (MultiPolygon) wktr.read(pgeomShell.getPixelGeom_the_geom());
-		Polygon polyShell = (Polygon) mpolyShell.getGeometryN(0);
+		Polygon polyShell = null;
+		Geometry geomShell = wktr.read(pgeomShell.getPixelGeom_the_geom());
+		if (geomShell instanceof MultiPolygon) {
+			polyShell = (Polygon) ((MultiPolygon) geomShell).getGeometryN(0);
+		} else if (geomShell instanceof Polygon) {
+			polyShell = (Polygon) geomShell;
+		}
 		Polygon polyHole = (Polygon) wktr.read(pgeomHole.getPixelGeom_the_geom());
 		LinearRing shell = gf.createLinearRing(polyShell.getExteriorRing()
 				.getCoordinates());

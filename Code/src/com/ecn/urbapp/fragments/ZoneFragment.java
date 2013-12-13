@@ -28,13 +28,16 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.dialogs.AddZoneDialogFragment;
 import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
 import com.ecn.urbapp.zones.Zone;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.io.ParseException;
 
@@ -251,35 +254,17 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				break;
 			case R.id.zone_button_validate:
 				if(!zone.getPoints().isEmpty()){
-					ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
-					for (PixelGeom pg : MainActivity.pixelGeom) {
-						lpg.add(pg);
-					}
-					ArrayList<Element> le = new ArrayList<Element>();
-					for (Element elt : MainActivity.element) {
-						le.add(elt);
-					}
-					try {
-						MainActivity.pixelGeom.remove(geomCache);
-						PixelGeom pg = new PixelGeom();
-						pg.setPixelGeom_the_geom(zone.getPolygon().toText());
-						UtilCharacteristicsZone.addInMainActivityZones(pg, null);
-						exitAction();
-						zone.clearBacks();//remove list of actions backs
-					} catch(TopologyException e) {
-						MainActivity.pixelGeom = lpg;
-						MainActivity.element = le;
-						TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
-						diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
+					//scf.validation();
+					MainActivity.pixelGeom.remove(geomCache);
+					AddZoneDialogFragment azdf = new AddZoneDialogFragment();
+					azdf.show(getFragmentManager(), "AddZoneDialogFragment");
+				} else {
+					state = IMAGE_SELECTION;
+					exitAction();
 				}
 				for(PixelGeom pg : MainActivity.pixelGeom){
 					pg.selected=false;
 				}
-				state = IMAGE_SELECTION;
-				exitAction();
 				break;
 			}
 			break;
@@ -305,8 +290,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		cancel.setEnabled(false);
 		delete.setEnabled(false);
 
-		zone = new Zone(); zoneCache = new Zone(); selected = new Point(0,0); 
-		
+		zone = new Zone(); selected = new Point(0,0); 
 		myImage = (ImageView) v.findViewById(R.id.image_zone);
 		
 		drawzoneview = new DrawZoneView(zone, selected) ;
@@ -363,30 +347,9 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 * Validation of the create of the drawn zone
 	 */
 	private void validateCreation(){
-		ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
-		for (PixelGeom pg : MainActivity.pixelGeom) {
-			lpg.add(pg);
-		}
-		ArrayList<Element> le = new ArrayList<Element>();
-		for (Element elt : MainActivity.element) {
-			le.add(elt);
-		}
-		try {
-			PixelGeom pg = new PixelGeom();
-			pg.setPixelGeom_the_geom((new Zone(zone)).getPolygon().toText());
-			UtilCharacteristicsZone.addInMainActivityZones(pg, null);
-			exitAction();
-			zone.clearBacks();
-		} catch(TopologyException e) {
-			MainActivity.pixelGeom = lpg;
-			MainActivity.element = le;
-			TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
-			diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		state = IMAGE_SELECTION;
-		exitAction();
+		//scf.validation();
+		AddZoneDialogFragment azdf = new AddZoneDialogFragment();
+		azdf.show(getFragmentManager(), "AddZoneDialogFragment");
 	}
 	
 	/**
@@ -438,17 +401,34 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				back.setEnabled(true);
 				if(points.size()>2+1){
 					validate.setEnabled(true);
-					zone.actualizePolygon();
-					MultiPolygon poly = zone.getPolygon();
-					for (int i=0; i<poly.getNumGeometries(); i++) {
-						PixelGeom pgeom = new PixelGeom();
-						pgeom.setPixelGeom_the_geom(poly.getGeometryN(i).toText());
-						Zone zone = ConvertGeom.pixelGeomToZone(pgeom);
-						Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting(zone.getPoints()));
-						if(!intersections.isEmpty()){
-							validate.setEnabled(false);
+					if(points.size()>2+1){//cannot be intersections with less than 3 points but needed for refreshing displaying
+						zone.actualizePolygon();
+						MultiPolygon polys = zone.getPolygon();
+						for (int i=0; i<polys.getNumGeometries(); i++) {
+							Vector<Point> toCheck = new Vector<Point>();
+							Polygon poly = (Polygon) polys.getGeometryN(i);
+							for (Coordinate c : poly.getExteriorRing().getCoordinates()) {
+								toCheck.add(new Point((int) c.x, (int) c.y));
+							}
+							Vector<Point> intersections = new Vector<Point>(Zone.isSelfIntersecting(toCheck));
+
+							if(!intersections.isEmpty()){
+								validate.setEnabled(false);
+							} else {
+								for (int j = 0; j<poly.getNumInteriorRing(); j++) {
+									toCheck = new Vector<Point>();
+									for (Coordinate c : poly.getInteriorRingN(j).getCoordinates()) {
+										toCheck.add(new Point((int) c.x, (int) c.y));
+									}
+									intersections = new Vector<Point>(Zone.isSelfIntersecting(toCheck));
+									if (!intersections.isEmpty()) {
+										validate.setEnabled(false);
+										break;
+									}
+								}
+							}
+							drawzoneview.setIntersections(intersections);
 						}
-						drawzoneview.setIntersections(intersections);
 					}
 				}
 			}
@@ -590,6 +570,47 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			cancel.setEnabled(true);
 			delete.setEnabled(true);
 			refreshDisplay();
+	}
+
+	/**
+	 * Add the equivalent of the attribute zone in MainActivity.pixelGeom.
+	 * Intersect this new PixelGeom wih older if the boolean in parameter is true. 
+	 * @param tryIntersect intersect the zone to add with existing zones if true
+	 */
+	public void addZone(boolean tryIntersect) {
+		PixelGeom pgeom = new PixelGeom();
+		zone.actualizePolygon();
+		pgeom.setPixelGeom_the_geom(zone.getPolygon().toText());
+		try {
+			if (tryIntersect) {
+				ArrayList<PixelGeom> lpg = new ArrayList<PixelGeom>();
+				for (PixelGeom pg : MainActivity.pixelGeom) {
+					lpg.add(pg);
+				}
+				ArrayList<Element> le = new ArrayList<Element>();
+				for (Element elt : MainActivity.element) {
+					le.add(elt);
+				}
+				try {
+					UtilCharacteristicsZone.addInMainActivityZones(pgeom, null);
+					state = IMAGE_SELECTION;
+					exitAction();
+					zone.clearBacks();//remove list of actions backs
+				} catch(TopologyException e) {
+					MainActivity.pixelGeom = lpg;
+					MainActivity.element = le;
+					TopologyExceptionDialogFragment diag = new TopologyExceptionDialogFragment();
+					diag.show(getFragmentManager(), "TopologyExceptionDialogFragment");
+				}
+			} else {
+				UtilCharacteristicsZone.addPixelGeom(pgeom, null);
+				state = IMAGE_SELECTION;
+				exitAction();
+				zone.clearBacks();//remove list of actions backs
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
