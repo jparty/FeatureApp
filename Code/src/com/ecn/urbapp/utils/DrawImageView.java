@@ -99,20 +99,18 @@ public class DrawImageView extends Drawable {
 				}
 				WKTReader wktr = new WKTReader();
 				for (PixelGeom pg : UtilCharacteristicsZone
-						.getPixelGeomsFromGeom(wktr.read(MainActivity.pixelGeom
+								.getPixelGeomsFromGeom(wktr.read(MainActivity.pixelGeom
 								.get(i).getPixelGeom_the_geom()), false)) {
-					Polygon poly = (Polygon) wktr.read(pg
-							.getPixelGeom_the_geom());
-					Coordinate[] points2 = poly.getExteriorRing()
-							.getCoordinates();
+					Polygon poly = (Polygon) wktr.read(pg.getPixelGeom_the_geom());
+					Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
 
-					/*if (el.getElement_color() != null
+					if (el.getElement_color() != null
 							&& Integer.parseInt(el.getElement_color()) != 0) {
 						finishedPaint.setColor(Integer.parseInt(el
 								.getElement_color()));
 					} else {
 						finishedPaint.setColor(Color.RED);
-					}*/
+					}
 
 					// Create a closed path for the polygon
 					Path polyPath = new Path();
