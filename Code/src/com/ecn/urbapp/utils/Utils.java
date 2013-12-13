@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import android.app.FragmentManager;
 import android.content.Context;
@@ -17,6 +18,12 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.DataObject;
+import com.ecn.urbapp.db.Element;
+import com.ecn.urbapp.db.GpsGeom;
+import com.ecn.urbapp.db.Photo;
+import com.ecn.urbapp.db.PixelGeom;
+import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.dialogs.ConfirmPhotoDialogFragment;
 
 public class Utils{
@@ -96,4 +103,46 @@ public class Utils{
 		return (String) formater.format(actual);
 	}
 	
+	/**
+	 * 
+	 * @param list list of elements to search
+	 * @param id Id of the element that is finded
+	 * @return return the element if it's in the list
+	 */
+	public static DataObject getElementById(List<DataObject> list, long id){
+		DataObject ret = null;
+		for(DataObject dobj : list){
+			if(dobj instanceof Element){
+				if(((Element)dobj).getElement_id()==id){
+					ret=dobj;
+					break;
+				}
+			}
+			else if(dobj instanceof GpsGeom){
+				if(((GpsGeom)dobj).getGpsGeomsId()==id){
+					ret=dobj;
+					break;
+				}
+			}
+			else if(dobj instanceof Photo){
+				if(((Photo)dobj).getPhoto_id()==id){
+					ret=dobj;
+					break;
+				}
+			}
+			else if(dobj instanceof PixelGeom){
+				if(((PixelGeom)dobj).getPixelGeomId()==id){
+					ret=dobj;
+					break;
+				}
+			}
+			else if(dobj instanceof Project){
+				if(((Project)dobj).getProjectId()==id){
+					ret=dobj;
+					break;
+				}
+			}
+		}
+		return ret;		
+	}
 }

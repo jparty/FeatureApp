@@ -12,45 +12,66 @@ public class GpsGeom extends DataObject{
 	
 	
 	//Attributes
-	//TODO Adddescription for javadoc
+	/**
+	 * long id of the gpsGeom
+	 */
 	private long gpsGeom_id;
-	//TODO Adddescription for javadoc
+	/**
+	 * String that describes a the_geom dataType in postgis
+	 */
 	private String gpsGeom_the_geom;
 	/**
 	 * Field containing the addressof the GpsGeom.
-	 * It's used only into the application.
-	 * It will not be registered in the database.
 	 */
 	private String gpsGeom_address;
 
 	
 	//Getters
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for gpsGeom_id
+	 * @return long gpsGeom_id
+	 */
 	public long getGpsGeomsId(){
 		return gpsGeom_id;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for gpsGeom geom
+	 * @return String gpsGeom_the_geom;
+	 */
 	public String getGpsGeomCord() {
 		return gpsGeom_the_geom;
 	}
 	
+	/**
+	 * getter for gpsGeom_address
+	 * @return String gpsGeom_address;
+	 */
 	public String getAddress(){
 		return gpsGeom_address;
 	}	
 	
 	//Setters
-	//TODO Adddescription for javadoc
-	public void setGpsGeomCoord(String str) {
-		this.gpsGeom_the_geom = str;
-	}
-
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for gpsGeom_id
+	 * @param long gpsGeom_id
+	 */
 	public void setGpsGeomId(long id) {
 		this.gpsGeom_id = id;
 	}
 
+	/**
+	 * setter for gpsGeom_the_geom
+	 * @param String str which will be gpsGeom_the_geom;
+	 */
+	public void setGpsGeomCoord(String str) {
+		this.gpsGeom_the_geom = str;
+	}
 	
+	/**
+	 * setter for gpsGeom_address
+	 * @param String s which will be gpsGeom_address;
+	 */
 	public void setAddress(String s){
 		gpsGeom_address=s;
 	}
@@ -59,24 +80,10 @@ public class GpsGeom extends DataObject{
 	
 	
 	//Ovveride methods
-	//TODO Adddescription for javadoc
-	//will be used by the ArayAdapter in the ListView
 	@Override
 	public String toString() {
 		return "gpsGeom_id =" + this.gpsGeom_id + "&" + "\n gpsGeom_the_geom =" + this.gpsGeom_the_geom  + "&" + "\n coord =" + this.gpsGeom_id;
 		
-	}
-
-	@Override
-	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long setId() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
@@ -100,7 +107,7 @@ public class GpsGeom extends DataObject{
 			if(!cursor.isAfterLast()){
 				long old_id = this.getGpsGeomsId();
 				//long new_id = 1+cursor.getLong(0);
-				long new_id = this.gpsGeom_id+Sync.getMaxId().get("GpsGeom");
+				long new_id = 1+Sync.getMaxId().get("GpsGeom")+this.gpsGeom_id;
 				this.setGpsGeomId(new_id);
 				this.trigger(old_id, new_id, MainActivity.photo, MainActivity.project, MainActivity.element);
 			}
@@ -108,6 +115,7 @@ public class GpsGeom extends DataObject{
 			datasource.getDatabase().insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);	
 		}
 	}		
+	
 	/**
 	 * query to get the biggest GpsGeom_id from local db
 	 * 
@@ -120,26 +128,41 @@ public class GpsGeom extends DataObject{
 			+" DESC LIMIT 1 ;"
 		;
 	
-	
+	/**
+	 * trigger method is used to update foreign keys in the dataObjects
+	 * this method is used before saving objects in database thank's to the "saved fragment"
+	 * @param old_id represents the past id of our GpsGeom
+	 * @param new_id represents the new id of our GpsGeom
+	 * @param photo represents the photo which we are working on and therefore is related to this gpsGeom
+	 * @param list_projet represents the projects that are related to this gpsGeom
+	 * @param list_element represents the projects that are related to this gpsGeom
+	 */
 	public void trigger(long old_id, long new_id, Photo photo, ArrayList<Project> list_projet, ArrayList<Element> list_element ){
+		/**
+		 * we update gpsGeom_id from past to new in the photo that is geolocalised by this gpsGeom
+		 */
 		if (photo.getGpsGeom_id() == old_id){
 			photo.setGpsGeom_id(new_id);
 		}
+		/**
+		 * we update gpsGeom_id from past to new in the projects that are geolocalised by this gpsGeom
+		 */
 		if (list_projet!=null){
 			for (Project p : list_projet){
 				if(p.getGpsGeom_id()==old_id){
 					p.setGpsGeom_id(new_id);
 				}
 			}
-			
 		}
+		/**
+		 * we update gpsGeom_id from past to new in the elements that are geolocalised by this gpsGeom
+		 */
 		if (list_element!=null){
 			for (Element e : list_element){
 				if(e.getGpsGeom_id()==old_id){
 					e.setGpsGeom_id(new_id);
 				}
 			}
-			
 		}
 		
 	}

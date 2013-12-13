@@ -30,9 +30,7 @@ import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.AddZoneDialogFragment;
 import com.ecn.urbapp.dialogs.TopologyExceptionDialogFragment;
-import com.ecn.urbapp.dialogs.UnionDialogFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
-import com.ecn.urbapp.utils.GetId;
 import com.ecn.urbapp.zones.BitmapLoader;
 import com.ecn.urbapp.zones.DrawZoneView;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
@@ -52,14 +50,14 @@ import com.vividsolutions.jts.io.ParseException;
  * ZoneFragment class
  * 
  * This is the fragment used to define the different zones.
- * 			
  */
 
 public class ZoneFragment extends Fragment implements OnClickListener, OnTouchListener{
+	
 	/**
 	 * Field defining the radius tolerance on touch
 	 */
-	private final int REFERENCE_TOUCH_RADIUS_TOLERANCE = 30;//only for catching points in edit mode
+	private final int REFERENCE_TOUCH_RADIUS_TOLERANCE = 30;
 	
 	/**
 	 * Constant field defining the reference height to correct the size of point for the zone creation
@@ -85,18 +83,17 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 * Button cancel
 	 */
 	private Button cancel;
-	/**
-	 * Button fusion
-	 */
-	//private Button fusion;
+	
 	/**
 	 * Button back
 	 */
 	private Button back;
+	
 	/**
 	 * Button validate
 	 */
 	private Button validate;
+	
 	/**
 	 * Button delete
 	 */
@@ -138,9 +135,20 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 */
 	private float touchRadiusTolerance;
 	
-	public static Element elementTemp;
+	/**
+	 * view containing the draw elements
+	 */
 	private DrawZoneView drawzoneview;
-	private int imageHeight; private int imageWidth;
+	
+	/**
+	 * image height of the picture
+	 */
+	private int imageHeight;
+	
+	/**
+	 * image with of the picture
+	 */
+	private int imageWidth;
 	
 	/**
 	 * Constant value
@@ -162,8 +170,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	
 	private int moving;
 
-	//private SetCharactFragment scf;
-	//private RecapCharactFragment rcf;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
@@ -171,41 +177,36 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 
 	@Override
 	public void onClick(View v) {
-		Log.d("Move","Etat:"+state);
 		switch(state){
-		
-		case IMAGE_SELECTION:
-			break;
 		case IMAGE_CREATION:
 			switch(v.getId()){
+			
 			case R.id.zone_button_back:
 				if(!zone.back()){
 					Toast.makeText(getActivity(), R.string.no_back, Toast.LENGTH_SHORT).show();
 				}
 				refreshDisplay();
 				break;
+				
 			case R.id.zone_button_cancel:
-				//scf.resetAffichage();
 				state = IMAGE_SELECTION;
 				exitAction();
 				break;
+				
 			case R.id.zone_button_delete:
 				if(POINT_SELECTED){
 					if (!zone.deletePoint(selected)){
 						Toast.makeText(getActivity(), R.string.point_deleting_impossible, Toast.LENGTH_SHORT).show();
 					}
-					selected.set(0,0);//no selected point anymore
+					selected.set(0,0);
 					refreshDisplay();
 					delete.setEnabled(false);
 					POINT_SELECTED = false;
 				}
 				break;
-			/*case R.id.zone_button_fusion:
-				UnionDialogFragment summarydialog = new UnionDialogFragment();
-				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
-				break;*/
+				
 			case R.id.zone_button_validate:
-				validateCreation();//it's also possible to create a zone by looping polygon, use this method !
+				validateCreation();
 				break;
 			}
 			break;
@@ -216,7 +217,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					if (!zone.deletePoint(selected)){
 						Toast.makeText(getActivity(), "Impossible de supprimer ce point", Toast.LENGTH_SHORT).show();
 					}
-					selected.set(0,0);//no selected point anymore
+					selected.set(0,0);
 					refreshDisplay();
 					delete.setEnabled(false);
 					POINT_SELECTED = false;
@@ -228,7 +229,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 							for(int i=0; i<MainActivity.element.size(); i++){
 								if(MainActivity.element.get(i).getPixelGeom_id()==MainActivity.pixelGeom.get(pos).getPixelGeomId()){
 									MainActivity.element.remove(i);
-									//scf.resetAffichage();
 									break;
 								}
 							}
@@ -244,17 +244,12 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				if(!zone.back()){
 					Toast.makeText(getActivity(), R.string.no_back, Toast.LENGTH_SHORT).show();
 				}
-	            refreshDisplay();
+				refreshDisplay();
 				break;
 			case R.id.zone_button_cancel:
-				//scf.resetAffichage();
-	            exitAction();
+				exitAction();
 				state = IMAGE_SELECTION;
 				break;
-			/*case R.id.zone_button_fusion:
-				UnionDialogFragment summarydialog = new UnionDialogFragment();
-				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
-				break;*/
 			case R.id.zone_button_validate:
 				if(!zone.getPoints().isEmpty()){
 					//scf.validation();
@@ -279,7 +274,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		View v = inflater.inflate(R.layout.layout_zone, null);
 
 		back = (Button) v.findViewById(R.id.zone_button_back);
-		//fusion = (Button) v.findViewById(R.id.zone_button_fusion);
 		cancel = (Button) v.findViewById(R.id.zone_button_cancel);
 		validate = (Button) v.findViewById(R.id.zone_button_validate);
 		delete = (Button) v.findViewById(R.id.zone_button_delete);
@@ -288,12 +282,10 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		cancel.setOnClickListener(this);
 		validate.setOnClickListener(this);
 		delete.setOnClickListener(this);
-		//fusion.setOnClickListener(this);
 		
 		validate.setEnabled(false);
 		back.setEnabled(false);
 		cancel.setEnabled(false);
-		//fusion.setEnabled(false);
 		delete.setEnabled(false);
 
 		zone = new Zone(); selected = new Point(0,0); 
@@ -307,17 +299,11 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			new BitmapDrawable(
 				getResources(),
 				BitmapLoader.decodeSampledBitmapFromFile(
-						Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(), metrics.widthPixels, metrics.heightPixels - 174)), drawzoneview
-		};//TODO 174 corresponds to menu bar + buttons bar. Calculate this value ! Maybe by charging a small picture before to know ImageView size
-
-				
+						Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(),metrics.widthPixels, metrics.heightPixels - 174)),drawzoneview
+		};
+		
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		myImage.setOnTouchListener(this);
-
-		//scf = (SetCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentCaract);
-		//rcf = (RecapCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentRecap);
-		//rcf.setZoneFragment(this);
-		
 		
 		return v;
 	}
@@ -326,7 +312,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	public void onStart(){
 		super.onStart();
 		
-		state=1;
+		state=IMAGE_SELECTION;
 		
 		imageHeight = myImage.getDrawable().getIntrinsicHeight(); 
 		imageWidth = myImage.getDrawable().getIntrinsicWidth();
@@ -343,25 +329,32 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 * Common action to do on exit (cancel or validation)
 	 */
 	private void exitAction(){
-        drawzoneview.onZonePage();
+		drawzoneview.onZonePage();
 		validate.setEnabled(false);
 		back.setEnabled(false);
 		cancel.setEnabled(false);
-		//fusion.setEnabled(false);
 		delete.setEnabled(false);
 		
 		zone.setZone(new Zone());
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
 		myImage.invalidate();
-		//rcf.refresh();
 	}
 	
+	/**
+	 * Validation of the create of the drawn zone
+	 */
 	private void validateCreation(){
 		//scf.validation();
 		AddZoneDialogFragment azdf = new AddZoneDialogFragment();
 		azdf.show(getFragmentManager(), "AddZoneDialogFragment");
 	}
+	
+	/**
+	 * The function return the point touch by the user
+	 * @param event
+	 * @return The point touch
+	 */
 	public Point getTouchedPoint(MotionEvent event){
 		float[] coord = {event.getX(),event.getY()};//get touched point coord
 
@@ -386,48 +379,27 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		return(new Point(pointX,pointY));
 	}
 	
+	/**
+	 * Set the matrix for the image
+	 */
 	public void getMatrix(){
 		matrix = new Matrix();
 		myImage.getImageMatrix().invert(matrix);
 	}
 	
+	/**
+	 * refresh of the display
+	 */
 	public void refreshDisplay(){
 		Vector<Point> points = zone.getPoints();
 		if(! points.isEmpty()){
-			back.setEnabled(false);							
+			back.setEnabled(false);
 			validate.setEnabled(false);
 			if(points.size()>1+1){
 				back.setEnabled(true);
 				if(points.size()>2+1){
 					validate.setEnabled(true);
-					if(points.size()>2+1){//cannot be intersections with less than 3 points but needed for refreshing displaying
-						zone.actualizePolygon();
-						MultiPolygon poly = zone.getPolygon();
-						for (int i=0; i<poly.getNumGeometries(); i++) {
-							PixelGeom pgeom = new PixelGeom();
-							pgeom.setPixelGeom_the_geom(poly.getGeometryN(i).toText());
-							Zone zone = ConvertGeom.pixelGeomToZone(pgeom);
-							Vector<Point> intersections = new Vector<Point>(zone.isSelfIntersecting(zone.getPoints()));
-							if(!intersections.isEmpty()){
-								validate.setEnabled(false);
-							}
-							drawzoneview.setIntersections(intersections);
-						}
-					}
-				}
-			}
-		}
-		myImage.invalidate();
-	}
-    /*public void refreshDisplay(){
-		Vector<Point> points = zone.getPoints();
-		if(points.size()<3+1){//+1 corresponds to the ending point closing polygon 
-			validate.setEnabled(false);
-		}
-		else{
-			if(points.size()>2+1){
-				validate.setEnabled(true);
-				if(points.size()>3+1){
+					zone.actualizePolygon();
 					MultiPolygon poly = zone.getPolygon();
 					for (int i=0; i<poly.getNumGeometries(); i++) {
 						PixelGeom pgeom = new PixelGeom();
@@ -443,66 +415,74 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			}
 		}
 		myImage.invalidate();
-	}*/
+	}
 
-    /**
-     * All touches handling method. Override Android API method.
-     */
+	/**
+	 * All touches handling method. Override Android API method.
+	 */
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-			switch(state){
-			case IMAGE_EDITION:	case IMAGE_CREATION: //app behavior in these two cases are quite the same, except some ifs
-				Log.d("Move","Moving:"+moving);
-				if(event.getAction() == MotionEvent.ACTION_DOWN && !POINT_SELECTED){
-					moving = 0;//ACTION_MOVE occurrences
-					Log.d("Move","Action Down");
-					selected.set(0, 0);
-					Point touch = getTouchedPoint(event);
-					for(Point p : zone.getPoints()){//is the touched point a normal point ?
+		if(state==IMAGE_SELECTION){
+			if (event.getAction() == MotionEvent.ACTION_UP) { 
+				if(!hasZoneSelected(event)){
+		    		getMatrix();
+					zone.addPoint2(getTouchedPoint(event));
+					state = IMAGE_CREATION; drawzoneview.onCreateMode();
+					validate.setEnabled(false);
+					back.setEnabled(false);
+					cancel.setEnabled(true);
+				}
+			}
+		}
+		else{
+			if(event.getAction() == MotionEvent.ACTION_DOWN && !POINT_SELECTED){
+				moving = 0;//ACTION_MOVE occurrences
+				selected.set(0, 0);
+				Point touch = getTouchedPoint(event);
+				for(Point p : zone.getPoints()){//is the touched point a normal point ?
+					float dx=Math.abs(p.x-touch.x);
+					float dy=Math.abs(p.y-touch.y);
+					if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){//10 radius tolerance
+						selected.set(p.x,p.y);
+					}
+				}
+				if(selected.x == 0 && selected.y == 0){//is the touched point a middle point ?
+					for(Point p : zone.getMiddles()){
 						float dx=Math.abs(p.x-touch.x);
 						float dy=Math.abs(p.y-touch.y);
-						if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){//10 radius tolerance
+						if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){
 							selected.set(p.x,p.y);
 						}
 					}
-					if(selected.x == 0 && selected.y == 0){//is the touched point a middle point ?
-						for(Point p : zone.getMiddles()){
-							float dx=Math.abs(p.x-touch.x);
-							float dy=Math.abs(p.y-touch.y);
-							if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){
-								selected.set(p.x,p.y);
+				}
+			}
+			if (event.getAction() == MotionEvent.ACTION_UP) {
+				if(POINT_SELECTED){
+					selected.set(0, 0);
+					POINT_SELECTED = false; delete.setEnabled(false);
+				}
+				else{
+					if(selected.x==0 && selected.y==0){
+						if(state == IMAGE_CREATION){
+							zone.addPoint2(getTouchedPoint(event));				
+						}else{
+							//if the user is touching a long time, and not by moving, a zone, switch zone selected 
+							if(moving < 2){
+								hasZoneSelected(event);
 							}
 						}
 					}
-				}
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					Log.d("Move","Action Up, down time:"+(event.getEventTime()-event.getDownTime()));
-					if(POINT_SELECTED){
-						selected.set(0, 0);
-						POINT_SELECTED = false; delete.setEnabled(false);
-					}
 					else{
-						if(selected.x==0 && selected.y==0){
-							if(state == IMAGE_CREATION){
-								zone.addPoint2(getTouchedPoint(event));				
-							}else{
-								//if the user is touching a long time, and not by moving, a zone, switch zone selected 
-								if(moving < 2){
-									hasZoneSelected(event);
+						if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<REFERENCE_TIME){
+							if(zone.getPoints().size()>2+1){
+								float dx=Math.abs(zone.getPoints().get(0).x-selected.x);
+								float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
+								if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){//10 radius tolerance
+									validateCreation();
 								}
 							}
 						}
 						else{
-							if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<REFERENCE_TIME){
-								if(zone.getPoints().size()>2+1){
-									float dx=Math.abs(zone.getPoints().get(0).x-selected.x);
-									float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
-									if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){//10 radius tolerance
-										validateCreation();
-										break;
-									}
-								}
-							}
 							Point touch = getTouchedPoint(event);
 							if(moving > 2){//if there is a real movement
 								zone.updatePoint(selected, touch);
@@ -516,68 +496,40 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						}
 					}
 				}
-				if (event.getAction() == MotionEvent.ACTION_MOVE && !POINT_SELECTED) {
-					moving ++;
-					Log.d("Move","Action Move");
-					if(selected.x!=0 || selected.y!=0){
-						Point touch = getTouchedPoint(event);
-						if (moving==3){
-							if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
-								zone.updateMiddle(selected, touch);//If not it's a "middle" point, and it's upgraded to normal
-								zone.startMove(null);	
-							}else{
-								zone.startMove(selected);
-							}
+			}
+			if (event.getAction() == MotionEvent.ACTION_MOVE && !POINT_SELECTED) {
+				moving ++;
+				Log.d("Move","Action Move");
+				if(selected.x!=0 || selected.y!=0){
+					Point touch = getTouchedPoint(event);
+					if (moving==3){
+						if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
+							zone.updateMiddle(selected, touch);//If not it's a "middle" point, and it's upgraded to normal
+							zone.startMove(null);	
+						}else{
+							zone.startMove(selected);
+						}
+						selected.set(touch.x,touch.y);
+					}
+					else{
+						if(moving>3){
+							zone.updatePoint(selected, touch);
 							selected.set(touch.x,touch.y);
 						}
-						else{
-							if(moving>3){
-								zone.updatePoint(selected, touch);
-								selected.set(touch.x,touch.y);
-							}
-						}
 					}
 				}
-				refreshDisplay();//display new point, refresh buttons' availabilities	
-				break;
-
-			case IMAGE_SELECTION:
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					if(!hasZoneSelected(event)){
-			    		getMatrix();
-						zone.addPoint2(getTouchedPoint(event));
-						refreshDisplay();
-						state = IMAGE_CREATION; drawzoneview.onCreateMode();
-						validate.setEnabled(false);
-						back.setEnabled(false);
-						cancel.setEnabled(true);
-						//fusion.setEnabled(true);
-						
-						elementTemp = new Element();
-						elementTemp.setElement_id(GetId.Element());
-						elementTemp.setPhoto_id(MainActivity.photo.getPhoto_id());
-						elementTemp.setPixelGeom_id(GetId.PixelGeom());
-						elementTemp.setGpsGeom_id(MainActivity.photo.getGpsGeom_id());
-					}
-				}
-				break;
 			}
+		}
+		refreshDisplay();
 		return true;
-	}
-
-	@Override
-	public void onStop(){
-		super.onStop();
 	}
 	
 	public void selectGeom(long i){
 		if(state==IMAGE_CREATION){
-			//scf.resetAffichage();
 			state = IMAGE_SELECTION;
 			exitAction();
 		}
 		else if(state==IMAGE_EDITION){
-			//scf.resetAffichage();
             exitAction();
 		}
 			Zone z=null;
@@ -597,14 +549,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			validate.setEnabled(true);
 			back.setEnabled(false);
 			cancel.setEnabled(true);
-			//fusion.setEnabled(true);
 			delete.setEnabled(true);
 			refreshDisplay();
-			//scf.setAffichage(geomCache);
-	}
-
-	public static ImageView getMyImage(){
-		return myImage;
 	}
 
 	/**
@@ -665,7 +611,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					flag=true;
 					geomCache = pg;
 					z=ConvertGeom.pixelGeomToZone(pg);
-					//scf.setAffichage(pg);
 					break;
 				}
 			}
@@ -677,11 +622,10 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			validate.setEnabled(true);
 			back.setEnabled(false);
 			cancel.setEnabled(true);
-			//fusion.setEnabled(true);
 			delete.setEnabled(true);
 			refreshDisplay();
 			return true;
-			}
+		}
 		else{
 			return false;
 		}

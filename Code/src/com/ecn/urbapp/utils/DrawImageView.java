@@ -47,10 +47,7 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.zones.UtilCharacteristicsZone;
-
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -102,12 +99,10 @@ public class DrawImageView extends Drawable {
 				}
 				WKTReader wktr = new WKTReader();
 				for (PixelGeom pg : UtilCharacteristicsZone
-						.getPixelGeomsFromGeom(wktr.read(MainActivity.pixelGeom
+								.getPixelGeomsFromGeom(wktr.read(MainActivity.pixelGeom
 								.get(i).getPixelGeom_the_geom()), false)) {
-					Polygon poly = (Polygon) wktr.read(pg
-							.getPixelGeom_the_geom());
-					Coordinate[] points2 = poly.getExteriorRing()
-							.getCoordinates();
+					Polygon poly = (Polygon) wktr.read(pg.getPixelGeom_the_geom());
+					Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
 
 					if (el.getElement_color() != null
 							&& Integer.parseInt(el.getElement_color()) != 0) {

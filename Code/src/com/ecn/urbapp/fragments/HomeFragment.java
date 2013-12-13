@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.LoadExternalProjectsActivity;
 import com.ecn.urbapp.activities.LoadLocalProjectsActivity;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.utils.Cst;
@@ -56,16 +57,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	 * Image button launching the activity LoadDistantProject
 	 */
 	private ImageView imageLoadDistant;
-	
-	//TODO transfert this piece of code
-	/*
-	private String imageStoredUrl;
-	private ImageDownloader imageDownloader = new ImageDownloader();
-	private String[] URLs={
-			"http://static.tumblr.com/604c1f8526cf8f5511c6d7a5e32f9abd/u00yntv/2wEmlbf4d/tumblr_static_baby_otter.jpg",
-			"http://axemdo.files.wordpress.com/2010/07/loutre1.jpg",
-			"http://www.spaycificzoo.com/wp-content/uploads/2011/11/loutre_naine1-300x232.jpg"
-	};*/
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -123,9 +115,10 @@ public class HomeFragment extends Fragment implements OnClickListener{
 				getActivity().startActivityForResult(i,Cst.CODE_LOAD_LOCAL_PROJECT);
 				break;
 			case R.id.home_image_loadDistantProject:
-				//TODO transfert this piece of code
-				//imageStoredUrl = imageDownloader.download(URLs[(int) (Math.random()*3)], image, "img"+((int)(Math.random()*3+1))+".png");
-			break;
+            	 i = new Intent(this.getActivity(), LoadExternalProjectsActivity.class);
+                 getActivity().startActivityForResult(i,Cst.CODE_LOAD_EXTERNAL_PROJECT);
+                 break;
+
 		}	
 	}
 }

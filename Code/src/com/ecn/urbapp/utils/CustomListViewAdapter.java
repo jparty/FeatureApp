@@ -59,7 +59,7 @@ public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
         /**
          * Load Pictures from local data
          */
-    	Bitmap myShrinkedBitmap = ShrinkBitmap(rowItem.getImagePath(), 20, 20);
+    	Bitmap myShrinkedBitmap = ShrinkBitmap(rowItem.getImagePath(), 100, 100);
     	holder.imageView.setImageBitmap(myShrinkedBitmap);
 	     
         return convertView;

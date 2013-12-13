@@ -21,11 +21,6 @@ public abstract class DataObject {
 		return registredInLocal;
 	}
 	
-	/**
-	 * method to get the Id of a DataObject
-	 * will be specified in each class that inherits DataObjects
-	 */
-	public abstract long getId();
 
 	
 	
@@ -39,13 +34,8 @@ public abstract class DataObject {
 		this.registredInLocal = registredInLocal;
 	}
 	
-	/**
-	 * method to set the Id of a DataObject
-	 * will be specified in each class that inherits DataObjects
-	 */
-	public abstract long setId();
 
-	
+
 	
 	
 	

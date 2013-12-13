@@ -65,24 +65,10 @@ public class Project extends DataObject {
 
 
 	//Override methods
-	//TODO Adddescription for javadoc
-	//will be used by the ArayAdapter in the ListView
 	@Override
 	public String toString() {
 		return "project_id =" + this.project_id + "&" + " name =" + this.project_name  + "&" + "  position =" + this.gpsGeom_id + "&" + "  position =" + this.Ext_GpsGeomCoord;
 		//print the uuid, need a query to get a position
-	}
-
-	@Override
-	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long setId() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
@@ -108,7 +94,7 @@ public class Project extends DataObject {
 			if(!cursor.isAfterLast()){
 				long old_id = this.getProjectId();
 				//long new_id = 1+cursor.getLong(0);
-				long new_id = this.project_id+Sync.getMaxId().get("Project");
+				long new_id = 1+this.project_id+Sync.getMaxId().get("Project");
 				this.setProjectId(new_id);
 				this.trigger(old_id, new_id, MainActivity.composed);
 			}

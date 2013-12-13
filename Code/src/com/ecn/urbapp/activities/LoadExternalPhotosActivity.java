@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -15,11 +16,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.db.Composed;
 import com.ecn.urbapp.db.GpsGeom;
-import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Photo;
+import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.CustomListViewAdapter;
+import com.ecn.urbapp.utils.ImageDownloader;
 import com.ecn.urbapp.utils.MathOperation;
 import com.ecn.urbapp.utils.RowItem;
 import com.ecn.urbapp.utils.Utils;
@@ -29,12 +33,12 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-public class LoadLocalPhotosActivity extends Activity{
-
-	/**
-	 * creating datasource
-	 */
-	private LocalDataSource datasource;
+/**
+ * Selection of the photo in the current project from server
+ * @author Sebastien
+ *
+ */
+public class LoadExternalPhotosActivity extends Activity{
 	/**
 	 * Contains all the projects attributes
 	 */
@@ -51,11 +55,11 @@ public class LoadLocalPhotosActivity extends Activity{
 	/**
 	 * The google map object
 	 */
-	private GoogleMap map = null;
+	private GoogleMap map;
 	/**
-	 * The instance of GeoActivity for map activity
+	 * The instance of  for map activity
 	 */
-	GeoActivity displayedMap;
+	 protected GeoActivity displayedMap;
 	/**
 	 * The button for switching to satellite view
 	 */
@@ -83,11 +87,19 @@ public class LoadLocalPhotosActivity extends Activity{
 	 */
 	String project_barycenter;
 	
+	/**
+	 * all GpsGeom
+	 */
+	private List<GpsGeom> allGpsGeom;
+	
+	/**
+	 * Instanciate the imageDowloader
+	 */
+	private ImageDownloader imageDownloader = new ImageDownloader();
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_loadlocalphotos);
-		datasource=MainActivity.datasource;
-		datasource.open();
 
 		/**
 		 * extras that contains the project_id
@@ -97,6 +109,8 @@ public class LoadLocalPhotosActivity extends Activity{
 
 		map = ((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap();
+		
+		displayedMap = new GeoActivity(true, GeoActivity.defaultPos, map);
 
 		project_barycenter = getIntent().getExtras().getString("PROJECT_COORD");
 		GpsGeom barycenter = new GpsGeom();
@@ -120,15 +134,25 @@ public class LoadLocalPhotosActivity extends Activity{
 
 		listePhotos.setOnItemClickListener(selectedPhoto);
 		map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+			@SuppressWarnings("null")
 			@Override
 			public void onInfoWindowClick(Marker marker) {
-				Toast.makeText(MainActivity.baseContext, refreshedValues.get(photosMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
 				
-				//TODO Sebastien has to make it more readable
-				MainActivity.datasource.instanciatePhoto(refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_id());
+				MainActivity.project = new ArrayList<Project>();
+				for (Project actualProjet:Sync.refreshedValues){
+					if (actualProjet.getProjectId() == project_id)
+						MainActivity.project.add(actualProjet);
+				}
 				
-				//TODO do a better way to have the path !
-				MainActivity.photo.setUrlTemp(Environment.getExternalStorageDirectory()+"/featureapp/"+refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_url());
+				Toast.makeText(MainActivity.baseContext, MainActivity.project.get(0).toString(), Toast.LENGTH_LONG).show();
+
+				//TODO factorize the for in a separated class !
+				for (Photo actualPhoto:Sync.refreshedValuesPhoto) {
+					if ((int)actualPhoto.getPhoto_id() == photosMarkers.get(marker.getId()))
+						MainActivity.photo = actualPhoto;
+				}
+
+				MainActivity.photo.setUrlTemp(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url());
 				
 				setResult(RESULT_OK);
 				finish();
@@ -138,56 +162,42 @@ public class LoadLocalPhotosActivity extends Activity{
 	}
 
 	protected void onClose() {      
-		datasource.close();
 		Utils.confirm(getFragmentManager());
 	}
 
-	//TODO add description for javadoc
-	/**
-	 * loading the different projects of the local db
-	 * @return
-	 */
-	public List<com.ecn.urbapp.db.Photo> recupPhoto() {
-
-		//List<com.ecn.urbapp.db.Photo> values = this.datasource.getAllPhotos();
-
-		//TODO CATCH EXCEPTION
-
-		List<com.ecn.urbapp.db.Photo> values = this.datasource.getAllPhotolinkedtoProject(project_id);
-		return values;
-
-	}
 	
-	/**
-	 * loading the different projects of the local db
-	 * @return
-	 */
-	public List<com.ecn.urbapp.db.GpsGeom> recupGpsGeom() {
-
-		//List<com.ecn.urbapp.db.Photo> values = this.datasource.getAllPhotos();
-
-		//TODO CATCH EXCEPTION
-
-		List<com.ecn.urbapp.db.GpsGeom> values = this.datasource.getAllGpsGeom();
-		return values;
-
-	}
 
 	/**
 	 * creating a list of project and loads in the view
 	 */
 	public void refreshListPhoto(){      
 
-		refreshedValues = recupPhoto();
-		List<com.ecn.urbapp.db.GpsGeom> allGpsGeom = recupGpsGeom();
-
+		Sync Synchro = new Sync();
+    	if (Synchro.getPhotosFromExt(project_id)){
+    		try{
+    			refreshedValues=Sync.refreshedValuesPhoto;
+    			allGpsGeom=Sync.allGpsGeom;
+    		}
+    		catch (Exception e){
+    			Log.e("DFHUPLOAD", "Pb de data");
+    		}
+    	}
+    	
 		rowItems = new ArrayList<RowItem>();
-		for (Photo image:refreshedValues) {
-			//TODO ajouter date
-			RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(), image.getPhoto_url(), image.getPhoto_description());
-			rowItems.add(item);
-		}
+		
+		synchronized (refreshedValues) {
+			for (Photo image:refreshedValues) {
+				/**
+				 * Download each photo and register it on tablet
+				 */
+				String imageStoredUrl = imageDownloader.download(MainActivity.serverURL+"images/", image.getPhoto_url());
 
+				//TODO ajouter date
+				RowItem item = new RowItem(imageStoredUrl,imageStoredUrl, image.getPhoto_description());
+				rowItems.add(item);
+			}
+		}
+		
 		CustomListViewAdapter adapter = new CustomListViewAdapter(this,
 				R.layout.layout_photolistview, rowItems);
 		listePhotos.setAdapter(adapter);
@@ -217,7 +227,7 @@ public class LoadLocalPhotosActivity extends Activity{
 			
 			displayedMap.drawPolygon(photoGPS, false);
 
-			photosMarkers.put(marker.getId(), i);
+			photosMarkers.put(marker.getId(), (int) enCours.getPhoto_id());
 			i++;
 		}
 	}    
@@ -232,7 +242,7 @@ public class LoadLocalPhotosActivity extends Activity{
 				long id) {
 
 
-			List<com.ecn.urbapp.db.GpsGeom> allGpsGeom = recupGpsGeom();
+			List<com.ecn.urbapp.db.GpsGeom> allGpsGeom = Sync.allGpsGeom;
 			ArrayList<LatLng> photoGPS = null;
 			for(GpsGeom gg : allGpsGeom){
 				if(gg.getGpsGeomsId()==refreshedValues.get(position).getGpsGeom_id()){

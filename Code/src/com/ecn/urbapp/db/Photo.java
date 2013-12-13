@@ -25,15 +25,12 @@ public class Photo extends DataObject  {
 	private String photo_url;
 	
 	private String photo_adresse;
-	private long photo_nbrPoints;
-	private String photo_derniereModif;
+	private long photo_nbrPoints=2;
+	private int photo_derniereModif=0;
 	
 	
 	private String photo_urlTemp;
 	private long gpsGeom_id;
-
-	
-	
 	
 	
 	//Getters
@@ -87,7 +84,7 @@ public class Photo extends DataObject  {
 		
 		
 		//TODO Adddescription for javadoc
-		public String getPhoto_derniereModif() {
+		public int getPhoto_derniereModif() {
 			return photo_derniereModif;
 		}
 		
@@ -132,7 +129,7 @@ public class Photo extends DataObject  {
 	}
 	
 	//TODO Adddescription for javadoc
-	public void setPhoto_derniereModif(String d) {
+	public void setPhoto_derniereModif(int d) {
 		this.photo_derniereModif=d;
 	}
 	
@@ -152,25 +149,12 @@ public class Photo extends DataObject  {
 	
 
 	//Override methods
-	//TODO Adddescription for javadoc
 	@Override
 	public String toString() {
 		return "Photo [photo_id=" + photo_id + ", photo_description="
 				+ photo_description + ", photo_author=" + photo_author
 				+ ", photo_url=" + photo_url + ", gps_Geom_id=" + gpsGeom_id +"&" + "  position =" + this.Ext_GpsGeomCoord
 				+ "]";
-	}
-
-	@Override
-	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long setId() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
@@ -194,7 +178,7 @@ public class Photo extends DataObject  {
 			if(!cursor.isAfterLast()){
 				long old_id = this.getPhoto_id();
 				//long new_id = 1+cursor.getLong(0);
-				long new_id = this.photo_id+Sync.getMaxId().get("Photo");
+				long new_id = 1+Sync.getMaxId().get("Photo")+this.gpsGeom_id;
 				this.setPhoto_id(new_id);
 				this.trigger(old_id, new_id, MainActivity.element, MainActivity.composed);
 			}

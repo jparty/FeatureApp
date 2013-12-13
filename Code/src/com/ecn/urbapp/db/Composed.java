@@ -22,7 +22,6 @@ public class Composed extends DataObject{
 	 * getter of the project_id
 	 * @return long id of the project
 	 */
-	//TODO delete and replace by getId from DataObject
 	public long getProject_id() {
 		return project_id;
 	}
@@ -31,18 +30,23 @@ public class Composed extends DataObject{
 	 * getter of the photo_id
 	 * @return long id of the photo
 	 */
-	//TODO Adddescription for javadoc
 	public long getPhoto_id() {
 		return photo_id;
 	}
 	
 	//Getters
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the project_id
+	 * @param project_id
+	 */
 	public void setProject_id(long project_id) {
 		this.project_id = project_id;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the photo_id
+	 * @param photo_id
+	 */
 	public void setPhoto_id(long photo_id) {
 		this.photo_id = photo_id;
 	}
@@ -56,40 +60,15 @@ public class Composed extends DataObject{
 				+ "]";
 	}
 
-	//TODO shit happens
-	@Override
-	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
-	//TODO shit happens
-	@Override
-	public long setId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
-	/**
-	 * 
-	 */
 	@Override
 	public void saveToLocal(LocalDataSource datasource) {
-		//TODO trigger
 		ContentValues values = new ContentValues(); 
 		values.put(MySQLiteHelper.COLUMN_PROJECTID, this.project_id);
 		values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
 		
-		if(this.registredInLocal){
-			//TODO delete, no need to change it hen it's registred
-			/*
-			String[] s=new String[1];
-			s[0]= ""+this.project_id;
-			s[1]= ""+this.photo_id;
-			datasource.getDatabase().update(MySQLiteHelper.TABLE_ELEMENT, values, MySQLiteHelper.COLUMN_ELEMENTID,s );
-			*/
-		}
-		else{
+		if(!this.registredInLocal){
 			datasource.getDatabase().insert(MySQLiteHelper.TABLE_COMPOSED, null, values);
 		}
 	}
