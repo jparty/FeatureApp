@@ -1,4 +1,4 @@
-/*--------------------------------------------------------------------
+/**--------------------------------------------------------------------
 
 Copyright Jonathan Cozzo and Patrick Rannou (22/03/2013)
 
@@ -31,7 +31,7 @@ same conditions as regards security.
 The fact that you are presently reading this means that you have had
 knowledge of the CeCILL license and that you accept its terms.
 
------------------------------------------------------------------------
+-----------------------------------------------------------------------*/
 
 package com.ecn.urbapp.dialogs;
 
@@ -47,25 +47,25 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.fragments.ZoneFragment;
 
-*//**
+/**
  * This class creates the dialog that indicate which pixelgeoms is not defined
  * 
  * @author Jules Party
  * 
- *//*
+ */
 public class AddZoneDialogFragment extends DialogFragment {
 
-	*//**
+	/**
 	 * The Dialog instance that allows the user to choose how to insert new PixelGeoms.
-	 *//*
+	 */
 	private Dialog box;
-	*//** 
+	/** 
 	 * Button to add the zone by intersecting it with older ones
-	 *//*
+	 */
 	private Button addIntersect = null;
-	*//**
+	/**
 	 * Button to add the zone directly without intersecting it with older ones
-	 *//*
+	 */
 	private Button addDirect = null;
 	
 	private static ZoneFragment zoneFrag;
@@ -104,4 +104,4 @@ public class AddZoneDialogFragment extends DialogFragment {
 	@Override
 	public void onCancel(DialogInterface dialog) {
 	}
-}*/
+}
