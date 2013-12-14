@@ -23,6 +23,7 @@ import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
@@ -164,7 +165,7 @@ public class CharacteristicsFragment extends Fragment {
 
 		@Override
 		public void onClick(View v) {
-			if (!UtilCharacteristicsZone.getAllSelectedZones().isEmpty()) {
+			if (!UtilCharacteristicsZone.getAllSelectedElements().isEmpty()) {
 				// Show the dialog to choose the characteristics
 				CharacteristicsDialogFragment typedialog = new CharacteristicsDialogFragment();
 				typedialog.show(getFragmentManager(), "CharacteristicsDialogFragment");
@@ -222,13 +223,17 @@ public class CharacteristicsFragment extends Fragment {
 
 		@Override
 		public void onClick(View v) {
-			Vector<PixelGeom> selectedPixelGeom = new Vector<PixelGeom>();
-			for(PixelGeom pg: MainActivity.pixelGeom){
-				if(pg.selected){
-					pg.setLinkedPixelGeom(selectedPixelGeom);
-				}
+			Vector<Element> selectedElements = UtilCharacteristicsZone.getAllSelectedElements();
+			for(Element elt : selectedElements){
+				elt.setLinkedElement(new Vector<Element>());
 			}
 			UtilCharacteristicsZone.unselectAll();
 		}
 	};
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		UtilCharacteristicsZone.unselectAll();
+	}
 }
