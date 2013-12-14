@@ -1,5 +1,7 @@
 package com.ecn.urbapp.fragments;
 
+import java.util.Vector;
+
 import android.app.Fragment;
 import android.content.res.Resources;
 import android.graphics.Matrix;
@@ -21,6 +23,7 @@ import android.widget.ImageView;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.dialogs.CharacteristicsDialogFragment;
 import com.ecn.urbapp.dialogs.SummaryDialogFragment;
 import com.ecn.urbapp.dialogs.UnionDialogFragment;
@@ -58,6 +61,9 @@ public class CharacteristicsFragment extends Fragment {
 	/** Button to group all selected zones */
 	private Button union = null;
 
+	/** Button to unlink all selected zones */
+	private Button unlink = null;
+
 	/**
 	 * Returns the Image used in this project.
 	 */
@@ -79,6 +85,7 @@ public class CharacteristicsFragment extends Fragment {
 		delete = (Button) v.findViewById(R.id.definition_button_delete);
 		recap = (Button) v.findViewById(R.id.definition_button_recap);
 		union = (Button) v.findViewById(R.id.definition_button_union);
+		unlink = (Button) v.findViewById(R.id.definition_button_divide);
 
 		DrawImageView view = new DrawImageView();
 	
@@ -98,6 +105,7 @@ public class CharacteristicsFragment extends Fragment {
 	    delete.setOnClickListener(clickListenerDelete);
 	    recap.setOnClickListener(clickListenerRecap);
 	    union.setOnClickListener(clickListenerUnion);
+	    unlink.setOnClickListener(clickListenerUnlink);
 
 		return v;
 	}
@@ -204,6 +212,23 @@ public class CharacteristicsFragment extends Fragment {
 		public void onClick(View v) {
 				UnionDialogFragment summarydialog = new UnionDialogFragment();
 				summarydialog.show(getFragmentManager(), "UnionDialogFragment");
+		}
+	};
+
+	/**
+	 * Unlink the selected zones.
+	 */
+	private OnClickListener clickListenerUnlink = new View.OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			Vector<PixelGeom> selectedPixelGeom = new Vector<PixelGeom>();
+			for(PixelGeom pg: MainActivity.pixelGeom){
+				if(pg.selected){
+					pg.setLinkedPixelGeom(selectedPixelGeom);
+				}
+			}
+			UtilCharacteristicsZone.unselectAll();
 		}
 	};
 }

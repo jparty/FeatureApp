@@ -45,6 +45,13 @@
         android:text="@string/definition_union"/>
     
     <Button 
+        android:id="@+id/definition_button_divide"
+        android:layout_width="200dp"
+        android:layout_height="85dp"
+        android:layout_toRightOf="@+id/definition_button_union"
+        android:text="@string/definition_divide"/>
+
+    <Button
         android:id="@+id/definition_button_recap"
         android:layout_width="200dp"
         android:layout_height="85dp"
